@@ -1,0 +1,62 @@
+﻿@model IEnumerable<ContosoAssets.SolutionManagement.AzureMarketplaceFulfillment.MarketplaceSubscription>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OfferId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlanId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubscriptionId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubscriptionName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OfferId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlanId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.State)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubscriptionId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubscriptionName)
+                </td>
+                <td>
+                    @Html.ActionLink("Operations", "Operations", new
+                    { item.SubscriptionId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

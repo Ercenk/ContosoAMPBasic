@@ -5,7 +5,8 @@ using System.Net;
 using System.Net.Mail;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using ContosoAssets.SolutionManagement.AzureMarketplaceFulfillment;
+using Dashboard.Mail;
+using Dashboard.Marketplace;
 using Dashboard.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,14 +17,14 @@ namespace Dashboard.Controllers
     public class LandingPageController : Controller
     {
         private readonly IFulfillmentManager fulfillmentManager;
+        private readonly IEMailHelper ieMailHelper;
         private readonly ILogger<LandingPageController> logger;
-        private readonly IMailHelper mailHelper;
         private readonly DashboardOptions options;
 
-        public LandingPageController(IOptionsMonitor<DashboardOptions> dashboardOptions, IFulfillmentManager fulfillmentManager, IMailHelper mailHelper, ILogger<LandingPageController> logger)
+        public LandingPageController(IOptionsMonitor<DashboardOptions> dashboardOptions, IFulfillmentManager fulfillmentManager, IEMailHelper ieMailHelper, ILogger<LandingPageController> logger)
         {
             this.fulfillmentManager = fulfillmentManager;
-            this.mailHelper = mailHelper;
+            this.ieMailHelper = ieMailHelper;
             this.logger = logger;
             this.options = dashboardOptions.CurrentValue;
         }
@@ -32,11 +33,12 @@ namespace Dashboard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Index(AzureSubscriptionProvisionModel provisionModel)
         {
+            var urlBase = $"{this.Request.Scheme}://{this.Request.Host}";
             try
             {
-                await this.mailHelper.SendActivateEmailAsync(provisionModel.SubscriptionId);
+                await this.ieMailHelper.SendActivateEmailAsync(urlBase, provisionModel);
 
-                return this.RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(Success));
             }
             catch (Exception ex)
             {
@@ -70,9 +72,9 @@ namespace Dashboard.Controllers
             return this.View(provisioningModel);
         }
 
-        public ActionResult Success(MarketplaceSubscription marketplaceSubscription)
+        public ActionResult Success()
         {
-            return this.View(marketplaceSubscription);
+            return this.View();
         }
     }
 }

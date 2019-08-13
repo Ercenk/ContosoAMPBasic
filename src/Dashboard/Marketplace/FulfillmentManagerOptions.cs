@@ -1,6 +1,7 @@
-﻿using SaaSFulfillmentClient.Models;
+﻿using SaaSFulfillmentClient.AzureAD;
+using SaaSFulfillmentClient.Models;
 
-namespace AzureMarketplaceFulfillment
+namespace Dashboard.Marketplace
 {
     public class FulfillmentManagerOptions
     {

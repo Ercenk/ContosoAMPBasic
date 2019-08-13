@@ -3,57 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ContosoAssets.SolutionManagement.AzureMarketplaceFulfillment;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 using SaaSFulfillmentClient;
+using SaaSFulfillmentClient.AzureAD;
 using SaaSFulfillmentClient.Models;
 
-namespace AzureMarketplaceFulfillment
+namespace Dashboard.Marketplace
 {
     public class FulfillmentManager : IFulfillmentManager
     {
-        private readonly ICredentialProvider credentialProvider;
         private readonly IFulfillmentClient fulfillmentClient;
         private readonly ILogger<FulfillmentManager> logger;
-        private readonly FulfillmentManagerOptions options;
 
         public FulfillmentManager(
-            IOptionsMonitor<FulfillmentManagerOptions> optionsAccessor,
-            ICredentialProvider credentialProvider,
             IFulfillmentClient fulfillmentClient,
-            ILogger<FulfillmentManager> logger) : this(
-            optionsAccessor,
-            credentialProvider,
-            fulfillmentClient,
-            AdApplicationHelper.GetApplication,
-            logger)
-        {
-        }
-
-        public FulfillmentManager(
-            IOptionsMonitor<FulfillmentManagerOptions> optionsAccessor,
-            ICredentialProvider credentialProvider,
-            IFulfillmentClient fulfillmentClient,
-            Func<FulfillmentManagerOptions, ICredentialProvider, IConfidentialClientApplication> adApplicationFactory,
             ILogger<FulfillmentManager> logger)
         {
-            options = optionsAccessor.CurrentValue;
-
-            this.credentialProvider = credentialProvider;
             this.fulfillmentClient = fulfillmentClient;
             this.logger = logger;
-            AdApplication = adApplicationFactory(options, this.credentialProvider);
         }
-
-        public IConfidentialClientApplication AdApplication { get; }
 
         public async Task<MarketplaceSubscription> ActivateSubscriptionAsync(Guid subscriptionId, string planId,
             int? quantity, CancellationToken cancellationToken = default)
         {
-            var bearerToken = await AdApplicationHelper.GetBearerToken(AdApplication);
-
             var requestId = Guid.NewGuid();
             var correlationId = Guid.NewGuid();
             var subscriptionToBeActivated = new ActivatedSubscription { PlanId = planId };
@@ -67,7 +40,6 @@ namespace AzureMarketplaceFulfillment
                 subscriptionToBeActivated,
                 requestId,
                 correlationId,
-                bearerToken,
                 cancellationToken);
 
             if (result.Success)
@@ -100,14 +72,12 @@ namespace AzureMarketplaceFulfillment
         {
             var requestId = Guid.NewGuid();
             var correlationId = Guid.NewGuid();
-            var bearerToken = await AdApplicationHelper.GetBearerToken(AdApplication);
 
             var operationResult = await fulfillmentClient.GetSubscriptionOperationAsync(
                 receivedSubscriptionId,
                 operationId,
                 requestId,
                 correlationId,
-                bearerToken,
                 cancellationToken);
 
             if (!operationResult.Success)
@@ -144,9 +114,8 @@ namespace AzureMarketplaceFulfillment
         {
             var requestId = Guid.NewGuid();
             var correlationId = Guid.NewGuid();
-            var bearerToken = await AdApplicationHelper.GetBearerToken(AdApplication);
 
-            var operations = await fulfillmentClient.GetSubscriptionOperationsAsync(subscriptionId, requestId, correlationId, bearerToken, cancellationToken);
+            var operations = await fulfillmentClient.GetSubscriptionOperationsAsync(subscriptionId, requestId, correlationId, cancellationToken);
 
             return operations;
         }
@@ -155,9 +124,8 @@ namespace AzureMarketplaceFulfillment
         {
             var requestId = Guid.NewGuid();
             var correlationId = Guid.NewGuid();
-            var bearerToken = await AdApplicationHelper.GetBearerToken(AdApplication);
 
-            var subscriptions = await fulfillmentClient.GetSubscriptionsAsync(requestId, correlationId, bearerToken, cancellationToken);
+            var subscriptions = await fulfillmentClient.GetSubscriptionsAsync(requestId, correlationId, cancellationToken);
 
             return subscriptions.Select(s => MarketplaceSubscription.From(s));
         }
@@ -167,10 +135,9 @@ namespace AzureMarketplaceFulfillment
         {
             var requestId = Guid.NewGuid();
             var correlationId = Guid.NewGuid();
-            var bearerToken = await AdApplicationHelper.GetBearerToken(AdApplication);
 
             var deleteRequest = await fulfillmentClient.DeleteSubscriptionAsync(subscriptionId, requestId,
-                correlationId, bearerToken, cancellationToken);
+                correlationId, cancellationToken);
 
             if (!deleteRequest.Success)
             {
@@ -196,12 +163,11 @@ namespace AzureMarketplaceFulfillment
         {
             var requestId = Guid.NewGuid();
             var correlationId = Guid.NewGuid();
-            var bearerToken = await AdApplicationHelper.GetBearerToken(AdApplication);
 
             var activatedSubscription = new ActivatedSubscription { PlanId = name };
 
             var updateResponse = await fulfillmentClient.UpdateSubscriptionAsync(subscriptionId,
-                activatedSubscription, requestId, correlationId, bearerToken, cancellationToken);
+                activatedSubscription, requestId, correlationId, cancellationToken);
 
             if (!updateResponse.Success)
             {
@@ -228,12 +194,10 @@ namespace AzureMarketplaceFulfillment
         public async Task<MarketplaceSubscription> ResolveSubscriptionAsync(string authCode,
             CancellationToken cancellationToken = default)
         {
-            var bearerToken = await AdApplicationHelper.GetBearerToken(AdApplication);
-
             var requestId = Guid.NewGuid();
             var correlationId = Guid.NewGuid();
             var subscription = await fulfillmentClient.ResolveSubscriptionAsync(authCode, requestId, correlationId,
-                bearerToken, cancellationToken);
+                cancellationToken);
 
             if (subscription.Success)
             {

@@ -1,24 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using Dashboard.Controllers;
+using Dashboard.Mail;
+using Dashboard.Marketplace;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using SendGrid.Helpers.Mail;
-using AzureMarketplaceFulfillment;
+using SaaSFulfillmentClient;
 
 namespace Dashboard
 {
@@ -81,15 +76,24 @@ namespace Dashboard
 
             services.Configure<DashboardOptions>(this.Configuration.GetSection("Dashboard"));
 
-            services.AddFulfillmentManager(options =>
-                    ConfigurationBinder.Bind(this.Configuration, (string)"FulfillmentClient", (object)options),
-                    credentialBuilder => credentialBuilder.WithClientSecretAuthentication(this.Configuration["FulfillmentClient:AzureActiveDirectory:AppKey"]));
+            services.AddFulfillmentClient(options => this.Configuration.Bind("FulfillmentClient", options),
+                credentialBuilder =>
+                    credentialBuilder.WithClientSecretAuthentication(this.Configuration["FulfillmentClient:AzureActiveDirectory:AppKey"]));
 
             services
                 .AddWebhookProcessor()
                 .WithWebhookHandler<ContosoWebhookHandler>();
 
-            services.TryAddScoped<IMailHelper, DashboardMailHelper>();
+            services.TryAddScoped<IFulfillmentManager, FulfillmentManager>();
+
+            services.TryAddScoped<IEMailHelper, DashboardEMailHelper>();
+
+            services.AddAuthorization(options =>
+                options.AddPolicy("DashboardAdmin",
+                    policy => policy.Requirements.Add((new DashboardAdminRequirement(this.Configuration
+                        .GetSection("Dashboard").Get<DashboardOptions>().DashboardAdmin)))));
+
+            services.AddSingleton<IAuthorizationHandler, DashboardAdminHandler>();
 
             services.AddMvc(options =>
             {

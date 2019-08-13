@@ -1,9 +1,9 @@
 ﻿using System.Security.Cryptography.X509Certificates;
-using ContosoAssets.SolutionManagement.AzureMarketplaceFulfillment;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using SaaSFulfillmentClient.AzureAD;
 
-namespace AzureMarketplaceFulfillment
+namespace Dashboard.Marketplace
 {
     public class FulfillmentManagerBuilder
     {
@@ -29,7 +29,7 @@ namespace AzureMarketplaceFulfillment
 
         public void WithClientSecretAuthentication(string clientSecret)
         {
-            services.TryAddSingleton<ICredentialProvider>(new ClientSercretCredentialProvider(clientSecret));
+            services.TryAddSingleton<ICredentialProvider>(new ClientSecretCredentialProvider(clientSecret));
         }
     }
 }

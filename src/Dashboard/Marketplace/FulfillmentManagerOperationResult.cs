@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace AzureMarketplaceFulfillment
+namespace Dashboard.Marketplace
 {
     public class FulfillmentManagerOperationResult
     {

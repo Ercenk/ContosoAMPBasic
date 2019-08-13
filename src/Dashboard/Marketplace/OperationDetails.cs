@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ContosoAssets.SolutionManagement.AzureMarketplaceFulfillment
+namespace Dashboard.Marketplace
 {
     public class OperationDetails
     {

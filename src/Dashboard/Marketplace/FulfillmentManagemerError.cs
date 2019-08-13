@@ -1,4 +1,4 @@
-﻿namespace AzureMarketplaceFulfillment
+﻿namespace Dashboard.Marketplace
 {
     public class FulfillmentManagementError
     {

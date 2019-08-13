@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace AzureMarketplaceFulfillment
+namespace Dashboard.Marketplace
 {
     [Serializable]
     internal class FulfillmentManagerException : Exception

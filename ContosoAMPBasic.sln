@@ -9,8 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{428E6E6A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard", "src\Dashboard\Dashboard.csproj", "{CBCA3843-7048-412A-A97E-2F7F7D9334D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureMarketplaceFulfillment", "src\AzureMarketplaceFulfillment\AzureMarketplaceFulfillment.csproj", "{8D128277-FC5B-4A37-A612-5E2D431111E1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DE3CEBAD-3C79-44DD-958F-04857902AE8F}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
@@ -26,17 +24,12 @@ Global
 		{CBCA3843-7048-412A-A97E-2F7F7D9334D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBCA3843-7048-412A-A97E-2F7F7D9334D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBCA3843-7048-412A-A97E-2F7F7D9334D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8D128277-FC5B-4A37-A612-5E2D431111E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D128277-FC5B-4A37-A612-5E2D431111E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D128277-FC5B-4A37-A612-5E2D431111E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D128277-FC5B-4A37-A612-5E2D431111E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CBCA3843-7048-412A-A97E-2F7F7D9334D1} = {AEF2D8C7-2399-4FF3-9800-79AAA5DF1052}
-		{8D128277-FC5B-4A37-A612-5E2D431111E1} = {AEF2D8C7-2399-4FF3-9800-79AAA5DF1052}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2EF50173-E909-42F6-89B2-F4B704BD4580}

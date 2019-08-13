@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ContosoAssets.SolutionManagement.AzureMarketplaceFulfillment;
+using Dashboard.Marketplace;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SaaSFulfillmentClient;
 
 namespace Dashboard.Controllers
 {
+    [Authorize(policy: "DashboardAdmin")]
     public class SubscriptionsController : Controller
     {
         private readonly IFulfillmentManager fulfillmentManager;

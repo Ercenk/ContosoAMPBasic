@@ -1,38 +1,93 @@
 ﻿using System.Threading.Tasks;
-using ContosoAssets.SolutionManagement.AzureMarketplaceFulfillment;
+using Dashboard.Mail;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using SaaSFulfillmentClient.Models;
+using SaaSFulfillmentClient.WebHook;
 
 namespace Dashboard
 {
     public class ContosoWebhookHandler : IWebhookHandler
     {
-        public Task ChangePlanAsync(WebhookPayload payload)
+        private readonly IEMailHelper emailHelper;
+
+        public ContosoWebhookHandler(IEMailHelper emailHelper)
         {
-            throw new System.NotImplementedException();
+            this.emailHelper = emailHelper;
         }
 
-        public Task ChangeQuantityAsync(WebhookPayload payload)
+        public async Task ChangePlanAsync(WebhookPayload payload)
         {
-            throw new System.NotImplementedException();
+            switch (payload.Status)
+            {
+                case OperationStatusEnum.Succeeded:
+                    await this.emailHelper.SendChangePlanEmailAsync(payload);
+                    break;
+
+                case OperationStatusEnum.Failed:
+                case OperationStatusEnum.Conflict:
+                    await this.emailHelper.SendOperationFailOrConflictEmailAsync(payload);
+                    break;
+            }
         }
 
-        public Task ReinstatedAsync(WebhookPayload payload)
+        public async Task ChangeQuantityAsync(WebhookPayload payload)
         {
-            throw new System.NotImplementedException();
+            switch (payload.Status)
+            {
+                case OperationStatusEnum.Succeeded:
+                    await this.emailHelper.SendChangeQuantityEmailAsync(payload);
+                    break;
+
+                case OperationStatusEnum.Failed:
+                case OperationStatusEnum.Conflict:
+                    await this.emailHelper.SendOperationFailOrConflictEmailAsync(payload);
+                    break;
+            }
         }
 
-        public Task SubscribedAsync(WebhookPayload payload)
+        public async Task ReinstatedAsync(WebhookPayload payload)
         {
-            throw new System.NotImplementedException();
+            switch (payload.Status)
+            {
+                case OperationStatusEnum.Succeeded:
+                    await this.emailHelper.SendReinstatedEmailAsync(payload);
+                    break;
+
+                case OperationStatusEnum.Failed:
+                case OperationStatusEnum.Conflict:
+                    await this.emailHelper.SendOperationFailOrConflictEmailAsync(payload);
+                    break;
+            }
         }
 
-        public Task SuspendedAsync(WebhookPayload payload)
+        public async Task SuspendedAsync(WebhookPayload payload)
         {
-            throw new System.NotImplementedException();
+            switch (payload.Status)
+            {
+                case OperationStatusEnum.Succeeded:
+                    await this.emailHelper.SendSuspendedEmailAsync(payload);
+                    break;
+
+                case OperationStatusEnum.Failed:
+                case OperationStatusEnum.Conflict:
+                    await this.emailHelper.SendOperationFailOrConflictEmailAsync(payload);
+                    break;
+            }
         }
 
-        public Task UnsubscribedAsync(WebhookPayload payload)
+        public async Task UnsubscribedAsync(WebhookPayload payload)
         {
-            throw new System.NotImplementedException();
+            switch (payload.Status)
+            {
+                case OperationStatusEnum.Succeeded:
+                    await this.emailHelper.SendUnsubscribedEmailAsync(payload);
+                    break;
+
+                case OperationStatusEnum.Failed:
+                case OperationStatusEnum.Conflict:
+                    await this.emailHelper.SendOperationFailOrConflictEmailAsync(payload);
+                    break;
+            }
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using SaaSFulfillmentClient.Models;
 
-namespace ContosoAssets.SolutionManagement.AzureMarketplaceFulfillment
+namespace Dashboard.Marketplace
 {
     public class MarketplaceSubscription
     {

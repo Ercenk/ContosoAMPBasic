@@ -1,8 +1,10 @@
-﻿namespace Dashboard.Controllers
+﻿using Dashboard.Mail;
+
+namespace Dashboard
 {
     public class DashboardOptions
     {
-        public object DashboardUri { get; internal set; }
-        public MailOptions Mail { get; internal set; }
+        public string DashboardAdmin { get; set; }
+        public MailOptions Mail { get; set; }
     }
 }

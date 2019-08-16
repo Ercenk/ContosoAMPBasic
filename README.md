@@ -12,3 +12,15 @@ When a subscriber provides the details on the landing page, the solution generat
 The solution does not implement native cancel or update subscription options. The subscriber uses the Azure Marketplace to cancel or update the subscription. In the case of a change on the subscription (cancel, update, suspend), the marketplace posts a notification to the webhook, and the operations contact receives an email. Just like the onboarding operation, the operations contact performs the required operation manually, and then comes back to the email, and click on the included link to indicate completion of the operation.
 
 ![overview](./Docs/Overview.png)
+
+## Notes
+
+## Secrets
+
+Secrets such as API keys are managed through "dotnet user-secrets" command. For example, to set the value for "FulfillmentClient:AzureActiveDirectory:AppKey" use the following command:
+
+``` sh
+dotnet user-secrets set "FulfillmentClient:AzureActiveDirectory:AppKey" "secret here"
+```
+
+Please see the user secrets [documentation](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-2.2&tabs=windows) for more details.

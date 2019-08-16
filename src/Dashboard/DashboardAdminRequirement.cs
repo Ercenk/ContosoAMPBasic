@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-
-namespace Dashboard
+﻿namespace Dashboard
 {
+    using Microsoft.AspNetCore.Authorization;
+
     public class DashboardAdminRequirement : IAuthorizationRequirement
     {
         public DashboardAdminRequirement(string dashboardAdmin)

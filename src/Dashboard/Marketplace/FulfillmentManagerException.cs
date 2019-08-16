@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace Dashboard.Marketplace
+﻿namespace Dashboard.Marketplace
 {
+    using System;
+    using System.Runtime.Serialization;
+
     [Serializable]
     internal class FulfillmentManagerException : Exception
     {
@@ -12,18 +12,21 @@ namespace Dashboard.Marketplace
 
         public FulfillmentManagerException(FulfillmentManagerOperationResult fulfillmentManagerOperationResult)
         {
-            OperationResult = fulfillmentManagerOperationResult;
+            this.OperationResult = fulfillmentManagerOperationResult;
         }
 
-        public FulfillmentManagerException(string message) : base(message)
+        public FulfillmentManagerException(string message)
+            : base(message)
         {
         }
 
-        public FulfillmentManagerException(string message, Exception innerException) : base(message, innerException)
+        public FulfillmentManagerException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
 
-        protected FulfillmentManagerException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected FulfillmentManagerException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
 

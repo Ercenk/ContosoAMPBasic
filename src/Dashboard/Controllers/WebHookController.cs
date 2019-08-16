@@ -1,16 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Dashboard.Controllers
+﻿namespace Dashboard.Controllers
 {
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Options;
+
+    using SaaSFulfillmentClient.WebHook;
+
     public class WebHookController : Controller
     {
-        public IActionResult Index()
+        private readonly IWebhookProcessor webhookProcessor;
+
+        private DashboardOptions options;
+
+        public WebHookController(IWebhookProcessor webhookProcessor, IOptionsMonitor<DashboardOptions> optionsMonitor)
         {
-            return View();
+            this.webhookProcessor = webhookProcessor;
+            this.options = optionsMonitor.CurrentValue;
+        }
+
+        public async Task<IActionResult> Index(WebhookPayload payload)
+        {
+            // Options is injected as a singleton. This is not a good hack, but need to pass the host name and port
+            this.options.BaseUrl = $"{this.Request.Scheme}://{this.Request.Host}/";
+            await this.webhookProcessor.ProcessWebhookNotificationAsync(payload);
+            return this.Ok();
         }
     }
 }

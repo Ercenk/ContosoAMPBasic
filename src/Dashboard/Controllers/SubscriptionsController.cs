@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Dashboard.Marketplace;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SaaSFulfillmentClient;
-
-namespace Dashboard.Controllers
+﻿namespace Dashboard.Controllers
 {
+    using System;
+    using System.Threading.Tasks;
+
+    using Dashboard.Marketplace;
+
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+
     [Authorize(policy: "DashboardAdmin")]
     public class SubscriptionsController : Controller
     {
@@ -22,14 +21,14 @@ namespace Dashboard.Controllers
         public async Task<IActionResult> Index()
         {
             var subscriptions = await this.fulfillmentManager.GetSubscriptionsAsync();
-            return View(subscriptions);
+            return this.View(subscriptions);
         }
 
         public async Task<IActionResult> Operations(Guid subscriptionId)
         {
             var operations = await this.fulfillmentManager.GetSubscriptionOperationsAsync(subscriptionId);
 
-            return View(operations);
+            return this.View(operations);
         }
     }
 }

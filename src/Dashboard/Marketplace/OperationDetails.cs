@@ -1,13 +1,13 @@
-﻿using System;
-
-namespace Dashboard.Marketplace
+﻿namespace Dashboard.Marketplace
 {
+    using System;
+
     public class OperationDetails
     {
         public Guid OperationId { get; set; }
 
-        public Guid SubscriptionId { get; set; }
-
         public TimeSpan RetryInterval { get; set; }
+
+        public Guid SubscriptionId { get; set; }
     }
 }

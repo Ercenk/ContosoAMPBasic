@@ -1,11 +1,12 @@
-﻿using System.Threading.Tasks;
-using Dashboard.Mail;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using SaaSFulfillmentClient.Models;
-using SaaSFulfillmentClient.WebHook;
-
-namespace Dashboard
+﻿namespace Dashboard
 {
+    using System.Threading.Tasks;
+
+    using Dashboard.Mail;
+
+    using SaaSFulfillmentClient.Models;
+    using SaaSFulfillmentClient.WebHook;
+
     public class ContosoWebhookHandler : IWebhookHandler
     {
         private readonly IEMailHelper emailHelper;

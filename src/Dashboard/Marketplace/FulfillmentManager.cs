@@ -1,31 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Client;
-using SaaSFulfillmentClient;
-using SaaSFulfillmentClient.AzureAD;
-using SaaSFulfillmentClient.Models;
-
-namespace Dashboard.Marketplace
+﻿namespace Dashboard.Marketplace
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using Microsoft.Extensions.Logging;
+
+    using SaaSFulfillmentClient;
+    using SaaSFulfillmentClient.Models;
+
     public class FulfillmentManager : IFulfillmentManager
     {
         private readonly IFulfillmentClient fulfillmentClient;
+
         private readonly ILogger<FulfillmentManager> logger;
 
-        public FulfillmentManager(
-            IFulfillmentClient fulfillmentClient,
-            ILogger<FulfillmentManager> logger)
+        public FulfillmentManager(IFulfillmentClient fulfillmentClient, ILogger<FulfillmentManager> logger)
         {
             this.fulfillmentClient = fulfillmentClient;
             this.logger = logger;
         }
 
-        public async Task<MarketplaceSubscription> ActivateSubscriptionAsync(Guid subscriptionId, string planId,
-            int? quantity, CancellationToken cancellationToken = default)
+        public async Task<MarketplaceSubscription> ActivateSubscriptionAsync(
+            Guid subscriptionId,
+            string planId,
+            int? quantity,
+            CancellationToken cancellationToken = default)
         {
             var requestId = Guid.NewGuid();
             var correlationId = Guid.NewGuid();
@@ -35,23 +37,23 @@ namespace Dashboard.Marketplace
                 subscriptionToBeActivated.Quantity = quantity.Value.ToString();
             }
 
-            var result = await fulfillmentClient.ActivateSubscriptionAsync(
-                subscriptionId,
-                subscriptionToBeActivated,
-                requestId,
-                correlationId,
-                cancellationToken);
+            var result = await this.fulfillmentClient.ActivateSubscriptionAsync(
+                             subscriptionId,
+                             subscriptionToBeActivated,
+                             requestId,
+                             correlationId,
+                             cancellationToken);
 
             if (result.Success)
             {
-                logger.LogInformation(
+                this.logger.LogInformation(
                     $"Activated subscription {subscriptionId} for plan {planId} with quantitiy {quantity}");
                 var returnValue = new MarketplaceSubscription
-                {
-                    PlanId = planId,
-                    State = StatusEnum.Subscribed,
-                    SubscriptionId = subscriptionId
-                };
+                                      {
+                                          PlanId = planId,
+                                          State = StatusEnum.Subscribed,
+                                          SubscriptionId = subscriptionId
+                                      };
 
                 if (quantity.HasValue)
                 {
@@ -61,33 +63,35 @@ namespace Dashboard.Marketplace
                 return returnValue;
             }
 
-            logger.LogError(
+            this.logger.LogError(
                 $"Cannot activate subscription {subscriptionId} for plan {planId} with quantitiy {quantity}");
 
             return default;
         }
 
-        public async Task<FulfillmentManagerOperationResult> GetOperationResultAsync(Guid receivedSubscriptionId,
-            Guid operationId, CancellationToken cancellationToken = default)
+        public async Task<FulfillmentManagerOperationResult> GetOperationResultAsync(
+            Guid receivedSubscriptionId,
+            Guid operationId,
+            CancellationToken cancellationToken = default)
         {
             var requestId = Guid.NewGuid();
             var correlationId = Guid.NewGuid();
 
-            var operationResult = await fulfillmentClient.GetSubscriptionOperationAsync(
-                receivedSubscriptionId,
-                operationId,
-                requestId,
-                correlationId,
-                cancellationToken);
+            var operationResult = await this.fulfillmentClient.GetSubscriptionOperationAsync(
+                                      receivedSubscriptionId,
+                                      operationId,
+                                      requestId,
+                                      correlationId,
+                                      cancellationToken);
 
             if (!operationResult.Success)
             {
                 return FulfillmentManagerOperationResult.Failed(
                     new FulfillmentManagementError
-                    {
-                        Description =
-                            $"Check operation error. Subscription {receivedSubscriptionId}, operation {operationId}"
-                    });
+                        {
+                            Description =
+                                $"Check operation error. Subscription {receivedSubscriptionId}, operation {operationId}"
+                        });
             }
 
             if (operationResult.Status == OperationStatusEnum.Succeeded)
@@ -95,60 +99,74 @@ namespace Dashboard.Marketplace
                 return FulfillmentManagerOperationResult.Success;
             }
 
-            if (operationResult.Status == OperationStatusEnum.Failed ||
-                operationResult.Status == OperationStatusEnum.Conflict)
+            if (operationResult.Status == OperationStatusEnum.Failed
+                || operationResult.Status == OperationStatusEnum.Conflict)
             {
                 return FulfillmentManagerOperationResult.Failed(
                     new FulfillmentManagementError
-                    {
-                        Description =
-                            $"Check operation error. Status is {operationResult.Status}. Subscription {receivedSubscriptionId}, operation {operationId}"
-                    });
+                        {
+                            Description =
+                                $"Check operation error. Status is {operationResult.Status}. Subscription {receivedSubscriptionId}, operation {operationId}"
+                        });
             }
 
             // Operation status does not return a retry-after header. We hardcoded for 10 seconds for now.
             return FulfillmentManagerOperationResult.Success;
         }
 
-        public async Task<IEnumerable<SubscriptionOperation>> GetSubscriptionOperationsAsync(Guid subscriptionId, CancellationToken cancellationToken = default)
-        {
-            var requestId = Guid.NewGuid();
-            var correlationId = Guid.NewGuid();
-
-            var operations = await fulfillmentClient.GetSubscriptionOperationsAsync(subscriptionId, requestId, correlationId, cancellationToken);
-
-            return operations;
-        }
-
-        public async Task<IEnumerable<MarketplaceSubscription>> GetSubscriptionsAsync(CancellationToken cancellationToken = default)
-        {
-            var requestId = Guid.NewGuid();
-            var correlationId = Guid.NewGuid();
-
-            var subscriptions = await fulfillmentClient.GetSubscriptionsAsync(requestId, correlationId, cancellationToken);
-
-            return subscriptions.Select(s => MarketplaceSubscription.From(s));
-        }
-
-        public async Task<FulfillmentManagerOperationResult> RequestCancelSubscriptionAsync(Guid subscriptionId,
+        public async Task<IEnumerable<SubscriptionOperation>> GetSubscriptionOperationsAsync(
+            Guid subscriptionId,
             CancellationToken cancellationToken = default)
         {
             var requestId = Guid.NewGuid();
             var correlationId = Guid.NewGuid();
 
-            var deleteRequest = await fulfillmentClient.DeleteSubscriptionAsync(subscriptionId, requestId,
-                correlationId, cancellationToken);
+            var operations = await this.fulfillmentClient.GetSubscriptionOperationsAsync(
+                                 subscriptionId,
+                                 requestId,
+                                 correlationId,
+                                 cancellationToken);
+
+            return operations;
+        }
+
+        public async Task<IEnumerable<MarketplaceSubscription>> GetSubscriptionsAsync(
+            CancellationToken cancellationToken = default)
+        {
+            var requestId = Guid.NewGuid();
+            var correlationId = Guid.NewGuid();
+
+            var subscriptions = await this.fulfillmentClient.GetSubscriptionsAsync(
+                                    requestId,
+                                    correlationId,
+                                    cancellationToken);
+
+            return subscriptions.Select(s => MarketplaceSubscription.From(s));
+        }
+
+        public async Task<FulfillmentManagerOperationResult> RequestCancelSubscriptionAsync(
+            Guid subscriptionId,
+            CancellationToken cancellationToken = default)
+        {
+            var requestId = Guid.NewGuid();
+            var correlationId = Guid.NewGuid();
+
+            var deleteRequest = await this.fulfillmentClient.DeleteSubscriptionAsync(
+                                    subscriptionId,
+                                    requestId,
+                                    correlationId,
+                                    cancellationToken);
 
             if (!deleteRequest.Success)
             {
-                return FulfillmentManagerOperationResult.Failed(new FulfillmentManagementError { Description = "" });
+                return FulfillmentManagerOperationResult.Failed(new FulfillmentManagementError { Description = string.Empty });
             }
 
             var operationUri = deleteRequest.Operation;
             Guid operationId;
             try
             {
-                operationId = ExtractOperationId(subscriptionId, operationUri);
+                operationId = this.ExtractOperationId(subscriptionId, operationUri);
             }
             catch (FulfillmentManagerException exception)
             {
@@ -158,30 +176,37 @@ namespace Dashboard.Marketplace
             return FulfillmentManagerOperationResult.Success;
         }
 
-        public async Task<FulfillmentManagerOperationResult> RequestUpdateSubscriptionAsync(Guid subscriptionId,
-            string name, CancellationToken cancellationToken = default)
+        public async Task<FulfillmentManagerOperationResult> RequestUpdateSubscriptionAsync(
+            Guid subscriptionId,
+            string name,
+            CancellationToken cancellationToken = default)
         {
             var requestId = Guid.NewGuid();
             var correlationId = Guid.NewGuid();
 
             var activatedSubscription = new ActivatedSubscription { PlanId = name };
 
-            var updateResponse = await fulfillmentClient.UpdateSubscriptionAsync(subscriptionId,
-                activatedSubscription, requestId, correlationId, cancellationToken);
+            var updateResponse = await this.fulfillmentClient.UpdateSubscriptionAsync(
+                                     subscriptionId,
+                                     activatedSubscription,
+                                     requestId,
+                                     correlationId,
+                                     cancellationToken);
 
             if (!updateResponse.Success)
             {
-                return FulfillmentManagerOperationResult.Failed(new FulfillmentManagementError
-                {
-                    Description = $"Update request error. Subscription id {subscriptionId}"
-                });
+                return FulfillmentManagerOperationResult.Failed(
+                    new FulfillmentManagementError
+                        {
+                            Description = $"Update request error. Subscription id {subscriptionId}"
+                        });
             }
 
             var operationUri = updateResponse.Operation;
             Guid operationId;
             try
             {
-                operationId = ExtractOperationId(subscriptionId, operationUri);
+                operationId = this.ExtractOperationId(subscriptionId, operationUri);
             }
             catch (FulfillmentManagerException exception)
             {
@@ -191,22 +216,26 @@ namespace Dashboard.Marketplace
             return FulfillmentManagerOperationResult.Success;
         }
 
-        public async Task<MarketplaceSubscription> ResolveSubscriptionAsync(string authCode,
+        public async Task<MarketplaceSubscription> ResolveSubscriptionAsync(
+            string authCode,
             CancellationToken cancellationToken = default)
         {
             var requestId = Guid.NewGuid();
             var correlationId = Guid.NewGuid();
-            var subscription = await fulfillmentClient.ResolveSubscriptionAsync(authCode, requestId, correlationId,
-                cancellationToken);
+            var subscription = await this.fulfillmentClient.ResolveSubscriptionAsync(
+                                   authCode,
+                                   requestId,
+                                   correlationId,
+                                   cancellationToken);
 
             if (subscription.Success)
             {
-                logger.LogInformation(
+                this.logger.LogInformation(
                     $"Resolved subscription {subscription.SubscriptionId} for plan {subscription.PlanId} with quantitiy {subscription.Quantity}");
                 return MarketplaceSubscription.From(subscription, StatusEnum.Provisioning);
             }
 
-            logger.LogError("Cannot resolve subscription.");
+            this.logger.LogError("Cannot resolve subscription.");
             return default;
         }
 
@@ -218,32 +247,35 @@ namespace Dashboard.Marketplace
 
             if (uriSegments.Length != 7)
             {
-                throw new FulfillmentManagerException(FulfillmentManagerOperationResult.Failed(
-                    new FulfillmentManagementError
-                    {
-                        Description =
-                            $"The received operation Uri is not valid. It does not have 7 segments: {operationUri}"
-                    }));
+                throw new FulfillmentManagerException(
+                    FulfillmentManagerOperationResult.Failed(
+                        new FulfillmentManagementError
+                            {
+                                Description =
+                                    $"The received operation Uri is not valid. It does not have 7 segments: {operationUri}"
+                            }));
             }
 
-            if (!(Guid.TryParse(uriSegments[4], out var receivedSubscriptionId) ||
-                  receivedSubscriptionId != subscriptionId))
+            if (!(Guid.TryParse(uriSegments[4], out var receivedSubscriptionId)
+                  || receivedSubscriptionId != subscriptionId))
             {
-                throw new FulfillmentManagerException(FulfillmentManagerOperationResult.Failed(
-                    new FulfillmentManagementError
-                    {
-                        Description =
-                            $"The received subscription Id is not a valid Guid, or not equal to the original subscription. {uriSegments[6]}"
-                    }));
+                throw new FulfillmentManagerException(
+                    FulfillmentManagerOperationResult.Failed(
+                        new FulfillmentManagementError
+                            {
+                                Description =
+                                    $"The received subscription Id is not a valid Guid, or not equal to the original subscription. {uriSegments[6]}"
+                            }));
             }
 
             if (!Guid.TryParse(uriSegments[6], out var operationId))
             {
-                throw new FulfillmentManagerException(FulfillmentManagerOperationResult.Failed(
-                    new FulfillmentManagementError
-                    {
-                        Description = $"The received operation Id is not a valid Guid. {uriSegments[6]}"
-                    }));
+                throw new FulfillmentManagerException(
+                    FulfillmentManagerOperationResult.Failed(
+                        new FulfillmentManagementError
+                            {
+                                Description = $"The received operation Id is not a valid Guid. {uriSegments[6]}"
+                            }));
             }
 
             return operationId;

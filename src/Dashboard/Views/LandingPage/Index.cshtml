@@ -1,4 +1,4 @@
-﻿@model Dashboard.Models.AzureSubscriptionProvisionModel
+﻿@model AzureSubscriptionProvisionModel
 
 @{
     ViewData["Title"] = "Index";
@@ -7,7 +7,7 @@
 <h1>Index</h1>
 
 <h4>New subscription details</h4>
-<hr />
+<hr/>
 
 <form asp-action="Index">
     <div>
@@ -17,48 +17,48 @@
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Email)
-                <input asp-for="Email" type="hidden" class="form-control" />
+                <input asp-for="Email" type="hidden" class="form-control"/>
             </dd>
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.FullName)
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.FullName)
-                <input asp-for="FullName" type="hidden" class="form-control" />
+                <input asp-for="FullName" type="hidden" class="form-control"/>
             </dd>
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.OfferId)
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.OfferId)
-                <input asp-for="OfferId" type="hidden" class="form-control" />
+                <input asp-for="OfferId" type="hidden" class="form-control"/>
             </dd>
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.PlanName)
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.PlanName)
-                <input asp-for="PlanName" type="hidden" class="form-control" />
+                <input asp-for="PlanName" type="hidden" class="form-control"/>
             </dd>
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.SubscriptionId)
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.SubscriptionId)
-                <input asp-for="SubscriptionId" type="hidden" class="form-control" />
+                <input asp-for="SubscriptionId" type="hidden" class="form-control"/>
             </dd>
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.SubscriptionName)
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.SubscriptionName)
-                <input asp-for="SubscriptionName" type="hidden" class="form-control" />
+                <input asp-for="SubscriptionName" type="hidden" class="form-control"/>
             </dd>
         </dl>
     </div>
     <div>
         <input type="submit"
                value="Yes, that looks correct, go ahead and start my subscription process..."
-               class="btn btn-primary" />
+               class="btn btn-primary"/>
     </div>
 </form>

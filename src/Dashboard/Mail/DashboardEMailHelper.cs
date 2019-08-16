@@ -187,6 +187,7 @@
                                       new Tuple<string, string>("offerId", payload.OfferId),
                                       new Tuple<string, string>("planId", payload.PlanId),
                                       new Tuple<string, string>("quantity", payload.Quantity.ToString()),
+                                      new Tuple<string, string>("operationId", payload.OperationId.ToString())
                                   };
 
             var subscriptionDetails = await this.fulfillmentClient.GetSubscriptionAsync(

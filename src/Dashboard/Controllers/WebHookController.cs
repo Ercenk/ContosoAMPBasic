@@ -2,11 +2,14 @@
 {
     using System.Threading.Tasks;
 
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
 
     using SaaSFulfillmentClient.WebHook;
 
+    [AllowAnonymous]
+    [RequireHttps]
     public class WebHookController : Controller
     {
         private readonly IWebhookProcessor webhookProcessor;
@@ -19,7 +22,7 @@
             this.options = optionsMonitor.CurrentValue;
         }
 
-        public async Task<IActionResult> Index(WebhookPayload payload)
+        public async Task<IActionResult> Index([FromBody] WebhookPayload payload)
         {
             // Options is injected as a singleton. This is not a good hack, but need to pass the host name and port
             this.options.BaseUrl = $"{this.Request.Scheme}://{this.Request.Host}/";

@@ -11,6 +11,12 @@ When a subscriber provides the details on the landing page, the solution generat
 
 The solution does not implement native cancel or update subscription options. The subscriber uses the Azure Marketplace to cancel or update the subscription. In the case of a change on the subscription (cancel, update, suspend), the marketplace posts a notification to the webhook, and the operations contact receives an email. Just like the onboarding operation, the operations contact performs the required operation manually, and then comes back to the email, and click on the included link to indicate completion of the operation.
 
+I give an overview of integrating a SaaS application with Azure Marketplace in my sample client library [sample](https://github.com/Ercenk/AzureMarketplaceSaaSApiClient). I point out three areas for integration.
+
+- [Landing page](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/LandingPageController.cs#L27)
+- [Webhook endpoint](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/WebHookController.cs)
+- [Calling the API](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/LandingPageController.cs#L19)
+ 
 ![overview](./Docs/Overview.png)
 
 ## Notes

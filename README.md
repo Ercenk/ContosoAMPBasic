@@ -1,4 +1,5 @@
 # ContosoAMPBasic sample for Azure Marketplace SaaS integration
+
 This sample demonstrates the basic interaction of a SaaS solution with Azure Marketplace. It does not have any SaaS functionality, however it is a bare bones approach focusing on the marketplace integration.
 
 Please see the related [section](https://github.com/Ercenk/AzureMarketplaceSaaSApiClient#integrating-a-software-as-a-solution-with-azure-marketplace) on my marketplace REST API client implementation for an overview of the integration concepts.  

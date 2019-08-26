@@ -68,14 +68,16 @@
             var emailAddress = (this.User.Identity as ClaimsIdentity)?.FindFirst("preferred_username")?.Value;
 
             var provisioningModel = new AzureSubscriptionProvisionModel
-                                        {
-                                            FullName = fullName,
-                                            PlanName = resolvedSubscription.PlanId,
-                                            SubscriptionId = resolvedSubscription.SubscriptionId,
-                                            Email = emailAddress,
-                                            OfferId = resolvedSubscription.OfferId,
-                                            SubscriptionName = resolvedSubscription.SubscriptionName
-                                        };
+            {
+                FullName = fullName,
+                PlanName = resolvedSubscription.PlanId,
+                SubscriptionId = resolvedSubscription.SubscriptionId,
+                Email = emailAddress,
+                OfferId = resolvedSubscription.OfferId,
+                SubscriptionName = resolvedSubscription.SubscriptionName,
+                Region = TargetContosoRegionEnum.NorthAmerica,
+                MaximumNumberOfThingsToHandle = 0
+            };
 
             return this.View(provisioningModel);
         }

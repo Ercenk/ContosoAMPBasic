@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -10,6 +11,7 @@
     using Microsoft.Extensions.Options;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     using SaaSFulfillmentClient;
     using SaaSFulfillmentClient.WebHook;
@@ -48,7 +50,7 @@
                 () => $"New subscription, {provisionModel.SubscriptionName}",
                 () =>
                     $"<p>New subscription. Please take the required action, then return to this email and click the following link to confirm. {this.BuildALink("Activate", queryParams, "Click here to activate subscription")}.</p>"
-                    + $"<div> <p> Details are</p> {JsonConvert.SerializeObject(provisionModel, Formatting.Indented)}</div>",
+                    + $"<div> <p> Details are</p> <div> {BuildTable(JObject.Parse(JsonConvert.SerializeObject(provisionModel))) }</div></div>",
                 cancellationToken);
         }
 
@@ -95,7 +97,7 @@
                 () => $"Operation failure, {subscriptionDetails.Name}",
                 () =>
                     $"<p>Operation failure. {this.BuildALink("Operations", queryParams, "Click here to list all operations for this subscription", "Subscriptions")}</p>. "
-                    + $"<p> Details are {JsonConvert.SerializeObject(subscriptionDetails, Formatting.Indented)}</p>",
+                    + $"<p> Details are {BuildTable(JObject.Parse(JsonConvert.SerializeObject(subscriptionDetails)))}</p>",
                 cancellationToken);
         }
 
@@ -152,6 +154,14 @@
             return $"<a href=\"{href}\">{innerText}</a>";
         }
 
+        private string BuildTable(JObject parsed)
+        {
+            var tableContents = parsed.Properties().AsEnumerable().Select(p => $"<tr><th align=\"left\"> {p.Name} </th><th align=\"left\"> {p.Value}</th></tr>")
+                .Aggregate((head, tail) => head + tail);
+            return
+                $"<table border=\"1\" align=\"left\">{tableContents}</table>";
+        }
+
         private async Task SendEmailAsync(
             Func<string> subjectBuilder,
             Func<string> contentBuilder,
@@ -199,7 +209,7 @@
             await this.SendEmailAsync(
                 () => $"{subject}, {subscriptionDetails.Name}",
                 () => $"<p>{mailBody}" + $"{this.BuildALink(actionName, queryParams, "Click here to confirm.")}</p>"
-                                       + $"<br/><div> Details are {JsonConvert.SerializeObject(payload, Formatting.Indented)}</div>",
+                                       + $"<br/><div> Details are {BuildTable(JObject.Parse(JsonConvert.SerializeObject(subscriptionDetails)))}</div>",
                 cancellationToken);
         }
     }

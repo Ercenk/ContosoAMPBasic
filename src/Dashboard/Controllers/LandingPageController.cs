@@ -4,7 +4,6 @@
     using System.Security.Claims;
     using System.Threading.Tasks;
 
-    using Dashboard.Mail;
     using Dashboard.Marketplace;
     using Dashboard.Models;
 
@@ -18,20 +17,18 @@
     {
         private readonly IFulfillmentManager fulfillmentManager;
 
-        private readonly IEMailHelper ieMailHelper;
-
         private readonly ILogger<LandingPageController> logger;
-
+        private readonly IMarketplaceNotificationHandler notificationHelper;
         private readonly DashboardOptions options;
 
         public LandingPageController(
             IOptionsMonitor<DashboardOptions> dashboardOptions,
             IFulfillmentManager fulfillmentManager,
-            IEMailHelper ieMailHelper,
+            IMarketplaceNotificationHandler notificationHelper,
             ILogger<LandingPageController> logger)
         {
             this.fulfillmentManager = fulfillmentManager;
-            this.ieMailHelper = ieMailHelper;
+            this.notificationHelper = notificationHelper;
             this.logger = logger;
             this.options = dashboardOptions.CurrentValue;
         }
@@ -44,7 +41,7 @@
             this.options.BaseUrl = urlBase;
             try
             {
-                await this.ieMailHelper.SendActivateEmailAsync(provisionModel);
+                await this.notificationHelper.ProcessActivateAsync(provisionModel);
 
                 return this.RedirectToAction(nameof(this.Success));
             }

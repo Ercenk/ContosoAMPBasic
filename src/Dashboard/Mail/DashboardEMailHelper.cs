@@ -17,7 +17,7 @@
     using SendGrid;
     using SendGrid.Helpers.Mail;
 
-    public class DashboardEMailHelper : IEMailHelper
+    public class DashboardEMailHelper : IMarketplaceNotificationHandler
     {
         private const string MailLinkControllerName = "MailLink";
 
@@ -33,7 +33,7 @@
             this.options = optionsMonitor.CurrentValue;
         }
 
-        public async Task SendActivateEmailAsync(
+        public async Task ProcessActivateAsync(
             AzureSubscriptionProvisionModel provisionModel,
             CancellationToken cancellationToken = default)
         {
@@ -48,11 +48,11 @@
                 () => $"New subscription, {provisionModel.SubscriptionName}",
                 () =>
                     $"<p>New subscription. Please take the required action, then return to this email and click the following link to confirm. {this.BuildALink("Activate", queryParams, "Click here to activate subscription")}.</p>"
-                    + $"<div> <p> Details are</P> {JsonConvert.SerializeObject(provisionModel, Formatting.Indented)}</div>",
+                    + $"<div> <p> Details are</p> {JsonConvert.SerializeObject(provisionModel, Formatting.Indented)}</div>",
                 cancellationToken);
         }
 
-        public async Task SendChangePlanEmailAsync(
+        public async Task ProcessChangePlanAsync(
             WebhookPayload payload,
             CancellationToken cancellationToken = default)
         {
@@ -64,7 +64,7 @@
                 cancellationToken);
         }
 
-        public async Task SendChangeQuantityEmailAsync(
+        public async Task ProcessChangeQuantityAsync(
             WebhookPayload payload,
             CancellationToken cancellationToken = default)
         {
@@ -76,7 +76,7 @@
                 cancellationToken);
         }
 
-        public async Task SendOperationFailOrConflictEmailAsync(
+        public async Task ProcessOperationFailOrConflictAsync(
             WebhookPayload payload,
             CancellationToken cancellationToken = default)
         {
@@ -99,7 +99,7 @@
                 cancellationToken);
         }
 
-        public async Task SendReinstatedEmailAsync(
+        public async Task ProcessReinstatedAsync(
             WebhookPayload payload,
             CancellationToken cancellationToken = default)
         {
@@ -111,7 +111,7 @@
                 cancellationToken);
         }
 
-        public async Task SendSuspendedEmailAsync(WebhookPayload payload, CancellationToken cancellationToken = default)
+        public async Task ProcessSuspendedAsync(WebhookPayload payload, CancellationToken cancellationToken = default)
         {
             await this.SendWebhookNotificationEmailAsync(
                 "Suspend subscription request",
@@ -121,7 +121,7 @@
                 cancellationToken);
         }
 
-        public async Task SendUnsubscribedEmailAsync(
+        public async Task ProcessUnsubscribedAsync(
             WebhookPayload payload,
             CancellationToken cancellationToken = default)
         {

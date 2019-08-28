@@ -47,8 +47,8 @@
             await this.SendEmailAsync(
                 () => $"New subscription, {provisionModel.SubscriptionName}",
                 () =>
-                    $"<p>New subscription. Please take the required action, then return to this email and click the following link to confirm. {this.BuildALink("Activate", queryParams, "Click here to activate subscription")}</p>. "
-                    + $"<p> Details are {JsonConvert.SerializeObject(provisionModel, Formatting.Indented)}</p>",
+                    $"<p>New subscription. Please take the required action, then return to this email and click the following link to confirm. {this.BuildALink("Activate", queryParams, "Click here to activate subscription")}.</p>"
+                    + $"<div> <p> Details are</P> {JsonConvert.SerializeObject(provisionModel, Formatting.Indented)}</div>",
                 cancellationToken);
         }
 
@@ -198,8 +198,8 @@
 
             await this.SendEmailAsync(
                 () => $"{subject}, {subscriptionDetails.Name}",
-                () => $"<p>{mailBody}" + $"{this.BuildALink(actionName, queryParams, "Click here to confirm.")}</p>. "
-                                       + $"<p> Details are {JsonConvert.SerializeObject(payload, Formatting.Indented)}</p>",
+                () => $"<p>{mailBody}" + $"{this.BuildALink(actionName, queryParams, "Click here to confirm.")}</p>"
+                                       + $"<br/><div> Details are {JsonConvert.SerializeObject(payload, Formatting.Indented)}</div>",
                 cancellationToken);
         }
     }

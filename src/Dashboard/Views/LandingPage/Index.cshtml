@@ -4,9 +4,11 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+    <h1>New subscription details</h1>
 
-<h4>New subscription details</h4>
+
+<p>The publisher can add new fields to the form like below to capture more information from the subscriber and style as necessary.</p>
+
 <hr />
 
 <form asp-action="Index">
@@ -40,13 +42,13 @@
                 @Html.DisplayFor(model => model.PlanName)
                 <input asp-for="PlanName" type="hidden" class="form-control" />
             </dd>
-            @*<dt class="col-sm-2">
+            <dt class="col-sm-2">
                     @Html.DisplayNameFor(model => model.SubscriptionId)
                 </dt>
                 <dd class="col-sm-10">
                     @Html.DisplayFor(model => model.SubscriptionId)
                     <input asp-for="SubscriptionId" type="hidden" class="form-control" />
-                </dd>*@
+                </dd>
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.SubscriptionName)
             </dt>

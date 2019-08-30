@@ -81,10 +81,7 @@
 
             services.Configure<DashboardOptions>(this.configuration.GetSection("Dashboard"));
 
-            services.AddFulfillmentClient(
-                options => this.configuration.Bind("FulfillmentClient", options),
-                credentialBuilder => credentialBuilder.WithClientSecretAuthentication(
-                    this.configuration["FulfillmentClient:AzureActiveDirectory:AppKey"]));
+            services.AddFulfillmentClient(options => this.configuration.Bind("FulfillmentClient", options));
 
             // Hack to save the host name and port during the handling the request. Please see the WebhookController and ContosoWebhookHandler implementations
             services.AddSingleton<ContosoWebhookHandlerOptions>();

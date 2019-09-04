@@ -1,0 +1,43 @@
+{
+	"info": {
+		"_postman_id": "1fe4c31b-863d-4d00-a3e9-e67b2712f4a9",
+		"name": "AMP Fulfillment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "WebHook",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n                  \"id\": \"74dfb4db-c193-4891-827d-eb05fbdc64b0\",\r\n                  \"activityId\": \"6CC5EA41-B96F-4E56-BDBC-D06511A909B2\",\r\n                  \"subscriptionId\": \"37f9dea2-4345-438f-b0bd-03d40d28c7e0\",\r\n                  \"publisherId\": \"Fabrikam\",\r\n                  \"offerId\": \"<this is the offer name>\",\r\n                  \"planId\": \"Platinum\",\r\n                  \"quantity\": \"20\",\r\n                  \"timeStamp\": \"2019-04-15T20:17:31.7350641Z\",\r\n                  \"action\": \"Unsubscribe\",\r\n                  \"status\": \"Succeeded\"\r\n                }"
+				},
+				"url": {
+					"raw": "https://localhost:5001/WebHook/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"WebHook",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

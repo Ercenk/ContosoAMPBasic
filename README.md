@@ -31,3 +31,76 @@ dotnet user-secrets set "FulfillmentClient:AzureActiveDirectory:AppKey" "secret 
 ```
 
 Please see the user secrets [documentation](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-2.2&tabs=windows) for more details.
+
+# How to deploy and run?
+
+Now I read the readme, and the code, I understand all, but how to run it?
+
+The top level actions are:
+1. Create and configure Azure Active Directory applications
+1. Create and configure a SendGrid account
+1. Update user secrets
+
+## Registering Azure Active Directory applications
+
+I usually maintain a seperate Azure Active Directory tenant (directory) for my application registrations. To create one, 
+
+1. Login to Azure [portal](https://portal.azure.com)
+1. Click "Create a resource", and type in "azure active directory" in the search box, and select
+
+    ![createdirectory](./Docs/createdirectory.png)
+
+    and fill in the details as you see fit after clicking the "create" button
+1. Switch to the new directory
+
+    ![switchdirectory](./Docs/switchdirectory.png)
+1. And select the new directory, if it does not show under "Favorites" check "All directories" 
+
+    ![gotodirectory](./Docs/gotodirectory.png)
+
+Once you switch to the new directory (or if you have not created a new one, and decided to use the existing one instead), select the Active Directory service (1 on the image below). If you do not see it, find it using "All services" (2 on the image below).
+
+![findactivedirectory](./Docs/findactivedirectory.png)
+
+Clicik on "App registrations", and select "New registration". You will need to create two apps.
+
+![registerappstart](./Docs/registerappstart.png)
+
+### Register two apps
+
+I recommend you to register two apps, 
+1. For the landing page, the Azure Marketplace SaaS offers require to have a landing page, authenticating through Azure Active Directory. Register it as described in the [documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-aspnet-core-webapp#option-2-register-and-manually-configure-your-application-and-code-sample). **Please make sure to register a multi-tenant application**, you can find the differences in the [documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps). Set the value of the ClientId setting in the appsettings.json file in the "AzureAd" section to the AppId (clientId) for the app. 
+1. For Azure Marketplace Fulfillment API access, you can register a single tenant application for this. You will need to provide the application ID (client ID) and the Tenant ID on the ["Technical Configuration page"](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/offer-creation-checklist#technical-configuration-page) on the Partner portal while registering your offer.  Set the ClientId value of the "FulfillmentClient:AzureActiveDirectory" section to this value. You will need to create a client key, and either put it in the appsettings.json file or add it as a user secret using ```dotnet user-secrets``` command. You will also need to set the TenantId as described in the appsettings.json file. Remember, this is a single tenant app.
+
+## Creating and configuring a SendGrid account
+
+Follow the steps in the [tutorial](https://docs.microsoft.com/en-us/azure/sendgrid-dotnet-how-to-send-email), and grab an API Key. Set the value of the ApiKey in the configuration section, "Dashboard:Mail", either using the user-secrets method or in the appconfig.json file.
+
+## Running the sample
+
+You can run the sample either in Docker by building an image using the Dockerfile on the src/Dashboard folder, or running with ```dotnet run``` in the "ContosoAMPBasic\src\Dashboard" folder. Once you run the application, you need to grab the URL and update the "redirect URLs" section of the multi-tenant AD application's "Authentican" settings. E.g. if you run using ```dotnet run```, make sure to add https://localhost:5001/ and https://localhost:5001/signin-oidc to the URL list.
+
+The default page uses the "Dashboard:DashboardAdmin" value to authorize the logged on user. Make sure to set it to your email in the configuration. The default page queries the marketplace API to list the subscriptions to the offers.
+
+![offersubscriptions](./Docs/offersubscriptions.png)
+
+The sample uses the mock API with its default "FulfillmentClient:FulfillmentService" settings. 
+
+Now you want to navigate to the landing page to simulate a redirect. Append "/landingpage?token=wwww" to the URL. It should look something like this, "https://localhost:5001/landingpage?token=wwww".
+
+Since we are using the mock API, the value of the token does not really matter.
+
+If everything is configured correctly, you should see the landing page, be able to initiate your subscription, and receive an email momentarily after clicking the "all is good..." button.
+
+![landingpage](./Docs/landingpage.png)
+
+The email should look like the following.
+
+![receivedemail](./Docs/receivedemail.png)
+
+At this point we can assume the operations team will go off and provision the customer using the received details. The example captures the "MaximumNumberofThingsToHandle" and "Region". After the operations team complete their tasks and ready to activate the subscription, they need to come back to this email and click on the "Click here to activate subscription" link in the email.
+
+## Simulating the cancelled subscription
+
+I included a Postman collection containing one request to the webhook endpoint. Send the request using Postman, and go through the same steps as described above, this time for decommisioning the customer.
+

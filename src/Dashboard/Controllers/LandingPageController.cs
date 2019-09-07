@@ -11,6 +11,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using System.Net;
 
     [Authorize]
     public class LandingPageController : Controller
@@ -54,6 +55,8 @@
         // GET: LandingPage
         public async Task<ActionResult> Index(string token)
         {
+            token = WebUtility.UrlDecode(token);
+
             var resolvedSubscription = await this.fulfillmentManager.ResolveSubscriptionAsync(token);
             if (resolvedSubscription == default(MarketplaceSubscription))
             {

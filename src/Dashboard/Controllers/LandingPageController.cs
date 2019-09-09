@@ -55,7 +55,11 @@
         // GET: LandingPage
         public async Task<ActionResult> Index(string token)
         {
-            token = WebUtility.UrlDecode(token);
+            if (string.IsNullOrEmpty(token))
+            {
+                this.ModelState.AddModelError(string.Empty, "Token URL parameter cannot be empty");
+                return this.View();
+            }
 
             var resolvedSubscription = await this.fulfillmentManager.ResolveSubscriptionAsync(token);
             if (resolvedSubscription == default(MarketplaceSubscription))

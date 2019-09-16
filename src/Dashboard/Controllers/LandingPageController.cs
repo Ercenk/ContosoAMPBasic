@@ -69,7 +69,7 @@
             }
 
             var fullName = (this.User.Identity as ClaimsIdentity)?.FindFirst("name")?.Value;
-            var emailAddress = (this.User.Identity as ClaimsIdentity)?.FindFirst("preferred_username")?.Value;
+            var emailAddress = this.User.Identity.GetUserEmail();
 
             var provisioningModel = new AzureSubscriptionProvisionModel
             {

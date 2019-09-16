@@ -24,6 +24,10 @@
             Guid subscriptionId,
             CancellationToken cancellationToken = default);
 
+        Task<SubscriptionPlans> GetSubscriptionPlansAsync(
+            Guid subscriptionId,
+            CancellationToken cancellationToken = default);
+
         Task<IEnumerable<MarketplaceSubscription>> GetSubscriptionsAsync(CancellationToken cancellationToken = default);
 
         Task<FulfillmentManagerOperationResult> RequestCancelSubscriptionAsync(
@@ -37,6 +41,11 @@
 
         Task<MarketplaceSubscription> ResolveSubscriptionAsync(
             string authCode,
+            CancellationToken cancellationToken = default);
+
+        Task<FulfillmentManagerOperationResult> UpdateSubscriptionAsync(
+            Guid subscriptionId,
+            ActivatedSubscription update,
             CancellationToken cancellationToken = default);
     }
 }

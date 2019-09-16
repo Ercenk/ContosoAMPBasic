@@ -113,6 +113,24 @@
                 cancellationToken);
         }
 
+        public async Task ProcessStartProvisioningAsync(AzureSubscriptionProvisionModel provisionModel, CancellationToken cancellationToken = default)
+        {
+            var queryParams = new List<Tuple<string, string>>
+                                  {
+                                      new Tuple<string, string>(
+                                          "subscriptionId",
+                                          provisionModel.SubscriptionId.ToString()),
+                                      new Tuple<string, string>("planId", provisionModel.PlanName)
+                                  };
+
+            await this.SendEmailAsync(
+                () => $"New subscription, {provisionModel.SubscriptionName}",
+                () =>
+                    $"<p>New subscription. Please take the required action, then return to this email and click the following link to confirm. {this.BuildALink("Update", queryParams, "Click here to activate subscription")}.</p>"
+                    + $"<div> <p> Details are</p> <div> {BuildTable(JObject.Parse(JsonConvert.SerializeObject(provisionModel))) }</div></div>",
+                cancellationToken);
+        }
+
         public async Task ProcessSuspendedAsync(WebhookPayload payload, CancellationToken cancellationToken = default)
         {
             await this.SendWebhookNotificationEmailAsync(

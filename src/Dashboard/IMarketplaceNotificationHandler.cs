@@ -23,6 +23,8 @@
 
         Task ProcessReinstatedAsync(WebhookPayload payload, CancellationToken cancellationToken = default);
 
+        Task ProcessStartProvisioningAsync(AzureSubscriptionProvisionModel provisionModel, CancellationToken cancellationToken = default);
+
         Task ProcessSuspendedAsync(WebhookPayload payload, CancellationToken cancellationToken = default);
 
         Task ProcessUnsubscribedAsync(WebhookPayload payload, CancellationToken cancellationToken = default);

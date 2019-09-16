@@ -1,13 +1,17 @@
 ﻿namespace Dashboard.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
+    using SaaSFulfillmentClient.Models;
+
     public class AzureSubscriptionProvisionModel
     {
+        public IEnumerable<Plan> AvailablePlans { get; set; }
         public string Email { get; set; }
 
         public string FullName { get; set; }

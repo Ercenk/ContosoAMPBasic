@@ -100,6 +100,21 @@
                        : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Update(Guid subscriptionId, string planId)
+        {
+            var result = await this.fulfillmentClient.UpdateSubscriptionAsync(
+                             subscriptionId,
+                             new ActivatedSubscription() { PlanId = planId },
+                             Guid.Empty,
+                             Guid.Empty,
+                             CancellationToken.None);
+
+            return result.Success
+                       ? this.View(new ActivateActionViewModel { SubscriptionId = subscriptionId, PlanId = planId })
+                       : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
+        }
+
         private async Task<FulfillmentRequestResult> UpdateOperationAsync(
             WebhookPayload payload,
             CancellationToken cancellationToken)

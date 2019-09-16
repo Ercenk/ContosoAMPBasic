@@ -13,9 +13,7 @@
         {
             if (context.User == null) return Task.CompletedTask;
 
-            var emailAddress = (context.User.Identity as ClaimsIdentity)?.FindFirst("preferred_username")?.Value;
-
-            if (emailAddress == requirement.AdminName)
+            if (context.User.Identity.GetUserEmail() == requirement.AdminName)
             {
                 context.Succeed(requirement);
             }

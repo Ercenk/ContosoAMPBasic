@@ -5,6 +5,7 @@
 
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+    using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Authentication.OpenIdConnect;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
@@ -69,11 +70,15 @@
             services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
                 .AddAzureAD(options => this.configuration.Bind("AzureAd", options));
 
+            services.Configure<CookieAuthenticationOptions>(
+                AzureADDefaults.CookieScheme,
+                options => options.AccessDeniedPath = "/Subscriptions/NotAuthorized");
+
             services.Configure<OpenIdConnectOptions>(
                 AzureADDefaults.OpenIdScheme,
                 options =>
                     {
-                        options.Authority = options.Authority + "/v2.0/"; // Azure AD v2.0
+                        //options.Authority = options.Authority + "/v2.0/"; // Azure AD v2.0
 
                         options.TokenValidationParameters.ValidateIssuer =
                             false; // accept several tenants (here simplified)

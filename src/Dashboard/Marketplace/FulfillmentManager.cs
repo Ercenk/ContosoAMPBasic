@@ -49,11 +49,11 @@
                 this.logger.LogInformation(
                     $"Activated subscription {subscriptionId} for plan {planId} with quantitiy {quantity}");
                 var returnValue = new MarketplaceSubscription
-                                      {
-                                          PlanId = planId,
-                                          State = StatusEnum.Subscribed,
-                                          SubscriptionId = subscriptionId
-                                      };
+                {
+                    PlanId = planId,
+                    State = StatusEnum.Subscribed,
+                    SubscriptionId = subscriptionId
+                };
 
                 if (quantity.HasValue)
                 {
@@ -88,10 +88,10 @@
             {
                 return FulfillmentManagerOperationResult.Failed(
                     new FulfillmentManagementError
-                        {
-                            Description =
+                    {
+                        Description =
                                 $"Check operation error. Subscription {receivedSubscriptionId}, operation {operationId}"
-                        });
+                    });
             }
 
             if (operationResult.Status == OperationStatusEnum.Succeeded)
@@ -104,10 +104,10 @@
             {
                 return FulfillmentManagerOperationResult.Failed(
                     new FulfillmentManagementError
-                        {
-                            Description =
+                    {
+                        Description =
                                 $"Check operation error. Status is {operationResult.Status}. Subscription {receivedSubscriptionId}, operation {operationId}"
-                        });
+                    });
             }
 
             // Operation status does not return a retry-after header. We hardcoded for 10 seconds for now.
@@ -128,6 +128,20 @@
                                  cancellationToken);
 
             return operations;
+        }
+
+        public async Task<SubscriptionPlans> GetSubscriptionPlansAsync(
+            Guid subscriptionId,
+            CancellationToken cancellationToken = default)
+        {
+            var requestId = Guid.NewGuid();
+            var correlationId = Guid.NewGuid();
+
+            return await this.fulfillmentClient.GetSubscriptionPlansAsync(
+                       subscriptionId,
+                       requestId,
+                       correlationId,
+                       cancellationToken);
         }
 
         public async Task<IEnumerable<MarketplaceSubscription>> GetSubscriptionsAsync(
@@ -197,9 +211,9 @@
             {
                 return FulfillmentManagerOperationResult.Failed(
                     new FulfillmentManagementError
-                        {
-                            Description = $"Update request error. Subscription id {subscriptionId}"
-                        });
+                    {
+                        Description = $"Update request error. Subscription id {subscriptionId}"
+                    });
             }
 
             var operationUri = updateResponse.Operation;
@@ -239,6 +253,33 @@
             return default;
         }
 
+        public async Task<FulfillmentManagerOperationResult> UpdateSubscriptionAsync(
+            Guid subscriptionId,
+            ActivatedSubscription update,
+            CancellationToken cancellationToken = default)
+        {
+            var requestId = Guid.NewGuid();
+            var correlationId = Guid.NewGuid();
+
+            var result = await this.fulfillmentClient.UpdateSubscriptionAsync(
+                             subscriptionId,
+                             update,
+                             requestId,
+                             correlationId,
+                             cancellationToken);
+
+            if (result.Success)
+            {
+                return FulfillmentManagerOperationResult.Success;
+            }
+
+            return FulfillmentManagerOperationResult.Failed(
+                new FulfillmentManagementError
+                {
+                    Description = result.RawResponse
+                });
+        }
+
         private Guid ExtractOperationId(Guid subscriptionId, Uri operationUri)
         {
             // We expect an operation URI like
@@ -250,10 +291,10 @@
                 throw new FulfillmentManagerException(
                     FulfillmentManagerOperationResult.Failed(
                         new FulfillmentManagementError
-                            {
-                                Description =
+                        {
+                            Description =
                                     $"The received operation Uri is not valid. It does not have 7 segments: {operationUri}"
-                            }));
+                        }));
             }
 
             if (!(Guid.TryParse(uriSegments[4], out var receivedSubscriptionId)
@@ -262,10 +303,10 @@
                 throw new FulfillmentManagerException(
                     FulfillmentManagerOperationResult.Failed(
                         new FulfillmentManagementError
-                            {
-                                Description =
+                        {
+                            Description =
                                     $"The received subscription Id is not a valid Guid, or not equal to the original subscription. {uriSegments[6]}"
-                            }));
+                        }));
             }
 
             if (!Guid.TryParse(uriSegments[6], out var operationId))
@@ -273,9 +314,9 @@
                 throw new FulfillmentManagerException(
                     FulfillmentManagerOperationResult.Failed(
                         new FulfillmentManagementError
-                            {
-                                Description = $"The received operation Id is not a valid Guid. {uriSegments[6]}"
-                            }));
+                        {
+                            Description = $"The received operation Id is not a valid Guid. {uriSegments[6]}"
+                        }));
             }
 
             return operationId;

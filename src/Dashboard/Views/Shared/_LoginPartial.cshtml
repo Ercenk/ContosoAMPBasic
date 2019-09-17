@@ -1,17 +1,21 @@
 <ul class="navbar-nav">
     @if (User.Identity.IsAuthenticated)
     {
-        <li class="nav-item">
-            <span class="nav-text text-dark">Hello @User.Claims.First(c => c.Type == "name").Value!</span>
+        <li class="nav-item" style="margin-top: 9px">
+            <span class="text-dark" style="margin-right: 50px">Hello @User.Claims.First(c => c.Type == "name").Value!</span>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="AzureAD" asp-controller="Account" asp-action="SignOut">Sign out</a>
+            <button type="button" class="btn btn-warning" style="padding-top: 0px;padding-bottom: 0px;border-top-width: 0px;border-bottom-width: 0px;">
+                <a class="nav-link text-dark btn btn-warning" asp-area="AzureAD" asp-controller="Account" asp-action="SignOut" style="font-weight: bold">Sign out</a>
+
+            </button>
+            
         </li>
     }
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="AzureAD" asp-controller="Account" asp-action="SignIn">Sign in</a>
+            <a class="nav-link text-dark btn" asp-area="AzureAD" asp-controller="Account" asp-action="SignIn">Sign in</a>
         </li>
     }
 </ul>

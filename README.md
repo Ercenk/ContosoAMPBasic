@@ -6,11 +6,11 @@ Please see the related [section](https://github.com/Ercenk/AzureMarketplaceSaaSA
 
 This sample can be a good starting point if the solution does not have requirements for providing native experience for cancelling and updating a subscription.
 
-It exposes a landing page that can be customized for branding, and including various questions. It provides a webhook endpoint for processing the incoming notifications from the Azure Marketplace. Rest of the integration is done via emails.
+It exposes a landing page that can be customized for branding. It provides a webhook endpoint for processing the incoming notifications from the Azure Marketplace. The rest of the integration is done via emails.
 
-When a subscriber provides the details on the landing page, the solution generates an email to the configured operations contact. The operations team then provisions the required resources and onbards the customer using their internal processes then comes back to the generated email and clicks on the link in the email to activate the subscription.
+The landing page also includes questions to be answered, for example what is the favored region. When a subscriber provides the details on the landing page, the solution generates an email to the configured operations contact. The operations team then provisions the required resources and onboards the customer using their internal processes then comes back to the generated email and clicks on the link in the email to activate the subscription.
 
-The solution does not implement native cancel or update subscription options. The subscriber uses the Azure Marketplace to cancel or update the subscription. In the case of a change on the subscription (cancel, update, suspend), the marketplace posts a notification to the webhook, and the operations contact receives an email. Just like the onboarding operation, the operations contact performs the required operation manually, and then comes back to the email, and click on the included link to indicate completion of the operation.
+The solution does not implement native "cancel" or "update" subscription options. The subscriber uses the Azure Marketplace to cancel or update the subscription. In the case of a change on the subscription (cancel, update, suspend), the marketplace posts a notification to the webhook, and the operations contact receives an email. Just like the onboarding operation, the operations contact performs the required operation manually, and then returns to the email, and clicks on the included link to indicate completion of the operation.
 
 I give an overview of integrating a SaaS application with Azure Marketplace in my sample client library [sample](https://github.com/Ercenk/AzureMarketplaceSaaSApiClient). I point out three areas for integration.
 
@@ -33,28 +33,27 @@ dotnet user-secrets set "FulfillmentClient:AzureActiveDirectory:AppKey" "secret 
 Please see the user secrets [documentation](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-2.2&tabs=windows) for more details.
 
 # How to deploy and run?
-
-Now I read the readme, and the code, I understand all, but how to run it?
+How do I run the sample?
 
 The top level actions are:
-1. Create and configure Azure Active Directory applications
-1. Create and configure a SendGrid account
-1. Update user secrets
+1. Create and configure Azure Active Directory applications.
+1. Create and configure a SendGrid account.
+1. Update user secrets.
 
 ## Registering Azure Active Directory applications
 
-I usually maintain a seperate Azure Active Directory tenant (directory) for my application registrations. To create one, 
+It's a best practice to  maintain a separate Azure Active Directory tenant (directory) for my application registrations. To create one, 
 
 1. Login to Azure [portal](https://portal.azure.com)
 1. Click "Create a resource", and type in "azure active directory" in the search box, and select
 
     ![createdirectory](./Docs/createdirectory.png)
 
-    and fill in the details as you see fit after clicking the "create" button
-1. Switch to the new directory
+    Then fill in the details as you see fit after clicking the "create" button. The result is a new directory.
+1. Switch to the new directory.
 
     ![switchdirectory](./Docs/switchdirectory.png)
-1. And select the new directory, if it does not show under "Favorites" check "All directories" 
+1. Select the new directory, if it does not show under "Favorites" check "All directories" 
 
     ![gotodirectory](./Docs/gotodirectory.png)
 
@@ -62,15 +61,15 @@ Once you switch to the new directory (or if you have not created a new one, and 
 
 ![findactivedirectory](./Docs/findactivedirectory.png)
 
-Clicik on "App registrations", and select "New registration". You will need to create two apps.
+Click on "App registrations", and select "New registration". You will need to create two apps.
 
 ![registerappstart](./Docs/registerappstart.png)
 
 ### Register two apps
 
-I recommend you to register two apps, 
-1. For the landing page, the Azure Marketplace SaaS offers require to have a landing page, authenticating through Azure Active Directory. Register it as described in the [documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-aspnet-core-webapp#option-2-register-and-manually-configure-your-application-and-code-sample). **Please make sure to register a multi-tenant application**, you can find the differences in the [documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps). Set the value of the ClientId setting in the appsettings.json file in the "AzureAd" section to the AppId (clientId) for the app. 
-1. For Azure Marketplace Fulfillment API access, you can register a single tenant application for this. You will need to provide the application ID (client ID) and the Tenant ID on the ["Technical Configuration page"](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/offer-creation-checklist#technical-configuration-page) on the Partner portal while registering your offer.  Set the ClientId value of the "FulfillmentClient:AzureActiveDirectory" section to this value. You will need to create a client key, and either put it in the appsettings.json file or add it as a user secret using ```dotnet user-secrets``` command. You will also need to set the TenantId as described in the appsettings.json file. Remember, this is a single tenant app.
+I recommend you register two apps: 
+1. For the landing page, the Azure Marketplace requires SaaS app offers to have a landing page, authenticating through Azure Active Directory. Register it as described in the [documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-aspnet-core-webapp#option-2-register-and-manually-configure-your-application-and-code-sample). **Make sure you register a multi-tenant application**, you can find the differences in the [documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps). Set the value of the ClientId setting in the appsettings.json file in the "AzureAd" section to the AppId (clientId) for the app. 
+1. To authenticate Azure Marketplace Fulfillment APIs, you register a **single tenant application**. You will need to provide the application ID (also referred to as the "client ID") and the tenant ID on the ["Technical Configuration page"](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/offer-creation-checklist#technical-configuration-page) on the Partner portal while registering your offer.  Set the ClientId value of the "FulfillmentClient:AzureActiveDirectory" section to this value. You will need to create a client key, and either put it in the appsettings.json file or add it as a user secret using ```dotnet user-secrets``` command. You will also need to set the TenantId as described in the appsettings.json file. Remember, this is a single tenant app.
 
 ## Creating and configuring a SendGrid account
 

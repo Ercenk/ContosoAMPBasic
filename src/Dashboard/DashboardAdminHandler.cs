@@ -13,7 +13,7 @@
         {
             if (context.User == null) return Task.CompletedTask;
 
-            if (context.User.Identity.GetUserEmail() == requirement.AdminName)
+            if (context.User.Identity.GetUserEmail().GetDomainNameFromEmail() == requirement.AdminName.GetDomainNameFromEmail())
             {
                 context.Succeed(requirement);
             }

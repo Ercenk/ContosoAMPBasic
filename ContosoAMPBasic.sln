@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaaSFulfillmentClient", "..\AzureMarketplaceSaaSApiClient\src\SaaSFulfillmentClient.csproj", "{959FAF4F-2978-4807-B78F-A52FCA8E69C4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,10 +24,6 @@ Global
 		{CBCA3843-7048-412A-A97E-2F7F7D9334D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBCA3843-7048-412A-A97E-2F7F7D9334D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBCA3843-7048-412A-A97E-2F7F7D9334D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{959FAF4F-2978-4807-B78F-A52FCA8E69C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{959FAF4F-2978-4807-B78F-A52FCA8E69C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{959FAF4F-2978-4807-B78F-A52FCA8E69C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{959FAF4F-2978-4807-B78F-A52FCA8E69C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

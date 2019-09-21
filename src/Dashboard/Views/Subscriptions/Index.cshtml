@@ -1,5 +1,4 @@
-﻿@model IEnumerable<Dashboard.Marketplace.MarketplaceSubscription>
-
+﻿@model IEnumerable<Dashboard.Models.SubscriptionViewModel>
 @{
     ViewData["Title"] = "All Offer Subscriptions";
 }
@@ -27,6 +26,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.SubscriptionName)
             </th>
+            <th>Actions</th>
             <th></th>
         </tr>
     </thead>
@@ -51,6 +51,12 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.SubscriptionName)
+                </td>
+                <td>
+                    @foreach (var a in item.NextActions)
+                    {
+                        <span> @Html.ActionLink(Enum.GetName(typeof(ActionsEnum), a), "SubscriptionAction", new { subscriptionId = item.SubscriptionId, action = a }) </span>
+                    }
                 </td>
                 <td>
                     @Html.ActionLink("Operations", "Operations", new { item.SubscriptionId })

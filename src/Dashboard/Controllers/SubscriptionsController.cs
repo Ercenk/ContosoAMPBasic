@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Dashboard.Marketplace;
@@ -30,7 +31,8 @@
         public async Task<IActionResult> Index()
         {
             var subscriptions = await this.fulfillmentManager.GetSubscriptionsAsync();
-            return this.View(subscriptions);
+            var subscriptionsViewModel = subscriptions.Select(s => SubscriptionViewModel.FromSubscription(s));
+            return this.View(subscriptionsViewModel);
         }
 
         [AllowAnonymous]
@@ -45,6 +47,31 @@
             var operations = await this.fulfillmentManager.GetSubscriptionOperationsAsync(subscriptionId);
 
             return this.View(operations);
+        }
+
+        public async Task<IActionResult> SubscriptionAction(Guid subscriptionId, ActionsEnum action)
+        {
+            switch (action)
+            {
+                case ActionsEnum.Activate:
+                    break;
+
+                case ActionsEnum.Update:
+                    break;
+
+                case ActionsEnum.Ack:
+                    break;
+
+                case ActionsEnum.Unsubscribe:
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(action), action, null);
+            }
+
+            var operations = await this.fulfillmentManager.GetSubscriptionOperationsAsync(subscriptionId);
+
+            return this.View();
         }
     }
 }

@@ -55,40 +55,40 @@
         }
 
         public async Task ProcessChangePlanAsync(
-            WebhookPayload payload,
+            NotificationModel notificationModel,
             CancellationToken cancellationToken = default)
         {
             await this.SendWebhookNotificationEmailAsync(
                 "Plan change request",
                 "Plan change request. Please take the required action, then return to this email and click the following link to confirm.",
                 "PlanChange",
-                payload,
+                notificationModel,
                 cancellationToken);
         }
 
         public async Task ProcessChangeQuantityAsync(
-            WebhookPayload payload,
+            NotificationModel notificationModel,
             CancellationToken cancellationToken = default)
         {
             await this.SendWebhookNotificationEmailAsync(
                 "Quantity change request",
                 "Quantity change request. Please take the required action, then return to this email and click the following link to confirm.",
                 "QuantityChange",
-                payload,
+                notificationModel,
                 cancellationToken);
         }
 
         public async Task ProcessOperationFailOrConflictAsync(
-            WebhookPayload payload,
+            NotificationModel notificationModel,
             CancellationToken cancellationToken = default)
         {
             var queryParams = new List<Tuple<string, string>>
                                   {
-                                      new Tuple<string, string>("subscriptionId", payload.SubscriptionId.ToString())
+                                      new Tuple<string, string>("subscriptionId", notificationModel.SubscriptionId.ToString())
                                   };
 
             var subscriptionDetails = await this.fulfillmentClient.GetSubscriptionAsync(
-                                          payload.SubscriptionId,
+                notificationModel.SubscriptionId,
                                           Guid.Empty,
                                           Guid.Empty,
                                           cancellationToken);
@@ -102,14 +102,14 @@
         }
 
         public async Task ProcessReinstatedAsync(
-            WebhookPayload payload,
+            NotificationModel notificationModel,
             CancellationToken cancellationToken = default)
         {
             await this.SendWebhookNotificationEmailAsync(
                 "Reinstate subscription request",
                 "Reinstate subscription request. Please take the required action, then return to this email and click the following link to confirm.",
                 "Reinstate",
-                payload,
+                notificationModel,
                 cancellationToken);
         }
 
@@ -126,30 +126,49 @@
             await this.SendEmailAsync(
                 () => $"New subscription, {provisionModel.SubscriptionName}",
                 () =>
-                    $"<p>New subscription. Please take the required action, then return to this email and click the following link to confirm. {this.BuildALink("Update", queryParams, "Click here to activate subscription")}.</p>"
+                    $"<p>New subscription. Please take the required action, then return to this email and click the following link to confirm. {this.BuildALink("Activate", queryParams, "Click here to activate subscription")}.</p>"
                     + $"<div> <p> Details are</p> <div> {BuildTable(JObject.Parse(JsonConvert.SerializeObject(provisionModel))) }</div></div>",
                 cancellationToken);
         }
 
-        public async Task ProcessSuspendedAsync(WebhookPayload payload, CancellationToken cancellationToken = default)
+        public async Task ProcessSuspendedAsync(NotificationModel notificationModel, CancellationToken cancellationToken = default)
         {
             await this.SendWebhookNotificationEmailAsync(
                 "Suspend subscription request",
                 "Suspend subscription request. Please take the required action, then return to this email and click the following link to confirm.",
                 "SuspendSubscription",
-                payload,
+                notificationModel,
                 cancellationToken);
         }
 
         public async Task ProcessUnsubscribedAsync(
-            WebhookPayload payload,
+            NotificationModel notificationModel,
             CancellationToken cancellationToken = default)
         {
+
             await this.SendWebhookNotificationEmailAsync(
                 "Cancel subscription request",
                 "Cancel subscription request. Please take the required action, then return to this email and click the following link to confirm.",
-                "CancelSubscription",
-                payload,
+                "Unsubscribe",
+                notificationModel,
+                cancellationToken);
+        }
+
+        public async Task ProcessChangePlanAsync(AzureSubscriptionProvisionModel provisionModel,
+            CancellationToken cancellationToken = default)
+        {
+            var queryParams = new List<Tuple<string, string>>
+            {
+                new Tuple<string, string>(
+                    "subscriptionId",
+                    provisionModel.SubscriptionId.ToString()),
+                new Tuple<string, string>("planId", provisionModel.NewPlan)
+            };
+            await this.SendEmailAsync(
+                () => $"Update subscription, {provisionModel.SubscriptionName}",
+                () =>
+                    $"<p>Updated subscription from {provisionModel.PlanName} to {provisionModel.NewPlan}. Please take the required action, then return to this email and click the following link to confirm. {this.BuildALink("Update", queryParams, "Click here to update subscription")}.</p>"
+                    + $"<div> <p> Details are</p> <div> {BuildTable(JObject.Parse(JsonConvert.SerializeObject(provisionModel))) }</div></div>",
                 cancellationToken);
         }
 
@@ -205,24 +224,24 @@
             string subject,
             string mailBody,
             string actionName,
-            WebhookPayload payload,
+            NotificationModel notificationModel,
             CancellationToken cancellationToken)
         {
             var queryParams = new List<Tuple<string, string>>
                                   {
-                                      new Tuple<string, string>("subscriptionId", payload.SubscriptionId.ToString()),
-                                      new Tuple<string, string>("publisherId", payload.PublisherId),
-                                      new Tuple<string, string>("offerId", payload.OfferId),
-                                      new Tuple<string, string>("planId", payload.PlanId),
-                                      new Tuple<string, string>("quantity", payload.Quantity.ToString()),
-                                      new Tuple<string, string>("operationId", payload.OperationId.ToString())
+                                      new Tuple<string, string>("subscriptionId", notificationModel.SubscriptionId.ToString()),
+                                      new Tuple<string, string>("publisherId", notificationModel.PublisherId),
+                                      new Tuple<string, string>("offerId", notificationModel.OfferId),
+                                      new Tuple<string, string>("planId", notificationModel.PlanId),
+                                      new Tuple<string, string>("quantity", notificationModel.Quantity.ToString()),
+                                      new Tuple<string, string>("operationId", notificationModel.OperationId.ToString())
                                   };
 
             var subscriptionDetails = await this.fulfillmentClient.GetSubscriptionAsync(
-                                          payload.SubscriptionId,
-                                          Guid.Empty,
-                                          Guid.Empty,
-                                          cancellationToken);
+                notificationModel.SubscriptionId,
+                Guid.Empty,
+                Guid.Empty,
+                cancellationToken);
 
             await this.SendEmailAsync(
                 () => $"{subject}, {subscriptionDetails.Name}",

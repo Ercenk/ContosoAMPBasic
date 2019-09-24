@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>New subscription details</h1>
+    <h1>Configure subscription</h1>
 
 <p>The publisher can add new fields to the form like below to capture more information from the subscriber and style as necessary.</p>
 
@@ -44,6 +44,14 @@
                 <input asp-for="PlanName" type="hidden" class="form-control" />
             </dd>
             <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.AvailablePlans)
+            </dt>
+            <dd class="col-sm-10">
+                <select asp-for="NewPlan" asp-items="@(new SelectList(Model.AvailablePlans, "PlanId", "DisplayName"))" class="form-control">
+                    <option value="">Choose a new plan</option>
+                </select>
+            </dd>
+            <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.SubscriptionId)
             </dt>
             <dd class="col-sm-10">
@@ -78,7 +86,7 @@
     </div>
     <div>
         <input type="submit"
-               value="Yes, that looks correct, go ahead and start my subscription process..."
+               value="Submit"
                class="btn btn-primary" />
     </div>
 </form>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dashboard.Controllers
 {
@@ -65,7 +66,7 @@ namespace Dashboard.Controllers
             }
 
             var availablePlans =
-                await this.fulfillmentManager.GetSubscriptionPlansAsync(resolvedSubscription.SubscriptionId);
+                (await this.fulfillmentManager.GetSubscriptionPlansAsync(resolvedSubscription.SubscriptionId)).Plans;
 
             var desiredPlan = resolvedSubscription.PlanId;
             if (desiredPlan != "BasePlan")
@@ -88,7 +89,7 @@ namespace Dashboard.Controllers
             var provisioningModel = new AzureSubscriptionProvisionModel
             {
                 FullName = fullName,
-                AvailablePlans = desiredPlan == "BasePlan" ? availablePlans.Plans : default,
+                AvailablePlans = desiredPlan == "BasePlan" ? availablePlans : default,
                 PlanName = desiredPlan,
                 SubscriptionId = resolvedSubscription.SubscriptionId,
                 Email = emailAddress,

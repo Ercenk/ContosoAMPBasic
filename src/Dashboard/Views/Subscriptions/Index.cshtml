@@ -55,7 +55,7 @@
                 <td>
                     @foreach (var a in item.NextActions)
                     {
-                        <span> @Html.ActionLink(Enum.GetName(typeof(ActionsEnum), a), "SubscriptionAction", new { subscriptionId = item.SubscriptionId, action = a }) </span>
+                        <span> @Html.ActionLink(Enum.GetName(typeof(ActionsEnum), a), "SubscriptionAction", new {subscriptionAction = a, subscriptionId = item.SubscriptionId }) </span>
                     }
                 </td>
                 <td>

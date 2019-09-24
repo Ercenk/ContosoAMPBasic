@@ -49,9 +49,9 @@
             return this.View(operations);
         }
 
-        public async Task<IActionResult> SubscriptionAction(Guid subscriptionId, ActionsEnum action)
+        public async Task<IActionResult> SubscriptionAction(Guid subscriptionId, ActionsEnum subscriptionAction)
         {
-            switch (action)
+            switch (subscriptionAction)
             {
                 case ActionsEnum.Activate:
                     break;
@@ -63,10 +63,11 @@
                     break;
 
                 case ActionsEnum.Unsubscribe:
+                    await this.fulfillmentManager.RequestCancelSubscriptionAsync(subscriptionId);
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(action), action, null);
+                    throw new ArgumentOutOfRangeException(nameof(subscriptionAction), subscriptionAction, null);
             }
 
             var operations = await this.fulfillmentManager.GetSubscriptionOperationsAsync(subscriptionId);

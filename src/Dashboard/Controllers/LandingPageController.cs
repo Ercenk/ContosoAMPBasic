@@ -1,4 +1,7 @@
-﻿namespace Dashboard.Controllers
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace Dashboard.Controllers
 {
     using System;
     using System.Security.Claims;
@@ -42,7 +45,14 @@
             this.options.BaseUrl = urlBase;
             try
             {
-                await this.notificationHelper.ProcessActivateAsync(provisionModel);
+                if (string.IsNullOrEmpty(provisionModel.NewPlan) || (provisionModel.NewPlan == provisionModel.PlanName))
+                {
+                    await this.notificationHelper.ProcessActivateAsync(provisionModel);
+                }
+                else
+                {
+                    await this.notificationHelper.ProcessChangePlanAsync(provisionModel);
+                }
 
                 return this.RedirectToAction(nameof(this.Success));
             }
@@ -68,6 +78,10 @@
                 return this.View();
             }
 
+            var availablePlans =
+                (await this.fulfillmentManager.GetSubscriptionPlansAsync(resolvedSubscription.SubscriptionId)).Plans;
+
+
             var fullName = (this.User.Identity as ClaimsIdentity)?.FindFirst("name")?.Value;
             var emailAddress = this.User.Identity.GetUserEmail();
 
@@ -80,7 +94,8 @@
                 OfferId = resolvedSubscription.OfferId,
                 SubscriptionName = resolvedSubscription.SubscriptionName,
                 Region = TargetContosoRegionEnum.NorthAmerica,
-                MaximumNumberOfThingsToHandle = 0
+                MaximumNumberOfThingsToHandle = 0,
+                AvailablePlans = availablePlans
             };
 
             return this.View(provisioningModel);

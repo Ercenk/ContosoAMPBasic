@@ -19,12 +19,12 @@
             switch (payload.Status)
             {
                 case OperationStatusEnum.Succeeded:
-                    await this.notificationHelper.ProcessChangePlanAsync(payload);
+                    await this.notificationHelper.ProcessChangePlanAsync(NotificationModel.FromWebhookPayload(payload));
                     break;
 
                 case OperationStatusEnum.Failed:
                 case OperationStatusEnum.Conflict:
-                    await this.notificationHelper.ProcessOperationFailOrConflictAsync(payload);
+                    await this.notificationHelper.ProcessOperationFailOrConflictAsync(NotificationModel.FromWebhookPayload(payload));
                     break;
             }
         }
@@ -34,12 +34,12 @@
             switch (payload.Status)
             {
                 case OperationStatusEnum.Succeeded:
-                    await this.notificationHelper.ProcessChangeQuantityAsync(payload);
+                    await this.notificationHelper.ProcessChangeQuantityAsync(NotificationModel.FromWebhookPayload(payload));
                     break;
 
                 case OperationStatusEnum.Failed:
                 case OperationStatusEnum.Conflict:
-                    await this.notificationHelper.ProcessOperationFailOrConflictAsync(payload);
+                    await this.notificationHelper.ProcessOperationFailOrConflictAsync(NotificationModel.FromWebhookPayload(payload));
                     break;
             }
         }
@@ -49,14 +49,19 @@
             switch (payload.Status)
             {
                 case OperationStatusEnum.Succeeded:
-                    await this.notificationHelper.ProcessReinstatedAsync(payload);
+                    await this.notificationHelper.ProcessReinstatedAsync(NotificationModel.FromWebhookPayload(payload));
                     break;
 
                 case OperationStatusEnum.Failed:
                 case OperationStatusEnum.Conflict:
-                    await this.notificationHelper.ProcessOperationFailOrConflictAsync(payload);
+                    await this.notificationHelper.ProcessOperationFailOrConflictAsync(NotificationModel.FromWebhookPayload(payload));
                     break;
             }
+        }
+
+        public Task SubscribedAsync(WebhookPayload payload)
+        {
+            throw new System.NotImplementedException();
         }
 
         public async Task SuspendedAsync(WebhookPayload payload)
@@ -64,12 +69,12 @@
             switch (payload.Status)
             {
                 case OperationStatusEnum.Succeeded:
-                    await this.notificationHelper.ProcessSuspendedAsync(payload);
+                    await this.notificationHelper.ProcessSuspendedAsync(NotificationModel.FromWebhookPayload(payload));
                     break;
 
                 case OperationStatusEnum.Failed:
                 case OperationStatusEnum.Conflict:
-                    await this.notificationHelper.ProcessOperationFailOrConflictAsync(payload);
+                    await this.notificationHelper.ProcessOperationFailOrConflictAsync(NotificationModel.FromWebhookPayload(payload));
                     break;
             }
         }
@@ -79,12 +84,12 @@
             switch (payload.Status)
             {
                 case OperationStatusEnum.Succeeded:
-                    await this.notificationHelper.ProcessUnsubscribedAsync(payload);
+                    await this.notificationHelper.ProcessUnsubscribedAsync(NotificationModel.FromWebhookPayload(payload));
                     break;
 
                 case OperationStatusEnum.Failed:
                 case OperationStatusEnum.Conflict:
-                    await this.notificationHelper.ProcessOperationFailOrConflictAsync(payload);
+                    await this.notificationHelper.ProcessOperationFailOrConflictAsync(NotificationModel.FromWebhookPayload(payload));
                     break;
             }
         }

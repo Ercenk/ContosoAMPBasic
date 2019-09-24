@@ -13,20 +13,22 @@
             AzureSubscriptionProvisionModel provisionModel,
             CancellationToken cancellationToken = default);
 
-        Task ProcessChangePlanAsync(WebhookPayload payload, CancellationToken cancellationToken = default);
+        Task ProcessChangePlanAsync(NotificationModel notificationModel, CancellationToken cancellationToken = default);
 
-        Task ProcessChangeQuantityAsync(WebhookPayload payload, CancellationToken cancellationToken = default);
+        Task ProcessChangeQuantityAsync(NotificationModel notificationModel, CancellationToken cancellationToken = default);
 
         Task ProcessOperationFailOrConflictAsync(
-            WebhookPayload payload,
+            NotificationModel notificationModel,
             CancellationToken cancellationToken = default);
 
-        Task ProcessReinstatedAsync(WebhookPayload payload, CancellationToken cancellationToken = default);
+        Task ProcessReinstatedAsync(NotificationModel notificationModel, CancellationToken cancellationToken = default);
 
         Task ProcessStartProvisioningAsync(AzureSubscriptionProvisionModel provisionModel, CancellationToken cancellationToken = default);
 
-        Task ProcessSuspendedAsync(WebhookPayload payload, CancellationToken cancellationToken = default);
+        Task ProcessSuspendedAsync(NotificationModel notificationModel, CancellationToken cancellationToken = default);
 
-        Task ProcessUnsubscribedAsync(WebhookPayload payload, CancellationToken cancellationToken = default);
+        Task ProcessUnsubscribedAsync(NotificationModel notificationModel, CancellationToken cancellationToken = default);
+
+        Task ProcessChangePlanAsync(AzureSubscriptionProvisionModel provisionModel, CancellationToken cancellationToken = default);
     }
 }

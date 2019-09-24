@@ -24,99 +24,88 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Activate(Guid subscriptionId, string planId)
+        public async Task<IActionResult> Activate(NotificationModel notificationModel, CancellationToken cancellationToken)
         {
             var result = await this.fulfillmentClient.ActivateSubscriptionAsync(
-                             subscriptionId,
-                             new ActivatedSubscription() { PlanId = planId },
+                             notificationModel.SubscriptionId,
+                             new ActivatedSubscription() { PlanId = notificationModel.PlanId },
                              Guid.Empty,
                              Guid.Empty,
-                             CancellationToken.None);
+                             cancellationToken);
 
             return result.Success
-                       ? this.View(new ActivateActionViewModel { SubscriptionId = subscriptionId, PlanId = planId })
+                       ? this.View(new ActivateActionViewModel { SubscriptionId = notificationModel.SubscriptionId,
+                           PlanId = notificationModel.PlanId })
                        : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
         }
 
         [HttpGet]
-        public async Task<IActionResult> CancelSubscription(WebhookPayload payload, CancellationToken cancellationToken)
+        public async Task<IActionResult> Unsubscribe(NotificationModel notificationModel, CancellationToken cancellationToken)
         {
-            var result = await this.UpdateOperationAsync(payload, cancellationToken);
+            var result = await this.UpdateOperationAsync(notificationModel, cancellationToken);
 
             return result.Success
                        ? this.View(
                            "OperationUpdate",
-                           new OperationUpdateViewModel { OperationType = "CancelSubscription", Payload = payload })
+                           notificationModel)
                        : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
         }
 
         [HttpGet]
-        public async Task<IActionResult> PlanChange(WebhookPayload payload, CancellationToken cancellationToken)
+        public async Task<IActionResult> QuantityChange(NotificationModel notificationModel, CancellationToken cancellationToken)
         {
-            var result = await this.UpdateOperationAsync(payload, cancellationToken);
+            var result = await this.UpdateOperationAsync(notificationModel, cancellationToken);
 
             return result.Success
                        ? this.View(
                            "OperationUpdate",
-                           new OperationUpdateViewModel { OperationType = "PlanChange", Payload = payload })
+                           notificationModel)
                        : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
         }
 
         [HttpGet]
-        public async Task<IActionResult> QuantityChange(WebhookPayload payload, CancellationToken cancellationToken)
+        public async Task<IActionResult> Reinstate(NotificationModel notificationModel, CancellationToken cancellationToken)
         {
-            var result = await this.UpdateOperationAsync(payload, cancellationToken);
+            var result = await this.UpdateOperationAsync(notificationModel, cancellationToken);
 
             return result.Success
                        ? this.View(
                            "OperationUpdate",
-                           new OperationUpdateViewModel { OperationType = "QuantityChange", Payload = payload })
-                       : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Reinstate(WebhookPayload payload, CancellationToken cancellationToken)
-        {
-            var result = await this.UpdateOperationAsync(payload, cancellationToken);
-
-            return result.Success
-                       ? this.View(
-                           "OperationUpdate",
-                           new OperationUpdateViewModel { OperationType = "Reinstate", Payload = payload })
+                           notificationModel)
                        : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
         }
 
         [HttpGet]
         public async Task<IActionResult> SuspendSubscription(
-            WebhookPayload payload,
+            NotificationModel notificationModel,
             CancellationToken cancellationToken)
         {
-            var result = await this.UpdateOperationAsync(payload, cancellationToken);
+            var result = await this.UpdateOperationAsync(notificationModel, cancellationToken);
 
             return result.Success
                        ? this.View(
                            "OperationUpdate",
-                           new OperationUpdateViewModel { OperationType = "SuspendSubscription", Payload = payload })
+                           notificationModel)
                        : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
         }
 
         [HttpGet]
-        public async Task<IActionResult> Update(Guid subscriptionId, string planId)
+        public async Task<IActionResult> Update(NotificationModel notificationModel)
         {
             var result = await this.fulfillmentClient.UpdateSubscriptionAsync(
-                             subscriptionId,
-                             new ActivatedSubscription() { PlanId = planId },
+                             notificationModel.SubscriptionId,
+                             new ActivatedSubscription() { PlanId = notificationModel.PlanId},
                              Guid.Empty,
                              Guid.Empty,
                              CancellationToken.None);
 
             return result.Success
-                       ? this.View(new ActivateActionViewModel { SubscriptionId = subscriptionId, PlanId = planId })
+                       ? this.View(new ActivateActionViewModel { SubscriptionId = notificationModel.SubscriptionId, PlanId = notificationModel.PlanId })
                        : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
         }
 
         private async Task<FulfillmentRequestResult> UpdateOperationAsync(
-            WebhookPayload payload,
+            NotificationModel payload,
             CancellationToken cancellationToken)
         {
             return await this.fulfillmentClient.UpdateSubscriptionOperationAsync(

@@ -3,6 +3,7 @@
     using System;
     using System.Diagnostics;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Dashboard.Marketplace;
@@ -49,7 +50,7 @@
             return this.View(operations);
         }
 
-        public async Task<IActionResult> SubscriptionAction(Guid subscriptionId, ActionsEnum subscriptionAction)
+        public async Task<IActionResult> SubscriptionAction(Guid subscriptionId, ActionsEnum subscriptionAction, CancellationToken cancellationToken)
         {
             switch (subscriptionAction)
             {
@@ -57,7 +58,14 @@
                     break;
 
                 case ActionsEnum.Update:
-                    break;
+                    var availablePlans = 
+                                (await this.fulfillmentManager.GetSubscriptionPlansAsync(subscriptionId, cancellationToken)).Plans;
+                    var subscription = (await this.fulfillmentManager.GetsubscriptionAsync(subscriptionId, cancellationToken));
+                    var updateSubscriptionViewModel = new  UpdateSubscriptionViewModel {
+                        CurrentPlan = subscription.PlanId,
+                        AvailablePlans = availablePlans};
+
+                    return this.View("UpdateSubscription", updateSubscriptionViewModel);
 
                 case ActionsEnum.Ack:
                     break;

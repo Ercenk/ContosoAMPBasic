@@ -114,6 +114,14 @@
             return FulfillmentManagerOperationResult.Success;
         }
 
+        public async Task<Subscription> GetsubscriptionAsync(Guid subscriptionId, CancellationToken cancellationToken)
+        {
+            var requestId = Guid.NewGuid();
+            var correlationId = Guid.NewGuid();
+
+            return await this.fulfillmentClient.GetSubscriptionAsync(subscriptionId, requestId, correlationId, cancellationToken);
+        }
+
         public async Task<IEnumerable<SubscriptionOperation>> GetSubscriptionOperationsAsync(
             Guid subscriptionId,
             CancellationToken cancellationToken = default)

@@ -47,5 +47,7 @@
             Guid subscriptionId,
             ActivatedSubscription update,
             CancellationToken cancellationToken = default);
+
+        Task<Subscription> GetsubscriptionAsync(Guid subscriptionId, CancellationToken cancellationToken);
     }
 }

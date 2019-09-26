@@ -53,9 +53,16 @@
                     @Html.DisplayFor(modelItem => item.SubscriptionName)
                 </td>
                 <td>
-                    @foreach (var a in item.NextActions)
+                    @if (!item.PendingOperations)
                     {
-                        <span> @Html.ActionLink(Enum.GetName(typeof(ActionsEnum), a), "SubscriptionAction", new {subscriptionAction = a, subscriptionId = item.SubscriptionId }) </span>
+                        @foreach (var a in item.NextActions)
+                        {
+                            <span> @Html.ActionLink(Enum.GetName(typeof(ActionsEnum), a), "SubscriptionAction", new { subscriptionAction = a, subscriptionId = item.SubscriptionId }) </span>
+                        }
+                    }
+                    else
+                    {
+                        <span><p>Pending operations</p></span>
                     }
                 </td>
                 <td>

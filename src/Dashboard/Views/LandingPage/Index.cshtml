@@ -12,7 +12,7 @@
 
 <span class="text-danger">@Html.ValidationSummary(false)</span>
 
-<form asp-action="Index" >
+<form asp-action="Index">
     <div>
         <dl class="row">
             <dt class="col-sm-2">
@@ -48,7 +48,14 @@
                 @Html.DisplayNameFor(model => model.AvailablePlans)
             </dt>
             <dd class="col-sm-10">
-                <select asp-for="NewPlan" asp-items="@(new SelectList(Model.AvailablePlans, "PlanId", "DisplayName"))" class="form-control">
+                @{
+                    var Disabled = "";
+                    if (Model.PendingOperations == true)
+                    {
+                        Disabled = "disable";
+                    }
+                }
+                <select asp-for="NewPlan" asp-items="@(new SelectList(Model.AvailablePlans, "PlanId", "DisplayName"))" class="form-control" disabled="@Disabled">
                     <option value="">Choose a new plan</option>
                 </select>
             </dd>

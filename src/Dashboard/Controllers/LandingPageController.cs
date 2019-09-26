@@ -15,6 +15,9 @@ namespace Dashboard.Controllers
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using System.Net;
+    using System.Threading;
+
+    using SaaSFulfillmentClient.Models;
 
     [Authorize]
     public class LandingPageController : Controller
@@ -63,7 +66,7 @@ namespace Dashboard.Controllers
         }
 
         // GET: LandingPage
-        public async Task<ActionResult> Index(string token)
+        public async Task<ActionResult> Index(string token, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(token))
             {
@@ -81,7 +84,6 @@ namespace Dashboard.Controllers
             var availablePlans =
                 (await this.fulfillmentManager.GetSubscriptionPlansAsync(resolvedSubscription.SubscriptionId)).Plans;
 
-
             var fullName = (this.User.Identity as ClaimsIdentity)?.FindFirst("name")?.Value;
             var emailAddress = this.User.Identity.GetUserEmail();
 
@@ -95,7 +97,9 @@ namespace Dashboard.Controllers
                 SubscriptionName = resolvedSubscription.SubscriptionName,
                 Region = TargetContosoRegionEnum.NorthAmerica,
                 MaximumNumberOfThingsToHandle = 0,
-                AvailablePlans = availablePlans
+                AvailablePlans = availablePlans,
+                PendingOperations = (await this.fulfillmentManager.GetSubscriptionOperationsAsync(resolvedSubscription.SubscriptionId, cancellationToken)).Any(
+                    o => o.Status == OperationStatusEnum.InProgress)
             };
 
             return this.View(provisioningModel);

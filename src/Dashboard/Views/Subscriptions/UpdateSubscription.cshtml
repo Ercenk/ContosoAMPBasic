@@ -5,4 +5,47 @@
 
 <h1>Update Subscriptions</h1>
 
-@Model
+<hr />
+
+<span class="text-danger">@Html.ValidationSummary(false)</span>
+
+<form asp-action="UpdateSubscription">
+    <div>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.SubscriptionName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.SubscriptionName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.SubscriptionId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.SubscriptionId)
+                <input asp-for="SubscriptionId" type="hidden" class="form-control" />
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CurrentPlan)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CurrentPlan)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.AvailablePlans)
+            </dt>
+            <dd class="col-sm-10">
+                <select asp-for="NewPlan" asp-items="@(new SelectList(Model.AvailablePlans, "PlanId", "DisplayName"))" class="form-control">
+                    <option value="">Choose a new plan</option>
+                </select>
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <input type="submit"
+               value="Submit"
+               class="btn btn-primary" />
+    </div>
+</form>

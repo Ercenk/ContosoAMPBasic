@@ -17,6 +17,7 @@ namespace Dashboard.Models
     {
         [Display(Name = "Available plans")]
         public IEnumerable<Plan> AvailablePlans { get; set; }
+
         public string Email { get; set; }
 
         [Display(Name = "Subscriber full name")]
@@ -25,14 +26,16 @@ namespace Dashboard.Models
         [Display(Name = "Maximum number of things to manage")]
         public int MaximumNumberOfThingsToHandle { get; set; }
 
+        [BindProperty]
+        public string NewPlan { get; set; }
+
         [Display(Name = "Offer ID")]
         public string OfferId { get; set; }
 
+        public bool PendingOperations { get; set; }
+
         [Display(Name = "Current plan")]
         public string PlanName { get; set; }
-
-        [BindProperty]
-        public string NewPlan { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         public TargetContosoRegionEnum Region { get; set; }

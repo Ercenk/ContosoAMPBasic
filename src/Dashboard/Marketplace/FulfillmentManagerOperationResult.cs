@@ -1,7 +1,10 @@
 ﻿namespace Dashboard.Marketplace
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+
+    using SaaSFulfillmentClient.Models;
 
     public class FulfillmentManagerOperationResult
     {
@@ -22,6 +25,7 @@
         // containing an errors that occurred during the customer user operation.
         public IEnumerable<FulfillmentManagementError> Errors => this.errors;
 
+        public SubscriptionOperation Operation { get; set; }
         public bool Succeeded { get; protected set; }
 
         // Summary:

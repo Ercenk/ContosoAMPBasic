@@ -184,17 +184,6 @@
                 return FulfillmentManagerOperationResult.Failed(new FulfillmentManagementError { Description = string.Empty });
             }
 
-            var operationUri = deleteRequest.Operation;
-            Guid operationId;
-            try
-            {
-                operationId = this.ExtractOperationId(subscriptionId, operationUri);
-            }
-            catch (FulfillmentManagerException exception)
-            {
-                return exception.OperationResult;
-            }
-
             return FulfillmentManagerOperationResult.Success;
         }
 
@@ -224,18 +213,17 @@
                     });
             }
 
-            var operationUri = updateResponse.Operation;
-            Guid operationId;
-            try
-            {
-                operationId = this.ExtractOperationId(subscriptionId, operationUri);
-            }
-            catch (FulfillmentManagerException exception)
-            {
-                return exception.OperationResult;
-            }
+            var operation = await this.fulfillmentClient.GetSubscriptionOperationAsync(
+                                subscriptionId,
+                                updateResponse.OperationId,
+                                requestId,
+                                correlationId,
+                                cancellationToken);
 
-            return FulfillmentManagerOperationResult.Success;
+            var returnResult = FulfillmentManagerOperationResult.Success;
+            returnResult.Operation = operation;
+
+            return returnResult;
         }
 
         public async Task<MarketplaceSubscription> ResolveSubscriptionAsync(
@@ -276,58 +264,23 @@
                              correlationId,
                              cancellationToken);
 
-            if (result.Success)
+            if (!result.Success)
             {
-                return FulfillmentManagerOperationResult.Success;
+                return FulfillmentManagerOperationResult.Failed(
+                    new FulfillmentManagementError { Description = result.RawResponse });
             }
 
-            return FulfillmentManagerOperationResult.Failed(
-                new FulfillmentManagementError
-                {
-                    Description = result.RawResponse
-                });
-        }
+            var operation = await this.fulfillmentClient.GetSubscriptionOperationAsync(
+                                subscriptionId,
+                                result.OperationId,
+                                requestId,
+                                correlationId,
+                                cancellationToken);
 
-        private Guid ExtractOperationId(Guid subscriptionId, Uri operationUri)
-        {
-            // We expect an operation URI like
-            // https://marketplaceapi.microsoft.com/api/saas/subscriptions/37f9dea2-4345-438f-b0bd-03d40d28c7e0/operations/529f53e1-c04b-49c8-881c-c49fb5c6fada?api-version=2018-09-15
-            var uriSegments = operationUri.Segments.Select(s => s.TrimEnd('/')).ToArray();
+            var returnResult = FulfillmentManagerOperationResult.Success;
+            returnResult.Operation = operation;
 
-            if (uriSegments.Length != 7)
-            {
-                throw new FulfillmentManagerException(
-                    FulfillmentManagerOperationResult.Failed(
-                        new FulfillmentManagementError
-                        {
-                            Description =
-                                    $"The received operation Uri is not valid. It does not have 7 segments: {operationUri}"
-                        }));
-            }
-
-            if (!(Guid.TryParse(uriSegments[4], out var receivedSubscriptionId)
-                  || receivedSubscriptionId != subscriptionId))
-            {
-                throw new FulfillmentManagerException(
-                    FulfillmentManagerOperationResult.Failed(
-                        new FulfillmentManagementError
-                        {
-                            Description =
-                                    $"The received subscription Id is not a valid Guid, or not equal to the original subscription. {uriSegments[6]}"
-                        }));
-            }
-
-            if (!Guid.TryParse(uriSegments[6], out var operationId))
-            {
-                throw new FulfillmentManagerException(
-                    FulfillmentManagerOperationResult.Failed(
-                        new FulfillmentManagementError
-                        {
-                            Description = $"The received operation Id is not a valid Guid. {uriSegments[6]}"
-                        }));
-            }
-
-            return operationId;
+            return returnResult;
         }
     }
 }

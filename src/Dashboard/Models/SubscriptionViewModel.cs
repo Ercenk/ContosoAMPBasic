@@ -43,6 +43,8 @@
             }
         }
 
+        public bool PendingOperations { get; set; }
+
         public static SubscriptionViewModel FromSubscription(MarketplaceSubscription marketplaceSubscription)
         {
             return new SubscriptionViewModel

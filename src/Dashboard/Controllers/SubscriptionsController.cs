@@ -12,6 +12,8 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
+    using SaaSFulfillmentClient.Models;
+
     [Authorize(policy: "DashboardAdmin")]
     public class SubscriptionsController : Controller
     {
@@ -32,7 +34,15 @@
         public async Task<IActionResult> Index()
         {
             var subscriptions = await this.fulfillmentManager.GetSubscriptionsAsync();
-            var subscriptionsViewModel = subscriptions.Select(s => SubscriptionViewModel.FromSubscription(s));
+
+            var subscriptionsViewModel = subscriptions.Select(SubscriptionViewModel.FromSubscription);
+            foreach (var subscriptionViewModel in subscriptionsViewModel)
+            {
+                subscriptionViewModel.PendingOperations =
+                    (await this.fulfillmentManager.GetSubscriptionOperationsAsync(subscriptionViewModel.SubscriptionId)).Any(
+                        o => o.Status == OperationStatusEnum.InProgress);
+            }
+
             return this.View(subscriptionsViewModel);
         }
 
@@ -58,12 +68,18 @@
                     break;
 
                 case ActionsEnum.Update:
-                    var availablePlans = 
+                    var availablePlans =
                                 (await this.fulfillmentManager.GetSubscriptionPlansAsync(subscriptionId, cancellationToken)).Plans;
                     var subscription = (await this.fulfillmentManager.GetsubscriptionAsync(subscriptionId, cancellationToken));
-                    var updateSubscriptionViewModel = new  UpdateSubscriptionViewModel {
+                    var updateSubscriptionViewModel = new UpdateSubscriptionViewModel
+                    {
+                        SubscriptionId = subscriptionId,
+                        SubscriptionName = subscription.Name,
                         CurrentPlan = subscription.PlanId,
-                        AvailablePlans = availablePlans};
+                        AvailablePlans = availablePlans,
+                        PendingOperations = (await this.fulfillmentManager.GetSubscriptionOperationsAsync(subscriptionId, cancellationToken)).Any(
+                            o => o.Status == OperationStatusEnum.InProgress)
+                    };
 
                     return this.View("UpdateSubscription", updateSubscriptionViewModel);
 
@@ -71,16 +87,26 @@
                     break;
 
                 case ActionsEnum.Unsubscribe:
-                    await this.fulfillmentManager.RequestCancelSubscriptionAsync(subscriptionId);
-                    break;
+                    var unsubscribeResult = await this.fulfillmentManager.RequestCancelSubscriptionAsync(subscriptionId);
+                    return unsubscribeResult.Succeeded ? this.RedirectToAction("Index") : this.Error();
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(subscriptionAction), subscriptionAction, null);
             }
 
-            var operations = await this.fulfillmentManager.GetSubscriptionOperationsAsync(subscriptionId);
-
             return this.View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateSubscription(UpdateSubscriptionViewModel model, CancellationToken cancellationToken)
+        {
+            if ((await this.fulfillmentManager.GetSubscriptionOperationsAsync(model.SubscriptionId, cancellationToken))
+                .Any(o => o.Status == OperationStatusEnum.InProgress)) return this.RedirectToAction("Index");
+            var updateResult = await this.fulfillmentManager.UpdateSubscriptionAsync(
+                                   model.SubscriptionId,
+                                   new ActivatedSubscription { PlanId = model.NewPlan });
+
+            return updateResult.Succeeded ? this.RedirectToAction("Index") : this.Error();
         }
     }
 }

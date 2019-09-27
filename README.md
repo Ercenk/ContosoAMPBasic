@@ -2,9 +2,61 @@
 
 This sample demonstrates the basic interaction of a SaaS solution with Azure Marketplace. It does not have any SaaS functionality, however it is a bare bones approach focusing on the marketplace integration.
 
-Please see the related [section](https://github.com/Ercenk/AzureMarketplaceSaaSApiClient#integrating-a-software-as-a-solution-with-azure-marketplace) on my marketplace REST API client implementation for an overview of the integration concepts.  
+**My intent with this sample is to demonstrate the integration concepts, ahd highlight a possible solution that may address a common scenario.**
 
-This sample can be a good starting point if the solution does not have requirements for providing native experience for cancelling and updating a subscription.
+**This is sample quality code, and does not implement many important aspects, such as exception handling, transient faults, proper logging etc. Please use it as a learning tool, and write your own code.**
+
+Let's first start with mentioning how to integrate a SaaS solution with Azure Marketplace.
+
+## Integrating a Software as a Solution with Azure Marketplace
+
+Many different types of solution offers are available on Azure Marketplace for the customers to subscribe. Those different types include options such as virtual machines (VMs), solution templates, and containers, where a customer can deploy the solution to their Azure subscription. Azure Marketplace also provides the option to subscribe to a Software as a Service (SaaS) solution, which runs in an environment other than the customer's subscription.
+
+A SaaS solution publisher needs to integrate with the Azure Marketplace commerce capabilities for enabling the solution to be available for purchase.
+
+Azure Marketplace talks to a SaaS solution on two channels,
+
+- Landing page: The Azure Marketplace redirects the subscriber to this page maintained by the subscriber to capture the details for provisioning the solution for the subscriber.
+- Webhook: This is an endpoint where the Azure Marketplace notifies the solution for the events such as subscription cancel and update, or suspend request for the subscription, should the customer's payment method becomes unusable.
+
+The SaaS solution in turn uses the REST API exposed on the Azure Marketplace side to perform corresponding operations. Those can be activating, cancelling, updating a subscription.
+
+To summarize, we can talk about three interaction areas between the Azure Marketplace and the SaaS solution,
+
+1. Landing page
+2. Webhook endpoint
+3. Calls on the Azure Marketplace REST API
+
+![overview](./Docs/AmpIntegrationOverview.png)
+
+Let's go through those integration areas to highlight key points.
+
+### Landing page
+
+On this page, the subscriber provides additional details to the publisher so the publisher can provision required resources for the subscriber new subscription. **Important:** the subscriber can access this page after subscribing to an offer to make changes to his/her subscription, such as upgrading, downgrading, or any other changes to the subscription from Azure portal.
+
+A publisher provides the URL for this page when registering the offer for Azure Marketplace. This page should authenticate a subscriber through Azure Active Directory (AAD). The related AAD concepts are [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/scenario-web-app-sign-user-overview). The publisher should register a multi-tenant AAD application for the landing page.
+
+The publisher can collect other information from the subscriber to onboard the customer, and provision additional resources. The publisher's solution can also ask for consent to access other resources owned by the customer, and protected by AAD, such as Microsoft Graph API, Azure Management API etc.
+
+As noted above, the subscriber can access the landing page after subscribing to the offer to make changes to the subscription.
+
+### Webhook endpoint
+
+This is the second URL the publisher provides when registering the offer. The Azure Marketplace calls this endpoint to notify the solution for the events happening on the marketplace side. Those events can be the cancellation, and update of the subscription through Azure Marketplace, or suspending it, because of the unavailability of customer's payment method.
+
+This endpoint is not protected. The implementation should call the marketplace REST API to ensure the validity of the event.
+
+### Marketplace REST API interactions
+
+The publisher should register an AAD application and provide the AppID (ClientId) and the tenant ID (AAD directory where the app is registered) during registering the offer for the marketplace. The solution is put on a whitelist so it can call the marketplace REST API with those details. There is no OAuth 2.0 consent workflow for accessing the API. We recommend two separate AAD applications for the landing page and marketplace API interaction. The details of the API are [here for subscription integration](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/pc-saas-fulfillment-api-v2), and here for [usage based billing](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/marketplace-metering-service-apis).
+
+#### An experimental API client, and webhook processor helper
+I have an experimental API client I posted on a different repo that implements the API interactions as well as encapsulates the webhook interaction. Please take a look at this [repo](https://github.com/Ercenk/AzureMarketplaceSaaSApiClient)
+ 
+## About the sample
+
+This sample can be a good starting point if the solution does not have requirements for providing native experience for cancelling and updating a subscription by a customer.
 
 It exposes a landing page that can be customized for branding. It provides a webhook endpoint for processing the incoming notifications from the Azure Marketplace. The rest of the integration is done via emails.
 
@@ -31,6 +83,15 @@ dotnet user-secrets set "FulfillmentClient:AzureActiveDirectory:AppKey" "secret 
 ```
 
 Please see the user secrets [documentation](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-2.2&tabs=windows) for more details.
+
+Alternatively, if you are not going to publish your code, and will just keep the code on your computer, you can also modify the appsettings.json to add your secrets.
+
+## About Active Directory integration
+
+I recommend using two Azure AD applications. One for authenticating the subscriber on the landing page, and the other for interacting with the API. Please see the section [below](###Register-two-apps).
+
+This way, you can ask the subscriber for consent to access his/her Graph API, Azure Management API, or any other API that is protected by Azure AD on the landing page, and separate the security for accessing the marketplace API from this interaction. Good practice...
+
 
 # How do I run the sample?
 

@@ -16,8 +16,8 @@ A SaaS solution publisher needs to integrate with the Azure Marketplace commerce
 
 Azure Marketplace talks to a SaaS solution on two channels,
 
-- Landing page: The Azure Marketplace redirects the subscriber to this page maintained by the subscriber to capture the details for provisioning the solution for the subscriber.
-- Webhook: This is an endpoint where the Azure Marketplace notifies the solution for the events such as subscription cancel and update, or suspend request for the subscription, should the customer's payment method becomes unusable.
+- [Landing page](###-Landing-page): The Azure Marketplace redirects the subscriber to this page maintained by the subscriber to capture the details for provisioning the solution for the subscriber.
+- [Webhook](###-Webhook-endpoint): This is an endpoint where the Azure Marketplace notifies the solution for the events such as subscription cancel and update, or suspend request for the subscription, should the customer's payment method becomes unusable.
 
 The SaaS solution in turn uses the REST API exposed on the Azure Marketplace side to perform corresponding operations. Those can be activating, cancelling, updating a subscription.
 

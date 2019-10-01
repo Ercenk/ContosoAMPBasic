@@ -45,5 +45,7 @@ namespace Dashboard.Models
 
         [Display(Name = "Subscription name")]
         public string SubscriptionName { get; set; }
+
+        public StatusEnum SubscriptionState { get; set; }
     }
 }

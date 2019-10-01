@@ -6,6 +6,8 @@ This sample demonstrates the basic interaction of a SaaS solution with Azure Mar
 
 **This is sample quality code, and does not implement many important aspects, such as exception handling, transient faults, proper logging etc. Please use it as a learning tool, and write your own code.**
 
+**I make frequent changes to this repo as I discover new things with the marketplace API. Please check back often.**
+
 Let's first start with mentioning how to integrate a SaaS solution with Azure Marketplace.
 
 ## Integrating a Software as a Solution with Azure Marketplace

@@ -1,6 +1,7 @@
 ﻿namespace Dashboard.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Threading;
@@ -12,6 +13,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
+    using SaaSFulfillmentClient;
     using SaaSFulfillmentClient.Models;
 
     [Authorize(policy: "DashboardAdmin")]
@@ -19,9 +21,12 @@
     {
         private readonly IFulfillmentManager fulfillmentManager;
 
-        public SubscriptionsController(IFulfillmentManager fulfillmentManager)
+        private readonly IOperationsStore operationsStore;
+
+        public SubscriptionsController(IFulfillmentManager fulfillmentManager, IOperationsStore operationsStore)
         {
             this.fulfillmentManager = fulfillmentManager;
+            this.operationsStore = operationsStore;
         }
 
         [AllowAnonymous]
@@ -53,9 +58,21 @@
             return View();
         }
 
-        public async Task<IActionResult> Operations(Guid subscriptionId)
+        public async Task<IActionResult> Operations(Guid subscriptionId, CancellationToken cancellationToken)
         {
-            var operations = await this.fulfillmentManager.GetSubscriptionOperationsAsync(subscriptionId);
+            var subscriptionOperations =
+                await this.operationsStore.GetAllSubscriptionRecordsAsync(subscriptionId, cancellationToken);
+
+            var operations = new List<SubscriptionOperation>();
+
+            foreach (var operation in subscriptionOperations)
+            {
+                operations.Add(
+                    await this.fulfillmentManager.GetSubscriptionOperationAsync(
+                        subscriptionId,
+                        operation.OperationId,
+                        cancellationToken));
+            }
 
             return this.View(operations);
         }
@@ -102,9 +119,9 @@
         {
             if ((await this.fulfillmentManager.GetSubscriptionOperationsAsync(model.SubscriptionId, cancellationToken))
                 .Any(o => o.Status == OperationStatusEnum.InProgress)) return this.RedirectToAction("Index");
-            var updateResult = await this.fulfillmentManager.UpdateSubscriptionAsync(
+            var updateResult = await this.fulfillmentManager.UpdateSubscriptionPlanAsync(
                                    model.SubscriptionId,
-                                   new ActivatedSubscription { PlanId = model.NewPlan });
+                                   model.NewPlan);
 
             return updateResult.Succeeded ? this.RedirectToAction("Index") : this.Error();
         }

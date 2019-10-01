@@ -1,10 +1,11 @@
-﻿@model AzureSubscriptionProvisionModel
+﻿@using SaaSFulfillmentClient.Models
+@model AzureSubscriptionProvisionModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-    <h1>Configure subscription</h1>
+<h1>Configure subscription</h1>
 
 <p>The publisher can add new fields to the form like below to capture more information from the subscriber and style as necessary.</p>
 
@@ -41,16 +42,20 @@
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.PlanName)
+                <span>We are activating your subscription with a placeholder for now, and will get back to you once complete provisioning steps are done.</span>
                 <input asp-for="PlanName" type="hidden" class="form-control" />
             </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.AvailablePlans)
-            </dt>
-            <dd class="col-sm-10">
-                <select asp-for="NewPlan" asp-items="@(new SelectList(Model.AvailablePlans, "PlanId", "DisplayName"))" class="form-control">
-                    <option value="">Choose a new plan</option>
-                </select>
-            </dd>
+            @if (!(Model.PendingOperations || Model.SubscriptionState == StatusEnum.Provisioning))
+            {
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.AvailablePlans)
+                </dt>
+                <dd class="col-sm-10">
+                    <select asp-for="NewPlan" asp-items="@(new SelectList(Model.AvailablePlans, "PlanId", "DisplayName"))" class="form-control">
+                        <option value="">Choose a new plan</option>
+                    </select>
+                </dd>
+            }
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.SubscriptionId)
             </dt>

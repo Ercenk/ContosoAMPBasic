@@ -34,20 +34,11 @@
                              cancellationToken);
 
             return result.Success
-                       ? this.View(new ActivateActionViewModel { SubscriptionId = notificationModel.SubscriptionId,
-                           PlanId = notificationModel.PlanId })
-                       : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Unsubscribe(NotificationModel notificationModel, CancellationToken cancellationToken)
-        {
-            var result = await this.UpdateOperationAsync(notificationModel, cancellationToken);
-
-            return result.Success
-                       ? this.View(
-                           "OperationUpdate",
-                           notificationModel)
+                       ? this.View(new ActivateActionViewModel
+                       {
+                           SubscriptionId = notificationModel.SubscriptionId,
+                           PlanId = notificationModel.PlanId
+                       })
                        : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
         }
 
@@ -90,11 +81,23 @@
         }
 
         [HttpGet]
+        public async Task<IActionResult> Unsubscribe(NotificationModel notificationModel, CancellationToken cancellationToken)
+        {
+            var result = await this.UpdateOperationAsync(notificationModel, cancellationToken);
+
+            return result.Success
+                       ? this.View(
+                           "OperationUpdate",
+                           notificationModel)
+                       : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Update(NotificationModel notificationModel)
         {
-            var result = await this.fulfillmentClient.UpdateSubscriptionAsync(
+            var result = await this.fulfillmentClient.UpdateSubscriptionPlanAsync(
                              notificationModel.SubscriptionId,
-                             new ActivatedSubscription() { PlanId = notificationModel.PlanId},
+                             notificationModel.PlanId,
                              Guid.Empty,
                              Guid.Empty,
                              CancellationToken.None);

@@ -21,6 +21,7 @@ namespace Dashboard.Controllers
     [Authorize]
     public class LandingPageAdvancedController : Controller
     {
+        private const string basePlanName = "basic";
         private readonly DashboardOptions dashboardOptions;
 
         private readonly IFulfillmentManager fulfillmentManager;
@@ -69,12 +70,12 @@ namespace Dashboard.Controllers
                 (await this.fulfillmentManager.GetSubscriptionPlansAsync(resolvedSubscription.SubscriptionId)).Plans;
 
             var desiredPlan = resolvedSubscription.PlanId;
-            if (desiredPlan != "BasePlan")
+            if (desiredPlan != basePlanName)
             {
                 // Not the base plan, set to base plan, and save the desired plan for the future
-                var updateResult = await this.fulfillmentManager.UpdateSubscriptionAsync(
+                var updateResult = await this.fulfillmentManager.UpdateSubscriptionPlanAsync(
                                        resolvedSubscription.SubscriptionId,
-                                       new ActivatedSubscription { PlanId = "BasePlan" });
+                                       basePlanName);
 
                 if (!updateResult.Succeeded)
                 {
@@ -89,7 +90,7 @@ namespace Dashboard.Controllers
             var provisioningModel = new AzureSubscriptionProvisionModel
             {
                 FullName = fullName,
-                AvailablePlans = desiredPlan == "BasePlan" ? availablePlans : default,
+                AvailablePlans = desiredPlan == basePlanName ? availablePlans : default,
                 PlanName = desiredPlan,
                 SubscriptionId = resolvedSubscription.SubscriptionId,
                 Email = emailAddress,

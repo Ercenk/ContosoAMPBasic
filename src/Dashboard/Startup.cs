@@ -16,8 +16,11 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Microsoft.Extensions.Hosting;
 
     using SaaSFulfillmentClient;
+
+    using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
     public class Startup
     {
@@ -86,7 +89,8 @@
 
             services.Configure<DashboardOptions>(this.configuration.GetSection("Dashboard"));
 
-            services.AddFulfillmentClient(options => this.configuration.Bind("FulfillmentClient", options));
+            services.AddFulfillmentClient(options => this.configuration.Bind("FulfillmentClient", options))
+                .WithAzureTableOperationsStore(this.configuration["OperationsStoreConnectionString"]);
 
             // Hack to save the host name and port during the handling the request. Please see the WebhookController and ContosoWebhookHandler implementations
             services.AddSingleton<ContosoWebhookHandlerOptions>();

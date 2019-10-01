@@ -17,6 +17,7 @@ namespace Dashboard.Controllers
     using System.Net;
     using System.Threading;
 
+    using SaaSFulfillmentClient;
     using SaaSFulfillmentClient.Models;
 
     [Authorize]
@@ -26,6 +27,7 @@ namespace Dashboard.Controllers
 
         private readonly ILogger<LandingPageController> logger;
         private readonly IMarketplaceNotificationHandler notificationHelper;
+
         private readonly DashboardOptions options;
 
         public LandingPageController(
@@ -98,6 +100,7 @@ namespace Dashboard.Controllers
                 Region = TargetContosoRegionEnum.NorthAmerica,
                 MaximumNumberOfThingsToHandle = 0,
                 AvailablePlans = availablePlans,
+                SubscriptionState = resolvedSubscription.State,
                 PendingOperations = (await this.fulfillmentManager.GetSubscriptionOperationsAsync(resolvedSubscription.SubscriptionId, cancellationToken)).Any(
                     o => o.Status == OperationStatusEnum.InProgress)
             };

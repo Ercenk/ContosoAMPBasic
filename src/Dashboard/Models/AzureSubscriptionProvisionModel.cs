@@ -46,6 +46,8 @@ namespace Dashboard.Models
         [Display(Name = "Subscription name")]
         public string SubscriptionName { get; set; }
 
-        public StatusEnum SubscriptionState { get; set; }
+        public StatusEnum SubscriptionStatus { get; set; }
+
+        public StatusEnum ExistingSubscriptionStatus { get; set; }
     }
 }

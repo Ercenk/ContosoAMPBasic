@@ -44,11 +44,13 @@
                 @Html.DisplayFor(model => model.PlanName)
                 <input asp-for="PlanName" type="hidden" class="form-control" />
             </dd>
-            @if (!(Model.PendingOperations || Model.SubscriptionState == StatusEnum.Provisioning))
+            @* Only show if we are here for "modifying" a subscription *@
+            @if (Model.ExistingSubscriptionStatus == StatusEnum.Subscribed)
             {
                 <dt class="col-sm-2">
                     @Html.DisplayNameFor(model => model.AvailablePlans)
                 </dt>
+
                 <dd class="col-sm-10">
 
                     <select asp-for="NewPlan" asp-items="@(new SelectList(Model.AvailablePlans, "PlanId", "DisplayName"))" class="form-control">
@@ -87,6 +89,10 @@
                 <input asp-for="MaximumNumberOfThingsToHandle" class="form-control" />
             </dd>
         </dl>
+        @* Just to carry over the subscription status, so we can determine if we are here for initial
+            provisioning or configuration later in the life of the subscription*@
+        <input asp-for="ExistingSubscriptionStatus" type="hidden" class="form-control" />
+        <input asp-for="SubscriptionStatus" type="hidden" class="form-control" />
     </div>
     <div>
         <input type="submit"

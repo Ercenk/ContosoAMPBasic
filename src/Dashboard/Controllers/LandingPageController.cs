@@ -50,7 +50,8 @@ namespace Dashboard.Controllers
             this.options.BaseUrl = urlBase;
             try
             {
-                if (string.IsNullOrEmpty(provisionModel.NewPlan) || (provisionModel.NewPlan == provisionModel.PlanName))
+                // A new subscription will have PendingFulfillmentStart as status
+                if (provisionModel.ExistingSubscriptionStatus != StatusEnum.Subscribed)
                 {
                     await this.notificationHelper.ProcessActivateAsync(provisionModel);
                 }
@@ -76,15 +77,19 @@ namespace Dashboard.Controllers
                 return this.View();
             }
 
-            var resolvedSubscription = await this.fulfillmentManager.ResolveSubscriptionAsync(token);
+            var resolvedSubscription = await this.fulfillmentManager.ResolveSubscriptionAsync(token, cancellationToken);
             if (resolvedSubscription == default(MarketplaceSubscription))
             {
                 this.ModelState.AddModelError(string.Empty, "Cannot resolve subscription");
                 return this.View();
             }
 
+            var existingSubscription =
+                await this.fulfillmentManager.GetsubscriptionAsync(resolvedSubscription.SubscriptionId,
+                    cancellationToken);
+
             var availablePlans =
-                (await this.fulfillmentManager.GetSubscriptionPlansAsync(resolvedSubscription.SubscriptionId)).Plans;
+                (await this.fulfillmentManager.GetSubscriptionPlansAsync(resolvedSubscription.SubscriptionId, cancellationToken)).Plans;
 
             var fullName = (this.User.Identity as ClaimsIdentity)?.FindFirst("name")?.Value;
             var emailAddress = this.User.Identity.GetUserEmail();
@@ -97,10 +102,13 @@ namespace Dashboard.Controllers
                 Email = emailAddress,
                 OfferId = resolvedSubscription.OfferId,
                 SubscriptionName = resolvedSubscription.SubscriptionName,
+                // Assuming this will be set to the value the customer already set when subscribing, if we are here after the initial subscription activation
+                // Landing page is used both for initial provisioning and configuration of the subscription.
                 Region = TargetContosoRegionEnum.NorthAmerica,
                 MaximumNumberOfThingsToHandle = 0,
                 AvailablePlans = availablePlans,
-                SubscriptionState = resolvedSubscription.State,
+                SubscriptionStatus = resolvedSubscription.State,
+                ExistingSubscriptionStatus = existingSubscription.SaasSubscriptionStatus,
                 PendingOperations = (await this.fulfillmentManager.GetSubscriptionOperationsAsync(resolvedSubscription.SubscriptionId, cancellationToken)).Any(
                     o => o.Status == OperationStatusEnum.InProgress)
             };

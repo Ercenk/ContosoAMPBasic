@@ -16,7 +16,9 @@ namespace Dashboard.Controllers
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 
-    using SaaSFulfillmentClient.Models;
+    /// <summary>
+    /// Not fully implemented, it is here for a placeholder to demonstrate the idea
+    /// </summary>
 
     [Authorize]
     public class LandingPageAdvancedController : Controller

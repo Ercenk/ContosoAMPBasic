@@ -45,7 +45,8 @@
                 <span>We are activating your subscription with a placeholder for now, and will get back to you once complete provisioning steps are done.</span>
                 <input asp-for="PlanName" type="hidden" class="form-control" />
             </dd>
-            @if (!(Model.PendingOperations || Model.SubscriptionState == StatusEnum.Provisioning))
+            @* Only show if we are here for "modifying" a subscription *@
+            @if (Model.ExistingSubscriptionStatus == StatusEnum.Subscribed)
             {
                 <dt class="col-sm-2">
                     @Html.DisplayNameFor(model => model.AvailablePlans)

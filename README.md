@@ -95,10 +95,26 @@ I recommend using two Azure AD applications. One for authenticating the subscrib
 This way, you can ask the subscriber for consent to access his/her Graph API, Azure Management API, or any other API that is protected by Azure AD on the landing page, and separate the security for accessing the marketplace API from this interaction. Good practice...
 
 ## About options
-|Setting|Notes|
-|-------|-----|
-|       |     |
-
+|Setting|Change/Keep|Notes|
+|-------|-----------|-----|
+|AzureAd:Instance       |Keep|The landing page is using a multi-tenant app. Keep the instance value|
+|AzureAd:Domain       |Change|Change to the name of the domain of your AAD app|
+|AzureAd:TenantId       |Keep|Common authentication endpoint, since this is a multi-tenant app|
+|AzureAd:ClientId       |Change|Your app's tenant ID|
+|AzureAd:CallbackPath       |Keep|Default oidc sign in path|
+|AzureAd:SignedOutCallbackPath       |Keep|Default sign out path|
+|FulfillmentClient:AzureActiveDirectory:ClientId       |Change|AppId for the AAD application you registered for your fulfillment API client|
+|FulfillmentClient:AzureActiveDirectory:TenantId       |Change|Tenant ID for the AAD application you registered for your fulfillment API client|
+|FulfillmentClient:AzureActiveDirectory:AppKey       |Change|Application key for the AAD app. You can set it on the appsettings if you are not planning to publish. Remember, this is a secret.|
+|FulfillmentClient:FulfillmentService:BaseUri       |Keep|The Azure Marketplace API endpoint.|
+|FulfillmentClient:FulfillmentService:ApiVersion       |Change|Change if you want to hit the production or mock API. 2018-08-31 is for production, 2018-09-15 is for mock API|
+|Dashboard:Mail:OperationsTeamEmail       |Change|The sample sends emails to this address. |
+|Dashboard:Mail:FromEmail       |Change|Sendgrid requires a "from" email address when sending emails. |
+|Dashboard:Mail:ApiKey       |Change|Sendgrid API key. Please see notes below. |
+|Dashboard:DashboardAdmin       |Change|Change it to the email address you are logging on to the dashboard. Only the users with the domain name of this email is authorized to use the dashboard to display the subscriptions.|
+|Dashboard:ShowUnsubscribed       |Change|Change true or false, depending on if you want to see the subscriptions that are not active.|
+|Dashboard:AdvancedFlow       |Change|This controls the basic or advanced flow when activating new subscriptions. I recommend to keep the basic for the start. Advanced flow is implemented for demonstration only and I do not recommend to use this technique in production. |
+|Dashboard:BasePlanId       |Change|The name of the base plan used for the advanced flow. |
 
 # How do I run the sample?
 

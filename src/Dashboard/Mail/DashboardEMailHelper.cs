@@ -204,7 +204,7 @@
 
             msg.SetFrom(new EmailAddress(this.options.Mail.FromEmail, "Marketplace Dashboard"));
 
-            var recipients = new List<EmailAddress> { new EmailAddress(this.options.Mail.AdminEmail) };
+            var recipients = new List<EmailAddress> { new EmailAddress(this.options.Mail.OperationsTeamEmail) };
 
             msg.AddTos(recipients);
 

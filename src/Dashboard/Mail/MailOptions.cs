@@ -2,7 +2,7 @@
 {
     public class MailOptions
     {
-        public string AdminEmail { get; set; }
+        public string OperationsTeamEmail { get; set; }
 
         public string ApiKey { get; set; }
 

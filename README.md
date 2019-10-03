@@ -20,7 +20,7 @@ A SaaS solution publisher needs to integrate with the Azure Marketplace commerce
 
 Azure Marketplace talks to a SaaS solution on two channels,
 
-- [Landing page](###-Landing-page): The Azure Marketplace redirects the subscriber to this page maintained by the subscriber to capture the details for provisioning the solution for the subscriber.
+- [Landing page](###-Landing-page): The Azure Marketplace sends the subscriber to this page maintained by the publisher to capture the details for provisioning the solution for the subscriber. The subscriber is on this page for the activating the subscription, or modifying it.
 - [Webhook](###-Webhook-endpoint): This is an endpoint where the Azure Marketplace notifies the solution for the events such as subscription cancel and update, or suspend request for the subscription, should the customer's payment method becomes unusable.
 
 The SaaS solution in turn uses the REST API exposed on the Azure Marketplace side to perform corresponding operations. Those can be activating, cancelling, updating a subscription.
@@ -163,13 +163,13 @@ Follow the steps in the [tutorial](https://docs.microsoft.com/en-us/azure/sendgr
 
 ## Running the sample
 
-You can run the sample either in Docker by building an image using the Dockerfile on the src/Dashboard folder, or running with ```dotnet run``` in the "ContosoAMPBasic\src\Dashboard" folder. Once you run the application, you need to grab the URL and update the "redirect URLs" section of the multi-tenant AD application's "Authentican" settings. E.g. if you run using ```dotnet run```, make sure to add https://localhost:5001/ and https://localhost:5001/signin-oidc to the URL list.
+You can run the sample either in Docker by building an image using the Dockerfile on the src/Dashboard folder, or running with ```dotnet run``` in the "ContosoAMPBasic\src\Dashboard" folder. Once you run the application, you need to grab the URL and update the "redirect URLs" section of the multi-tenant AD application's "Authentication" settings. E.g. if you run using ```dotnet run```, make sure to add https://localhost:5001/ and https://localhost:5001/signin-oidc to the URL list.
 
 The default page uses the "Dashboard:DashboardAdmin" value to authorize the logged on user. Make sure to set it to your email in the configuration. The default page queries the marketplace API to list the subscriptions to the offers.
 
 ![offersubscriptions](./Docs/offersubscriptions.png)
 
-The sample uses the mock API with its default "FulfillmentClient:FulfillmentService" settings. 
+The sample uses the mock API with its default "FulfillmentClient:FulfillmentService" settings.
 
 Now you want to navigate to the landing page to simulate a redirect. Append "/landingpage?token=wwww" to the URL. It should look something like this, "https://localhost:5001/landingpage?token=wwww".
 

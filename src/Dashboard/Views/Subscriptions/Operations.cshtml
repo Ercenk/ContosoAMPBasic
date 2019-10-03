@@ -1,45 +1,48 @@
-﻿@model IEnumerable<SaaSFulfillmentClient.Models.SubscriptionOperation>
+﻿@model OperationsViewModel
 
 @{
     ViewData["Title"] = "Operations";
 }
 
-<h1>Operations</h1>
+<h1>Operations for @Html.DisplayFor(model => model.SubscriptionName)</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TimeStamp)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Action)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th> @Html.DisplayNameFor(model => model.OperationRequestSource)</th>
-            <th> @Html.DisplayNameFor(model => model.ErrorStatusCode)</th>
-            <th> @Html.DisplayNameFor(model => model.ErrorMessage)</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+@if (Model.Operations.Any())
+{
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TimeStamp)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Action)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                <td> @Html.DisplayFor(modelItem => item.OperationRequestSource)</td>
-                <td> @Html.DisplayFor(modelItem => item.ErrorStatusCode)</td>
-                <td> @Html.DisplayFor(modelItem => item.ErrorMessage)</td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Operations[0].TimeStamp)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Operations[0].Action)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Operations[0].Status)
+                </th>
+                <th> @Html.DisplayNameFor(model => model.Operations[0].OperationRequestSource)</th>
+                <th> @Html.DisplayNameFor(model => model.Operations[0].ErrorStatusCode)</th>
+                <th> @Html.DisplayNameFor(model => model.Operations[0].ErrorMessage)</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Operations)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TimeStamp)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Action)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td> @Html.DisplayFor(modelItem => item.OperationRequestSource)</td>
+                    <td> @Html.DisplayFor(modelItem => item.ErrorStatusCode)</td>
+                    <td> @Html.DisplayFor(modelItem => item.ErrorMessage)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

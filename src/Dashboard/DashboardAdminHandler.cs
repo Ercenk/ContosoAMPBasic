@@ -1,6 +1,5 @@
 ﻿namespace Dashboard
 {
-    using System.Security.Claims;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
@@ -13,10 +12,8 @@
         {
             if (context.User == null) return Task.CompletedTask;
 
-            if (context.User.Identity.GetUserEmail().GetDomainNameFromEmail() == requirement.AdminName.GetDomainNameFromEmail())
-            {
-                context.Succeed(requirement);
-            }
+            if (context.User.Identity.GetUserEmail().GetDomainNameFromEmail()
+                == requirement.AdminName.GetDomainNameFromEmail()) context.Succeed(requirement);
 
             return Task.CompletedTask;
         }

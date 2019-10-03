@@ -1,11 +1,8 @@
 ﻿namespace Dashboard.Models
 {
-    using System;
     using System.Collections.Generic;
 
     using Dashboard.Marketplace;
-
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     using SaaSFulfillmentClient.Models;
 
@@ -45,17 +42,17 @@
 
         public bool PendingOperations { get; set; }
 
-        public static SubscriptionViewModel FromSubscription(MarketplaceSubscription marketplaceSubscription)
+        public static SubscriptionViewModel FromSubscription(Subscription marketplaceSubscription)
         {
             return new SubscriptionViewModel
-            {
-                PlanId = marketplaceSubscription.PlanId,
-                Quantity = marketplaceSubscription.Quantity,
-                SubscriptionId = marketplaceSubscription.SubscriptionId,
-                OfferId = marketplaceSubscription.OfferId,
-                State = marketplaceSubscription.State,
-                SubscriptionName = marketplaceSubscription.SubscriptionName
-            };
+                       {
+                           PlanId = marketplaceSubscription.PlanId,
+                           Quantity = marketplaceSubscription.Quantity,
+                           SubscriptionId = marketplaceSubscription.SubscriptionId,
+                           OfferId = marketplaceSubscription.OfferId,
+                           State = marketplaceSubscription.SaasSubscriptionStatus,
+                           SubscriptionName = marketplaceSubscription.Name
+                       };
         }
     }
 }

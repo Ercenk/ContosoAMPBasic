@@ -5,11 +5,11 @@
             <span class="text-dark" style="margin-right: 50px">Hello @User.Claims.First(c => c.Type == "name").Value!</span>
         </li>
         <li class="nav-item">
-            <button type="button" class="btn btn-warning" style="padding-top: 0px;padding-bottom: 0px;border-top-width: 0px;border-bottom-width: 0px;">
+            <button type="button" class="btn btn-warning" style="border-bottom-width: 0px; border-top-width: 0px; padding-bottom: 0px; padding-top: 0px;">
                 <a class="nav-link text-dark btn btn-warning" asp-area="AzureAD" asp-controller="Account" asp-action="SignOut" style="font-weight: bold">Sign out</a>
 
             </button>
-            
+
         </li>
     }
     else

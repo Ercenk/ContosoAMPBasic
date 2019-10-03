@@ -7,95 +7,162 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Dashboard.Marketplace;
     using Dashboard.Models;
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Options;
 
     using SaaSFulfillmentClient;
     using SaaSFulfillmentClient.Models;
 
-    [Authorize(policy: "DashboardAdmin")]
+    [Authorize("DashboardAdmin")]
     public class SubscriptionsController : Controller
     {
-        private readonly IFulfillmentManager fulfillmentManager;
+        private readonly IFulfillmentClient fulfillmentClient;
 
         private readonly IOperationsStore operationsStore;
 
-        public SubscriptionsController(IFulfillmentManager fulfillmentManager, IOperationsStore operationsStore)
+        private readonly DashboardOptions options;
+
+        public SubscriptionsController(
+            IFulfillmentClient fulfillmentClient,
+            IOperationsStore operationsStore,
+            IOptionsMonitor<DashboardOptions> options)
         {
-            this.fulfillmentManager = fulfillmentManager;
+            this.fulfillmentClient = fulfillmentClient;
             this.operationsStore = operationsStore;
+            this.options = options.CurrentValue;
         }
 
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return this.View(
+                new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            var subscriptions = await this.fulfillmentManager.GetSubscriptionsAsync();
+            var requestId = Guid.NewGuid();
+            var correlationId = Guid.NewGuid();
 
-            var subscriptionsViewModel = subscriptions.Select(SubscriptionViewModel.FromSubscription);
-            foreach (var subscriptionViewModel in subscriptionsViewModel)
+            var subscriptions = await this.fulfillmentClient.GetSubscriptionsAsync(
+                                    requestId,
+                                    correlationId,
+                                    cancellationToken);
+
+            var subscriptionsViewModel = subscriptions.Select(SubscriptionViewModel.FromSubscription)
+                .Where(s => s.State != StatusEnum.Unsubscribed || this.options.ShowUnsubscribed);
+            foreach (var subscription in subscriptionsViewModel)
             {
-                subscriptionViewModel.PendingOperations =
-                    (await this.fulfillmentManager.GetSubscriptionOperationsAsync(subscriptionViewModel.SubscriptionId)).Any(
-                        o => o.Status == OperationStatusEnum.InProgress);
+                subscription.PendingOperations =
+                    (await this.fulfillmentClient.GetSubscriptionOperationsAsync(
+                         requestId,
+                         correlationId,
+                         subscription.SubscriptionId,
+                         cancellationToken)).Any(o => o.Status == OperationStatusEnum.InProgress);
+
+                var recordedSubscriptionOperations =
+                    await this.operationsStore.GetAllSubscriptionRecordsAsync(
+                        subscription.SubscriptionId,
+                        cancellationToken);
+
+                var subscriptionOperations = new List<SubscriptionOperation>();
+                foreach (var operation in recordedSubscriptionOperations)
+                    subscriptionOperations.Add(
+                        await this.fulfillmentClient.GetSubscriptionOperationAsync(
+                            operation.SubscriptionId,
+                            operation.OperationId,
+                            requestId,
+                            correlationId,
+                            cancellationToken));
+
+                subscription.PendingOperations |=
+                    subscriptionOperations.Any(o => o.Status == OperationStatusEnum.InProgress);
             }
 
-            return this.View(subscriptionsViewModel);
+            return this.View(subscriptionsViewModel.OrderByDescending(s => s.SubscriptionName));
         }
 
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult NotAuthorized()
         {
-            return View();
+            return this.View();
         }
 
         public async Task<IActionResult> Operations(Guid subscriptionId, CancellationToken cancellationToken)
         {
+            var requestId = Guid.NewGuid();
+            var correlationId = Guid.NewGuid();
+
             var subscriptionOperations =
                 await this.operationsStore.GetAllSubscriptionRecordsAsync(subscriptionId, cancellationToken);
+
+            var subscription = await this.fulfillmentClient.GetSubscriptionAsync(
+                                   subscriptionId,
+                                   requestId,
+                                   correlationId,
+                                   cancellationToken);
 
             var operations = new List<SubscriptionOperation>();
 
             foreach (var operation in subscriptionOperations)
-            {
                 operations.Add(
-                    await this.fulfillmentManager.GetSubscriptionOperationAsync(
+                    await this.fulfillmentClient.GetSubscriptionOperationAsync(
                         subscriptionId,
                         operation.OperationId,
+                        requestId,
+                        correlationId,
                         cancellationToken));
-            }
 
-            return this.View(operations);
+            return this.View(new OperationsViewModel { SubscriptionName = subscription.Name, Operations = operations });
         }
 
-        public async Task<IActionResult> SubscriptionAction(Guid subscriptionId, ActionsEnum subscriptionAction, CancellationToken cancellationToken)
+        public async Task<IActionResult> SubscriptionAction(
+            Guid subscriptionId,
+            ActionsEnum subscriptionAction,
+            CancellationToken cancellationToken)
         {
+            var requestId = Guid.NewGuid();
+            var correlationId = Guid.NewGuid();
+
             switch (subscriptionAction)
             {
                 case ActionsEnum.Activate:
                     break;
 
                 case ActionsEnum.Update:
-                    var availablePlans =
-                                (await this.fulfillmentManager.GetSubscriptionPlansAsync(subscriptionId, cancellationToken)).Plans;
-                    var subscription = (await this.fulfillmentManager.GetsubscriptionAsync(subscriptionId, cancellationToken));
+                    var availablePlans = (await this.fulfillmentClient.GetSubscriptionPlansAsync(
+                                              subscriptionId,
+                                              requestId,
+                                              correlationId,
+                                              cancellationToken)).Plans.ToList();
+
+                    // remove the base plan from the model to show
+                    availablePlans.Remove(availablePlans.Single(p => p.PlanId == this.options.BasePlanId));
+
+                    var subscription = await this.fulfillmentClient.GetSubscriptionAsync(
+                                           subscriptionId,
+                                           requestId,
+                                           correlationId,
+                                           cancellationToken);
                     var updateSubscriptionViewModel = new UpdateSubscriptionViewModel
                     {
                         SubscriptionId = subscriptionId,
                         SubscriptionName = subscription.Name,
                         CurrentPlan = subscription.PlanId,
                         AvailablePlans = availablePlans,
-                        PendingOperations = (await this.fulfillmentManager.GetSubscriptionOperationsAsync(subscriptionId, cancellationToken)).Any(
-                            o => o.Status == OperationStatusEnum.InProgress)
+                        PendingOperations =
+                                                                  (await this.fulfillmentClient
+                                                                       .GetSubscriptionOperationsAsync(
+                                                                           subscriptionId,
+                                                                           requestId,
+                                                                           correlationId,
+                                                                           cancellationToken)).Any(
+                                                                      o => o.Status == OperationStatusEnum.InProgress)
                     };
 
                     return this.View("UpdateSubscription", updateSubscriptionViewModel);
@@ -104,8 +171,13 @@
                     break;
 
                 case ActionsEnum.Unsubscribe:
-                    var unsubscribeResult = await this.fulfillmentManager.RequestCancelSubscriptionAsync(subscriptionId);
-                    return unsubscribeResult.Succeeded ? this.RedirectToAction("Index") : this.Error();
+                    var unsubscribeResult = await this.fulfillmentClient.DeleteSubscriptionAsync(
+                                                subscriptionId,
+                                                requestId,
+                                                correlationId,
+                                                cancellationToken);
+
+                    return unsubscribeResult.Success ? this.RedirectToAction("Index") : this.Error();
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(subscriptionAction), subscriptionAction, null);
@@ -115,15 +187,27 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateSubscription(UpdateSubscriptionViewModel model, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateSubscription(
+            UpdateSubscriptionViewModel model,
+            CancellationToken cancellationToken)
         {
-            if ((await this.fulfillmentManager.GetSubscriptionOperationsAsync(model.SubscriptionId, cancellationToken))
-                .Any(o => o.Status == OperationStatusEnum.InProgress)) return this.RedirectToAction("Index");
-            var updateResult = await this.fulfillmentManager.UpdateSubscriptionPlanAsync(
-                                   model.SubscriptionId,
-                                   model.NewPlan);
+            var requestId = Guid.NewGuid();
+            var correlationId = Guid.NewGuid();
 
-            return updateResult.Succeeded ? this.RedirectToAction("Index") : this.Error();
+            if ((await this.fulfillmentClient.GetSubscriptionOperationsAsync(
+                     model.SubscriptionId,
+                     requestId,
+                     correlationId,
+                     cancellationToken))
+                .Any(o => o.Status == OperationStatusEnum.InProgress)) return this.RedirectToAction("Index");
+            var updateResult = await this.fulfillmentClient.UpdateSubscriptionPlanAsync(
+                                   model.SubscriptionId,
+                                   model.NewPlan,
+                                   requestId,
+                                   correlationId,
+                                   cancellationToken);
+
+            return updateResult.Success ? this.RedirectToAction("Index") : this.Error();
         }
     }
 }

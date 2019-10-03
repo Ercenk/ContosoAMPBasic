@@ -6,10 +6,6 @@
 
     public class FulfillmentRequestErrorViewModel
     {
-        public FulfillmentRequestErrorViewModel()
-        {
-        }
-
         public string RawResponse { get; set; }
 
         public HttpStatusCode StatusCode { get; set; }

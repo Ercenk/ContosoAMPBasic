@@ -1,10 +1,8 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
-
-namespace Dashboard.Controllers
+﻿namespace Dashboard.Controllers
 {
     using System;
     using System.Security.Claims;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Dashboard.Marketplace;
@@ -14,57 +12,44 @@ namespace Dashboard.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using System.Net;
-    using System.Threading;
-
-    using SaaSFulfillmentClient;
-    using SaaSFulfillmentClient.Models;
 
     [Authorize]
     public class LandingPageController : Controller
     {
-        private readonly IFulfillmentManager fulfillmentManager;
+        private readonly IFulfillmentHandler fulfillmentHandler;
 
         private readonly ILogger<LandingPageController> logger;
-        private readonly IMarketplaceNotificationHandler notificationHelper;
 
         private readonly DashboardOptions options;
 
         public LandingPageController(
             IOptionsMonitor<DashboardOptions> dashboardOptions,
-            IFulfillmentManager fulfillmentManager,
+            IFulfillmentHandler fulfillmentHandler,
             IMarketplaceNotificationHandler notificationHelper,
             ILogger<LandingPageController> logger)
         {
-            this.fulfillmentManager = fulfillmentManager;
-            this.notificationHelper = notificationHelper;
+            this.fulfillmentHandler = fulfillmentHandler;
             this.logger = logger;
             this.options = dashboardOptions.CurrentValue;
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Index(AzureSubscriptionProvisionModel provisionModel)
+        public async Task<ActionResult> Index(
+            AzureSubscriptionProvisionModel provisionModel,
+            CancellationToken cancellationToken)
         {
             var urlBase = $"{this.Request.Scheme}://{this.Request.Host}";
             this.options.BaseUrl = urlBase;
             try
             {
-                // A new subscription will have PendingFulfillmentStart as status
-                if (provisionModel.ExistingSubscriptionStatus != StatusEnum.Subscribed)
-                {
-                    await this.notificationHelper.ProcessActivateAsync(provisionModel);
-                }
-                else
-                {
-                    await this.notificationHelper.ProcessChangePlanAsync(provisionModel);
-                }
+                this.fulfillmentHandler.ProcessLandingPageAsync(provisionModel, cancellationToken);
 
                 return this.RedirectToAction(nameof(this.Success));
             }
             catch (Exception ex)
             {
-                return this.View(ex);
+                return this.BadRequest(ex);
             }
         }
 
@@ -77,43 +62,19 @@ namespace Dashboard.Controllers
                 return this.View();
             }
 
-            var resolvedSubscription = await this.fulfillmentManager.ResolveSubscriptionAsync(token, cancellationToken);
-            if (resolvedSubscription == default(MarketplaceSubscription))
+            var provisioningModel = await this.fulfillmentHandler.BuildLandingPageModel(token, cancellationToken);
+
+            if (provisioningModel != default)
             {
-                this.ModelState.AddModelError(string.Empty, "Cannot resolve subscription");
-                return this.View();
+                provisioningModel.FullName = (this.User.Identity as ClaimsIdentity)?.FindFirst("name")?.Value;
+                provisioningModel.Email = this.User.Identity.GetUserEmail();
+                provisioningModel.BusinessUnitContactEmail = this.User.Identity.GetUserEmail();
+
+                return this.View(provisioningModel);
             }
 
-            var existingSubscription =
-                await this.fulfillmentManager.GetsubscriptionAsync(resolvedSubscription.SubscriptionId,
-                    cancellationToken);
-
-            var availablePlans =
-                (await this.fulfillmentManager.GetSubscriptionPlansAsync(resolvedSubscription.SubscriptionId, cancellationToken)).Plans;
-
-            var fullName = (this.User.Identity as ClaimsIdentity)?.FindFirst("name")?.Value;
-            var emailAddress = this.User.Identity.GetUserEmail();
-
-            var provisioningModel = new AzureSubscriptionProvisionModel
-            {
-                FullName = fullName,
-                PlanName = resolvedSubscription.PlanId,
-                SubscriptionId = resolvedSubscription.SubscriptionId,
-                Email = emailAddress,
-                OfferId = resolvedSubscription.OfferId,
-                SubscriptionName = resolvedSubscription.SubscriptionName,
-                // Assuming this will be set to the value the customer already set when subscribing, if we are here after the initial subscription activation
-                // Landing page is used both for initial provisioning and configuration of the subscription.
-                Region = TargetContosoRegionEnum.NorthAmerica,
-                MaximumNumberOfThingsToHandle = 0,
-                AvailablePlans = availablePlans,
-                SubscriptionStatus = resolvedSubscription.State,
-                ExistingSubscriptionStatus = existingSubscription.SaasSubscriptionStatus,
-                PendingOperations = (await this.fulfillmentManager.GetSubscriptionOperationsAsync(resolvedSubscription.SubscriptionId, cancellationToken)).Any(
-                    o => o.Status == OperationStatusEnum.InProgress)
-            };
-
-            return this.View(provisioningModel);
+            this.ModelState.AddModelError(string.Empty, "Cannot resolve subscription");
+            return this.View();
         }
 
         public ActionResult Success()

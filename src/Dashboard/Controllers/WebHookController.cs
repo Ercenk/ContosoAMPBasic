@@ -16,10 +16,15 @@
     public class WebHookController : Controller
     {
         private readonly ILogger<WebHookController> logger;
-        private readonly IWebhookProcessor webhookProcessor;
-        private DashboardOptions options;
 
-        public WebHookController(IWebhookProcessor webhookProcessor, IOptionsMonitor<DashboardOptions> optionsMonitor, ILogger<WebHookController> logger)
+        private readonly IWebhookProcessor webhookProcessor;
+
+        private readonly DashboardOptions options;
+
+        public WebHookController(
+            IWebhookProcessor webhookProcessor,
+            IOptionsMonitor<DashboardOptions> optionsMonitor,
+            ILogger<WebHookController> logger)
         {
             this.webhookProcessor = webhookProcessor;
             this.logger = logger;

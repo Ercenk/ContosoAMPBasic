@@ -16,11 +16,8 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
-    using Microsoft.Extensions.Hosting;
 
     using SaaSFulfillmentClient;
-
-    using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
     public class Startup
     {
@@ -52,11 +49,7 @@
 
             app.UseAuthentication();
 
-            app.UseMvc(
-                routes =>
-                    {
-                        routes.MapRoute(name: "default", template: "{controller=Subscriptions}/{action=Index}/{id?}");
-                    });
+            app.UseMvc(routes => { routes.MapRoute("default", "{controller=Subscriptions}/{action=Index}/{id?}"); });
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -81,8 +74,7 @@
                 AzureADDefaults.OpenIdScheme,
                 options =>
                     {
-                        //options.Authority = options.Authority + "/v2.0/"; // Azure AD v2.0
-
+                        // options.Authority = options.Authority + "/v2.0/"; // Azure AD v2.0
                         options.TokenValidationParameters.ValidateIssuer =
                             false; // accept several tenants (here simplified)
                     });
@@ -97,7 +89,7 @@
 
             services.AddWebhookProcessor().WithWebhookHandler<ContosoWebhookHandler>();
 
-            services.TryAddScoped<IFulfillmentManager, FulfillmentManager>();
+            services.TryAddScoped<IFulfillmentHandler, FulfillmentHandler>();
 
             // It is email in this sample, but you can plug in anything that implements the interface and communicate with an existing API.
             // In the email case, the existing API is the SendGrid API...
@@ -107,8 +99,8 @@
                 options => options.AddPolicy(
                     "DashboardAdmin",
                     policy => policy.Requirements.Add(
-                        (new DashboardAdminRequirement(
-                                this.configuration.GetSection("Dashboard").Get<DashboardOptions>().DashboardAdmin)))));
+                        new DashboardAdminRequirement(
+                            this.configuration.GetSection("Dashboard").Get<DashboardOptions>().DashboardAdmin))));
 
             services.AddSingleton<IAuthorizationHandler, DashboardAdminHandler>();
 

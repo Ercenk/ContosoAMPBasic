@@ -3,8 +3,11 @@
     public enum ActionsEnum
     {
         Activate,
+
         Update,
+
         Ack,
+
         Unsubscribe
     }
 }

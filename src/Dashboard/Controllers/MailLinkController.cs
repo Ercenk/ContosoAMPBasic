@@ -11,9 +11,8 @@
 
     using SaaSFulfillmentClient;
     using SaaSFulfillmentClient.Models;
-    using SaaSFulfillmentClient.WebHook;
 
-    [Authorize(policy: "DashboardAdmin")]
+    [Authorize("DashboardAdmin")]
     public class MailLinkController : Controller
     {
         private readonly IFulfillmentClient fulfillmentClient;
@@ -24,46 +23,48 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Activate(NotificationModel notificationModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> Activate(
+            NotificationModel notificationModel,
+            CancellationToken cancellationToken)
         {
             var result = await this.fulfillmentClient.ActivateSubscriptionAsync(
                              notificationModel.SubscriptionId,
-                             new ActivatedSubscription() { PlanId = notificationModel.PlanId },
+                             new ActivatedSubscription { PlanId = notificationModel.PlanId },
                              Guid.Empty,
                              Guid.Empty,
                              cancellationToken);
 
             return result.Success
-                       ? this.View(new ActivateActionViewModel
-                       {
-                           SubscriptionId = notificationModel.SubscriptionId,
-                           PlanId = notificationModel.PlanId
-                       })
-                       : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
+                       ? this.View(
+                           new ActivateActionViewModel
+                               {
+                                   SubscriptionId = notificationModel.SubscriptionId, PlanId = notificationModel.PlanId
+                               })
+                       : this.View("MailActionError", FulfillmentRequestErrorViewModel.From(result));
         }
 
         [HttpGet]
-        public async Task<IActionResult> QuantityChange(NotificationModel notificationModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> QuantityChange(
+            NotificationModel notificationModel,
+            CancellationToken cancellationToken)
         {
             var result = await this.UpdateOperationAsync(notificationModel, cancellationToken);
 
             return result.Success
-                       ? this.View(
-                           "OperationUpdate",
-                           notificationModel)
-                       : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
+                       ? this.View("OperationUpdate", notificationModel)
+                       : this.View("MailActionError", FulfillmentRequestErrorViewModel.From(result));
         }
 
         [HttpGet]
-        public async Task<IActionResult> Reinstate(NotificationModel notificationModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> Reinstate(
+            NotificationModel notificationModel,
+            CancellationToken cancellationToken)
         {
             var result = await this.UpdateOperationAsync(notificationModel, cancellationToken);
 
             return result.Success
-                       ? this.View(
-                           "OperationUpdate",
-                           notificationModel)
-                       : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
+                       ? this.View("OperationUpdate", notificationModel)
+                       : this.View("MailActionError", FulfillmentRequestErrorViewModel.From(result));
         }
 
         [HttpGet]
@@ -74,22 +75,20 @@
             var result = await this.UpdateOperationAsync(notificationModel, cancellationToken);
 
             return result.Success
-                       ? this.View(
-                           "OperationUpdate",
-                           notificationModel)
-                       : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
+                       ? this.View("OperationUpdate", notificationModel)
+                       : this.View("MailActionError", FulfillmentRequestErrorViewModel.From(result));
         }
 
         [HttpGet]
-        public async Task<IActionResult> Unsubscribe(NotificationModel notificationModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> Unsubscribe(
+            NotificationModel notificationModel,
+            CancellationToken cancellationToken)
         {
             var result = await this.UpdateOperationAsync(notificationModel, cancellationToken);
 
             return result.Success
-                       ? this.View(
-                           "OperationUpdate",
-                           notificationModel)
-                       : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
+                       ? this.View("OperationUpdate", notificationModel)
+                       : this.View("MailActionError", FulfillmentRequestErrorViewModel.From(result));
         }
 
         [HttpGet]
@@ -103,8 +102,12 @@
                              CancellationToken.None);
 
             return result.Success
-                       ? this.View(new ActivateActionViewModel { SubscriptionId = notificationModel.SubscriptionId, PlanId = notificationModel.PlanId })
-                       : this.View(viewName: "MailActionError", FulfillmentRequestErrorViewModel.From(result));
+                       ? this.View(
+                           new ActivateActionViewModel
+                               {
+                                   SubscriptionId = notificationModel.SubscriptionId, PlanId = notificationModel.PlanId
+                               })
+                       : this.View("MailActionError", FulfillmentRequestErrorViewModel.From(result));
         }
 
         private async Task<FulfillmentRequestResult> UpdateOperationAsync(
@@ -115,11 +118,11 @@
                        payload.SubscriptionId,
                        payload.OperationId,
                        new OperationUpdate
-                       {
-                           PlanId = payload.PlanId,
-                           Quantity = payload.Quantity,
-                           Status = OperationUpdateStatusEnum.Success
-                       },
+                           {
+                               PlanId = payload.PlanId,
+                               Quantity = payload.Quantity,
+                               Status = OperationUpdateStatusEnum.Success
+                           },
                        Guid.Empty,
                        Guid.Empty,
                        cancellationToken);

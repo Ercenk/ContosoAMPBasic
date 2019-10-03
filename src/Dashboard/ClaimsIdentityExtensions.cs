@@ -8,12 +8,11 @@
     {
         public static string GetUserEmail(this IIdentity principal)
         {
-            if (!(principal is ClaimsIdentity identity))
-            {
-                throw new ApplicationException("Not of ClaimsIdentity type");
-            }
+            if (!(principal is ClaimsIdentity identity)) throw new ApplicationException("Not of ClaimsIdentity type");
 
-            return string.IsNullOrEmpty(identity.Name) ? identity.FindFirst("preferred_username")?.Value : identity.Name;
+            return string.IsNullOrEmpty(identity.Name)
+                       ? identity.FindFirst("preferred_username")?.Value
+                       : identity.Name;
         }
     }
 }

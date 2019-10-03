@@ -3,9 +3,13 @@
     public enum TargetContosoRegionEnum
     {
         NorthAmerica,
+
         WestEurope,
+
         EastEurope,
+
         Germany,
+
         APAC
     }
 }

@@ -74,7 +74,7 @@ I give an overview of integrating a SaaS application with Azure Marketplace in m
  
 ![overview](./Docs/Overview.png)
 
-## Notes
+# Notes
 
 ## Secrets
 
@@ -93,6 +93,11 @@ Alternatively, if you are not going to publish your code, and will just keep the
 I recommend using two Azure AD applications. One for authenticating the subscriber on the landing page, and the other for interacting with the API. Please see the section [below](###Register-two-apps).
 
 This way, you can ask the subscriber for consent to access his/her Graph API, Azure Management API, or any other API that is protected by Azure AD on the landing page, and separate the security for accessing the marketplace API from this interaction. Good practice...
+
+## About options
+|Setting|Notes|
+|-------|-----|
+|       |     |
 
 
 # How do I run the sample?

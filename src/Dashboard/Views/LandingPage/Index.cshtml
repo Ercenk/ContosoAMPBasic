@@ -16,82 +16,115 @@
 <form asp-action="Index">
     <div>
         <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Email)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Email)
-                <input asp-for="Email" type="hidden" class="form-control" />
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.FullName)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.FullName)
-                <input asp-for="FullName" type="hidden" class="form-control" />
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.OfferId)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.OfferId)
-                <input asp-for="OfferId" type="hidden" class="form-control" />
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.PlanName)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.PlanName)
-                <input asp-for="PlanName" type="hidden" class="form-control" />
-            </dd>
-            @* Only show if we are here for "modifying" a subscription *@
-            @if (Model.ExistingSubscriptionStatus == StatusEnum.Subscribed)
-            {
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.AvailablePlans)
-                </dt>
+            <div class="col-lg-12">
+                <div class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Email)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Email)
+                        <input asp-for="Email" type="hidden" class="form-control" />
+                    </dd>
+                </div>
 
-                <dd class="col-sm-10">
+                <div class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.FullName)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.FullName)
+                        <input asp-for="FullName" type="hidden" class="form-control" />
+                    </dd>
+                </div>
 
-                    <select asp-for="NewPlan" asp-items="@(new SelectList(Model.AvailablePlans, "PlanId", "DisplayName"))" class="form-control">
-                        <option value="">Choose a new plan</option>
-                    </select>
-                </dd>
-            }
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.SubscriptionId)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.SubscriptionId)
-                <input asp-for="SubscriptionId" type="hidden" class="form-control" />
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.SubscriptionName)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.SubscriptionName)
-                <input asp-for="SubscriptionName" type="hidden" class="form-control" />
-            </dd>
+                <div class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.OfferId)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.OfferId)
+                        <input asp-for="OfferId" type="hidden" class="form-control" />
+                    </dd>
+                </div>
 
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Region)
-            </dt>
-            <dd class="col-sm-10">
-                <select asp-for="Region" asp-items="Html.GetEnumSelectList<TargetContosoRegionEnum>()" class="form-control">
-                    <option selected="selected" value="">Please select</option>
-                </select>
-            </dd>
+                <div class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.PlanId)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.PlanId)
+                        <input asp-for="PlanId" type="hidden" class="form-control" />
+                    </dd>
+                </div>
 
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.MaximumNumberOfThingsToHandle)
-            </dt>
-            <dd class="col-sm-10">
-                <input asp-for="MaximumNumberOfThingsToHandle" class="form-control" />
-            </dd>
+                @* Only show if we are here for "modifying" a subscription for the basic flow, and always for the advanced flow, if the customer has not already select the base plan when subscribing.*@
+                @if (Model.SubscriptionStatus == StatusEnum.Subscribed || Model.AdvancedFlow && Model.PlanId == Model.BasePlanId)
+                {
+                    <div class="row">
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.AvailablePlans)
+                        </dt>
+
+                        <dd class="col-sm-10">
+
+                            <select asp-for="NewPlanId" asp-items="@(new SelectList(Model.AvailablePlans, "PlanId", "DisplayName"))" class="form-control">
+                                <option value="">Choose a new plan, or plan you wish to be on.</option>
+                            </select>
+                        </dd>
+                    </div>
+                }
+
+                <div class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.SubscriptionId)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.SubscriptionId)
+                        <input asp-for="SubscriptionId" type="hidden" class="form-control" />
+                    </dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.SubscriptionName)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.SubscriptionName)
+                        <input asp-for="SubscriptionName" type="hidden" class="form-control" />
+                    </dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Region)
+                    </dt>
+                    <dd class="col-sm-2">
+                        <select asp-for="Region" asp-items="Html.GetEnumSelectList<TargetContosoRegionEnum>()" class="form-control">
+                            <option selected="selected" value="">Please select</option>
+                        </select>
+                    </dd>
+                    <div class="col-sm-8"></div>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.BusinessUnitContactEmail)
+                    </dt>
+                    <dd class="col-sm-10">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <input asp-for="BusinessUnitContactEmail" type="email" class="form-control" />
+                            </div>
+                            <div class="col-sm-9">
+                                <p>*The purchaser (who sees this page) can be different than the actual user of the solution.</p>
+                            </div>
+                        </div>
+                    </dd>
+                </div>
+            </div>
         </dl>
         @* Just to carry over the subscription status, so we can determine if we are here for initial
             provisioning or configuration later in the life of the subscription*@
-        <input asp-for="ExistingSubscriptionStatus" type="hidden" class="form-control" />
         <input asp-for="SubscriptionStatus" type="hidden" class="form-control" />
     </div>
     <div>

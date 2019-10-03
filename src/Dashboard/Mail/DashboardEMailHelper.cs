@@ -14,7 +14,6 @@
     using Newtonsoft.Json.Linq;
 
     using SaaSFulfillmentClient;
-    using SaaSFulfillmentClient.WebHook;
 
     using SendGrid;
     using SendGrid.Helpers.Mail;
@@ -35,6 +34,18 @@
             this.options = optionsMonitor.CurrentValue;
         }
 
+        public async Task NotifyChangePlanAsync(
+            NotificationModel notificationModel,
+            CancellationToken cancellationToken = default)
+        {
+            await this.SendWebhookNotificationEmailAsync(
+                "Plan change request complete",
+                "Plan change request complete. Please take the required action.",
+                string.Empty,
+                notificationModel,
+                cancellationToken);
+        }
+
         public async Task ProcessActivateAsync(
             AzureSubscriptionProvisionModel provisionModel,
             CancellationToken cancellationToken = default)
@@ -44,54 +55,57 @@
                                       new Tuple<string, string>(
                                           "subscriptionId",
                                           provisionModel.SubscriptionId.ToString()),
-                                      new Tuple<string, string>("planId", provisionModel.PlanName)
+                                      new Tuple<string, string>("planId", provisionModel.PlanId)
                                   };
+
+            var emailText =
+                "<p>New subscription. Please take the required action, then return to this email and click the following link to confirm. ";
+            emailText += $"{this.BuildALink("Activate", queryParams, "Click here to activate subscription")}.</p>";
+            emailText +=
+                $"<div> <p> Details are</p> <div> {this.BuildTable(JObject.Parse(JsonConvert.SerializeObject(provisionModel)))}</div></div>";
+
             await this.SendEmailAsync(
                 () => $"New subscription, {provisionModel.SubscriptionName}",
-                () =>
-                    $"<p>New subscription. Please take the required action, then return to this email and click the following link to confirm. {this.BuildALink("Activate", queryParams, "Click here to activate subscription")}.</p>"
-                    + $"<div> <p> Details are</p> <div> {BuildTable(JObject.Parse(JsonConvert.SerializeObject(provisionModel))) }</div></div>",
+                () => emailText,
                 cancellationToken);
         }
 
         public async Task ProcessChangePlanAsync(
-            NotificationModel notificationModel,
-            CancellationToken cancellationToken = default)
-        {
-            await this.SendWebhookNotificationEmailAsync(
-                "Plan change request",
-                "Plan change request. Please take the required action.",
-                "",
-                notificationModel,
-                cancellationToken);
-        }
-
-        public async Task ProcessChangePlanAsync(AzureSubscriptionProvisionModel provisionModel,
+            AzureSubscriptionProvisionModel provisionModel,
             CancellationToken cancellationToken = default)
         {
             var queryParams = new List<Tuple<string, string>>
-            {
-                new Tuple<string, string>(
-                    "subscriptionId",
-                    provisionModel.SubscriptionId.ToString()),
-                new Tuple<string, string>("planId", provisionModel.NewPlan)
-            };
+                                  {
+                                      new Tuple<string, string>(
+                                          "subscriptionId",
+                                          provisionModel.SubscriptionId.ToString()),
+                                      new Tuple<string, string>("planId", provisionModel.NewPlanId)
+                                  };
+
+            var emailText = provisionModel.AdvancedFlow
+                                ? $"Customer's subscription is active with the {provisionModel.BasePlanId} plan. "
+                                : $"<p>Updated subscription from {provisionModel.PlanId} to {provisionModel.NewPlanId}.";
+
+            emailText +=
+                "Please take the required action, then return to this email and click the following link to confirm. ";
+            emailText += $"{this.BuildALink("Update", queryParams, "Click here to update subscription")}.</p>";
+            emailText +=
+                $"<div> <p> Details are</p> <div> {this.BuildTable(JObject.Parse(JsonConvert.SerializeObject(provisionModel)))}</div></div>";
+
             await this.SendEmailAsync(
                 () => $"Update subscription, {provisionModel.SubscriptionName}",
-                () =>
-                    $"<p>Updated subscription from {provisionModel.PlanName} to {provisionModel.NewPlan}. Please take the required action, then return to this email and click the following link to confirm. {this.BuildALink("Update", queryParams, "Click here to update subscription")}.</p>"
-                    + $"<div> <p> Details are</p> <div> {BuildTable(JObject.Parse(JsonConvert.SerializeObject(provisionModel))) }</div></div>",
+                () => emailText,
                 cancellationToken);
         }
 
         public async Task ProcessChangeQuantityAsync(
-                    NotificationModel notificationModel,
+            NotificationModel notificationModel,
             CancellationToken cancellationToken = default)
         {
             await this.SendWebhookNotificationEmailAsync(
                 "Quantity change request",
                 "Quantity change request. Please take the required action.",
-                "",
+                string.Empty,
                 notificationModel,
                 cancellationToken);
         }
@@ -102,11 +116,13 @@
         {
             var queryParams = new List<Tuple<string, string>>
                                   {
-                                      new Tuple<string, string>("subscriptionId", notificationModel.SubscriptionId.ToString())
+                                      new Tuple<string, string>(
+                                          "subscriptionId",
+                                          notificationModel.SubscriptionId.ToString())
                                   };
 
             var subscriptionDetails = await this.fulfillmentClient.GetSubscriptionAsync(
-                notificationModel.SubscriptionId,
+                                          notificationModel.SubscriptionId,
                                           Guid.Empty,
                                           Guid.Empty,
                                           cancellationToken);
@@ -115,7 +131,7 @@
                 () => $"Operation failure, {subscriptionDetails.Name}",
                 () =>
                     $"<p>Operation failure. {this.BuildALink("Operations", queryParams, "Click here to list all operations for this subscription", "Subscriptions")}</p>. "
-                    + $"<p> Details are {BuildTable(JObject.Parse(JsonConvert.SerializeObject(subscriptionDetails)))}</p>",
+                    + $"<p> Details are {this.BuildTable(JObject.Parse(JsonConvert.SerializeObject(subscriptionDetails)))}</p>",
                 cancellationToken);
         }
 
@@ -131,30 +147,14 @@
                 cancellationToken);
         }
 
-        public async Task ProcessStartProvisioningAsync(AzureSubscriptionProvisionModel provisionModel, CancellationToken cancellationToken = default)
-        {
-            var queryParams = new List<Tuple<string, string>>
-                                  {
-                                      new Tuple<string, string>(
-                                          "subscriptionId",
-                                          provisionModel.SubscriptionId.ToString()),
-                                      new Tuple<string, string>("planId", provisionModel.PlanName)
-                                  };
-
-            await this.SendEmailAsync(
-                () => $"New subscription, {provisionModel.SubscriptionName}",
-                () =>
-                    $"<p>New subscription. Please take the required action, then return to this email and click the following link to confirm. {this.BuildALink("Activate", queryParams, "Click here to activate subscription")}.</p>"
-                    + $"<div> <p> Details are</p> <div> {BuildTable(JObject.Parse(JsonConvert.SerializeObject(provisionModel))) }</div></div>",
-                cancellationToken);
-        }
-
-        public async Task ProcessSuspendedAsync(NotificationModel notificationModel, CancellationToken cancellationToken = default)
+        public async Task ProcessSuspendedAsync(
+            NotificationModel notificationModel,
+            CancellationToken cancellationToken = default)
         {
             await this.SendWebhookNotificationEmailAsync(
                 "Suspend subscription request",
                 "Suspend subscription request. Please take the required action.",
-                "",
+                string.Empty,
                 notificationModel,
                 cancellationToken);
         }
@@ -166,7 +166,7 @@
             await this.SendWebhookNotificationEmailAsync(
                 "Cancel subscription request",
                 "Cancel subscription request. Please take the required action.",
-                "",
+                string.Empty,
                 notificationModel,
                 cancellationToken);
         }
@@ -180,10 +180,7 @@
             var uriStart = FluentUriBuilder.Start(this.options.BaseUrl.Trim()).AddPath(controllerName)
                 .AddPath(controllerAction);
 
-            foreach (var (item1, item2) in queryParams)
-            {
-                uriStart.AddQuery(item1, item2);
-            }
+            foreach (var (item1, item2) in queryParams) uriStart.AddQuery(item1, item2);
 
             var href = uriStart.Uri.ToString();
 
@@ -192,10 +189,10 @@
 
         private string BuildTable(JObject parsed)
         {
-            var tableContents = parsed.Properties().AsEnumerable().Select(p => $"<tr><th align=\"left\"> {p.Name} </th><th align=\"left\"> {p.Value}</th></tr>")
+            var tableContents = parsed.Properties().AsEnumerable()
+                .Select(p => $"<tr><th align=\"left\"> {p.Name} </th><th align=\"left\"> {p.Value}</th></tr>")
                 .Aggregate((head, tail) => head + tail);
-            return
-                $"<table border=\"1\" align=\"left\">{tableContents}</table>";
+            return $"<table border=\"1\" align=\"left\">{tableContents}</table>";
         }
 
         private async Task SendEmailAsync(
@@ -228,7 +225,9 @@
         {
             var queryParams = new List<Tuple<string, string>>
                                   {
-                                      new Tuple<string, string>("subscriptionId", notificationModel.SubscriptionId.ToString()),
+                                      new Tuple<string, string>(
+                                          "subscriptionId",
+                                          notificationModel.SubscriptionId.ToString()),
                                       new Tuple<string, string>("publisherId", notificationModel.PublisherId),
                                       new Tuple<string, string>("offerId", notificationModel.OfferId),
                                       new Tuple<string, string>("planId", notificationModel.PlanId),
@@ -237,10 +236,10 @@
                                   };
 
             var subscriptionDetails = await this.fulfillmentClient.GetSubscriptionAsync(
-                notificationModel.SubscriptionId,
-                Guid.Empty,
-                Guid.Empty,
-                cancellationToken);
+                                          notificationModel.SubscriptionId,
+                                          Guid.Empty,
+                                          Guid.Empty,
+                                          cancellationToken);
 
             var actionLink = !string.IsNullOrEmpty(actionName)
                                  ? this.BuildALink(actionName, queryParams, "Click here to confirm.")
@@ -249,7 +248,7 @@
             await this.SendEmailAsync(
                 () => $"{subject}, {subscriptionDetails.Name}",
                 () => $"<p>{mailBody}" + $"{actionLink}</p>"
-                                       + $"<br/><div> Details are {BuildTable(JObject.Parse(JsonConvert.SerializeObject(subscriptionDetails)))}</div>",
+                                       + $"<br/><div> Details are {this.BuildTable(JObject.Parse(JsonConvert.SerializeObject(subscriptionDetails)))}</div>",
                 cancellationToken);
         }
     }

@@ -1,4 +1,7 @@
-﻿@model IEnumerable<Dashboard.Models.SubscriptionViewModel>
+﻿@using _Page_Views_Subscriptions_Index_cshtml
+@using TModel = IEnumerable
+@using TModel = IEnumerable
+@model IEnumerable<SubscriptionViewModel>
 @{
     ViewData["Title"] = "All Offer Subscriptions";
 }
@@ -7,69 +10,73 @@
 
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.OfferId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PlanId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.State)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SubscriptionId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SubscriptionName)
-            </th>
-            <th>Actions</th>
-            <th>Pending operations</th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.SubscriptionName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.State)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OfferId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PlanId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Quantity)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.SubscriptionId)
+        </th>
+
+        <th>Actions</th>
+        <th>Pending operations</th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OfferId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PlanId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.State)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SubscriptionId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SubscriptionName)
-                </td>
-                <td>
-                    @if (!item.PendingOperations)
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubscriptionName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OfferId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlanId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.SubscriptionId)
+            </td>
+
+            <td>
+                @if (!item.PendingOperations)
+                {
+                    @foreach (var a in item.NextActions)
                     {
-                        @foreach (var a in item.NextActions)
-                        {
-                            <span> @Html.ActionLink(Enum.GetName(typeof(ActionsEnum), a), "SubscriptionAction", new { subscriptionAction = a, subscriptionId = item.SubscriptionId }) </span>
-                        }
+                        <span> @Html.ActionLink(Enum.GetName(typeof(ActionsEnum), a), "SubscriptionAction", new { subscriptionAction = a, subscriptionId = item.SubscriptionId }) </span>
                     }
-                    else
-                    {
-                        <span>Pending operations</span>
-                    }
-                </td>
-                <td>
-                    @Html.ActionLink("Operations", "Operations", new { item.SubscriptionId })
-                </td>
-            </tr>
-        }
+                }
+                else
+                {
+                    <span>Pending operations</span>
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Operations", "Operations", new { item.SubscriptionId })
+            </td>
+        </tr>
+    }
     </tbody>
 </table>
 

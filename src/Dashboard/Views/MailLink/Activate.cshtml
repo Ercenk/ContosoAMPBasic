@@ -1,31 +1,31 @@
-﻿@model Dashboard.Models.ActivateActionViewModel
+﻿@model ActivateActionViewModel
 
 @{
     ViewData["Title"] = "Activate";
 }
 
 <h1>Subscription activated</h1>
-<br />
+<br/>
 
 <div class="table-responsive">
     <table class="table">
         <tbody>
-            <tr>
-                <td>
-                    Subscription
-                </td>
-                <td>
-                    <p>@Model.SubscriptionId</p>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Plan
-                </td>
-                <td>
-                    <p>@Model.PlanId</p>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                Subscription
+            </td>
+            <td>
+                <p>@Model.SubscriptionId</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Plan
+            </td>
+            <td>
+                <p>@Model.PlanId</p>
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>

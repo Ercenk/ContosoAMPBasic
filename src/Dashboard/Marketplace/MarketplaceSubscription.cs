@@ -23,27 +23,27 @@
         internal static MarketplaceSubscription From(ResolvedSubscription subscription, StatusEnum newState)
         {
             return new MarketplaceSubscription
-                       {
-                           SubscriptionId = subscription.SubscriptionId,
-                           OfferId = subscription.OfferId,
-                           PlanId = subscription.PlanId,
-                           Quantity = subscription.Quantity,
-                           SubscriptionName = subscription.SubscriptionName,
-                           State = newState
-                       };
+            {
+                SubscriptionId = subscription.SubscriptionId,
+                OfferId = subscription.OfferId,
+                PlanId = subscription.PlanId,
+                Quantity = subscription.Quantity,
+                SubscriptionName = subscription.SubscriptionName,
+                State = newState
+            };
         }
 
         internal static MarketplaceSubscription From(Subscription subscription)
         {
             return new MarketplaceSubscription
-                       {
-                           SubscriptionId = subscription.SubscriptionId,
-                           OfferId = subscription.OfferId,
-                           PlanId = subscription.PlanId,
-                           Quantity = subscription.Quantity,
-                           SubscriptionName = subscription.Name,
-                           State = subscription.SaasSubscriptionStatus
-                       };
+            {
+                SubscriptionId = subscription.SubscriptionId,
+                OfferId = subscription.OfferId,
+                PlanId = subscription.PlanId,
+                Quantity = subscription.Quantity,
+                SubscriptionName = subscription.Name,
+                State = subscription.SaasSubscriptionStatus
+            };
         }
     }
 }

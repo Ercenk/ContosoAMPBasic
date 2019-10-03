@@ -4,9 +4,9 @@ This sample demonstrates the basic interaction of a SaaS solution with Azure Mar
 
 First, disclaimers :)
 
-- **My intent with this sample is to demonstrate the integration concepts, ahd highlight a possible solution that may address a common scenario.**
+- **My intent with this sample is to demonstrate the integration concepts, and highlight a possible solution that may address a common scenario.**
 
-- **This is sample quality code, and does not implement many important aspects, such as exception handling, transient faults, proper logging etc. Please use it as a learning tool, and write your own code.**
+- **This is sample quality code, and does not implement many important aspects for production level, such as exception handling, transient faults, proper logging etc. Please use it as a learning tool, and write your own code.**
 
 - **I make frequent changes to this repo as I discover new things with the marketplace API. Please check back often.**
 

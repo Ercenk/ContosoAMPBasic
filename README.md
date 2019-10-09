@@ -56,7 +56,7 @@ This endpoint is not protected. The implementation should call the marketplace R
 The publisher should register an AAD application and provide the AppID (ClientId) and the tenant ID (AAD directory where the app is registered) during registering the offer for the marketplace. The solution is put on a whitelist so it can call the marketplace REST API with those details. There is no OAuth 2.0 consent workflow for accessing the API. We recommend two separate AAD applications for the landing page and marketplace API interaction. The details of the API are [here for subscription integration](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/pc-saas-fulfillment-api-v2), and here for [usage based billing](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/marketplace-metering-service-apis).
 
 #### An experimental API client, and webhook processor helper
-I have an experimental API client I posted on a different repo that implements the API interactions as well as encapsulates the webhook interaction. Please take a look at this [repo](https://github.com/Ercenk/AzureMarketplaceSaaSApiClient)
+I have an experimental API client I posted on a different repo that implements the API interactions as well as encapsulates the webhook interaction. Please take a look at this [repo](https://github.com/Ercenk/AzureMarketplaceSaaSApiClient).
  
 ## About the sample
 
@@ -126,6 +126,8 @@ The top level actions are:
 1. Create and configure a SendGrid account.
 1. Update user secrets.
 
+**Make sure to set the API version in the settings to the mock API. Please see `FulfillmentClient:FulfillmentService:ApiVersion` setting.**
+
 ## Registering Azure Active Directory applications
 
 I usually maintain a separate Azure Active Directory tenant (directory) for my application registrations. To create one, 
@@ -187,5 +189,4 @@ At this point we can assume the operations team will go off and provision the cu
 
 ## Simulating the cancelled subscription
 
-I included a Postman collection containing one request to the webhook endpoint. Send the request using Postman, and go through the same steps as described above, this time for decommisioning the customer.
-
+I included a Postman collection containing one request to the webhook endpoint. Send the request using Postman, and go through the same steps as described above, this time for decommissioning the customer.

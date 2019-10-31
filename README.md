@@ -55,6 +55,8 @@ This endpoint is not protected. The implementation should call the marketplace R
 
 The publisher should register an AAD application and provide the AppID (ClientId) and the tenant ID (AAD directory where the app is registered) during registering the offer for the marketplace. The solution is put on a whitelist so it can call the marketplace REST API with those details. There is no OAuth 2.0 consent workflow for accessing the API. We recommend two separate AAD applications for the landing page and marketplace API interaction. The details of the API are [here for subscription integration](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/pc-saas-fulfillment-api-v2), and here for [usage based billing](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/marketplace-metering-service-apis).
 
+![AuthAndAPIFlow](./Docs/Auth_and_API_flow.png)
+
 #### An experimental API client, and webhook processor helper
 I have an experimental API client I posted on a different repo that implements the API interactions as well as encapsulates the webhook interaction. Please take a look at this [repo](https://github.com/Ercenk/AzureMarketplaceSaaSApiClient).
  

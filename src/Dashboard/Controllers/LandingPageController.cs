@@ -43,7 +43,7 @@
             this.options.BaseUrl = urlBase;
             try
             {
-                this.fulfillmentHandler.ProcessLandingPageAsync(provisionModel, cancellationToken);
+                await this.fulfillmentHandler.ProcessLandingPageAsync(provisionModel, cancellationToken);
 
                 return this.RedirectToAction(nameof(this.Success));
             }

@@ -13,23 +13,24 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Authorization;
+    using Microsoft.AspNetCore.Routing.Patterns;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
-
+    using Microsoft.Extensions.Hosting;
     using SaaSFulfillmentClient;
 
     public class Startup
     {
         private readonly IConfiguration configuration;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
             this.configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -49,7 +50,15 @@
 
             app.UseAuthentication();
 
-            app.UseMvc(routes => { routes.MapRoute("default", "{controller=Subscriptions}/{action=Index}/{id?}"); });
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapControllerRoute("default", "{controller=Subscriptions}/{action=Index}/{id?}");
+            });
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -74,7 +83,7 @@
                 AzureADDefaults.OpenIdScheme,
                 options =>
                     {
-                        // options.Authority = options.Authority + "/v2.0/"; // Azure AD v2.0
+                        options.Authority = options.Authority + "/v2.0/"; // Azure AD v2.0
                         options.TokenValidationParameters.ValidateIssuer =
                             false; // accept several tenants (here simplified)
                     });
@@ -104,12 +113,12 @@
 
             services.AddSingleton<IAuthorizationHandler, DashboardAdminHandler>();
 
-            services.AddMvc(
-                options =>
-                    {
-                        var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                        options.Filters.Add(new AuthorizeFilter(policy));
-                    }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers(options =>
+                {
+                    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                    options.Filters.Add(new AuthorizeFilter(policy));
+                }
+            );
         }
     }
 }

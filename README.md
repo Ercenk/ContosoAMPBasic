@@ -112,6 +112,7 @@ This way, you can ask the subscriber for consent to access his/her Graph API, Az
 |FulfillmentClient:AzureActiveDirectory:AppKey       |Change|Application key for the AAD app. You can set it on the appsettings if you are not planning to publish. Remember, this is a secret.|
 |FulfillmentClient:FulfillmentService:BaseUri       |Keep|The Azure Marketplace API endpoint.|
 |FulfillmentClient:FulfillmentService:ApiVersion       |Change|Change if you want to hit the production or mock API. 2018-08-31 is for production, 2018-09-15 is for mock API|
+|FulfillmentClient:OperationsStoreConnectionString       |Change|Provide a Azure Storage connection string for the operations store. Please see [SDK documentation for details](https://github.com/Ercenk/AzureMarketplaceSaaSApiClient#operations-store)|
 |Dashboard:Mail:OperationsTeamEmail       |Change|The sample sends emails to this address. |
 |Dashboard:Mail:FromEmail       |Change|Sendgrid requires a "from" email address when sending emails. |
 |Dashboard:Mail:ApiKey       |Change|Sendgrid API key. Please see notes below. |

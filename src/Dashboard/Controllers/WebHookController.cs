@@ -32,7 +32,6 @@
         }
 
         [HttpPost]
-        [HttpGet]
         public async Task<IActionResult> Index([FromBody] WebhookPayload payload)
         {
             // Options is injected as a singleton. This is not a good hack, but need to pass the host name and port

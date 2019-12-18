@@ -158,7 +158,7 @@ Click on "App registrations", and select "New registration". You will need to cr
 
 ### Register two apps
 
-I recommend you register two apps:
+I recommend registering two apps:
 
 1. **For the landing page,** the Azure Marketplace SaaS offers are required to have a landing page, authenticating through Azure Active Directory. Register it as described in the [documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-aspnet-core-webapp#option-2-register-and-manually-configure-your-application-and-code-sample). **Make sure you register a multi-tenant application**, you can find the differences in the [documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps). Set the value of the ClientId setting in the appsettings.json file in the "AzureAd" section to the AppId (clientId) for the app. The landing page uses [OpenID Connect protocol](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-protocols-oidc) to authenticate the subscriber.
 

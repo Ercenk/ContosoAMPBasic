@@ -63,7 +63,9 @@
                                       cancellationToken)).Plans.ToList();
 
             // remove the base plan from the model to show
-            availablePlans.Remove(availablePlans.Single(p => p.PlanId == this.options.BasePlanId));
+            if (availablePlans.Any(p => p.PlanId == this.options.BasePlanId)){
+                availablePlans.Remove(availablePlans.Single(p => p.PlanId == this.options.BasePlanId));
+            }
 
             var provisioningModel = new AzureSubscriptionProvisionModel
             {

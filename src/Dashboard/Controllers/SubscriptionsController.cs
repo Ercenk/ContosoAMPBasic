@@ -44,7 +44,7 @@
         }
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
-        {
+        {            
             var requestId = Guid.NewGuid();
             var correlationId = Guid.NewGuid();
 

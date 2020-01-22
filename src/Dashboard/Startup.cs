@@ -65,12 +65,12 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(
-                options =>
-                    {
+    options =>
+        {
                         // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                         options.CheckConsentNeeded = context => true;
-                        options.MinimumSameSitePolicy = SameSiteMode.None;
-                    });
+            options.MinimumSameSitePolicy = SameSiteMode.None;
+        });
 
             services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
                 .AddAzureAD(options => this.configuration.Bind("AzureAd", options));
@@ -118,7 +118,7 @@
                     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                     options.Filters.Add(new AuthorizeFilter(policy));
                 }
-            );
+            ).AddNewtonsoftJson();
         }
     }
 }

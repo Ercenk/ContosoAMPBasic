@@ -1,7 +1,7 @@
 ﻿namespace Dashboard.Controllers
 {
     using System.Threading.Tasks;
-
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -11,7 +11,7 @@
 
     using SaaSFulfillmentClient.WebHook;
 
-    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [RequireHttps]
     public class WebHookController : Controller
     {

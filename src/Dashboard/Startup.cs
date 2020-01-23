@@ -11,14 +11,16 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Authorization;
-    using Microsoft.AspNetCore.Routing.Patterns;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.IdentityModel.Protocols;
+    using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+    using Microsoft.IdentityModel.Tokens;
     using SaaSFulfillmentClient;
+    using System.Threading;
 
     public class Startup
     {
@@ -72,8 +74,25 @@
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
 
+            // https://docs.microsoft.com/en-us/aspnet/core/security/authentication/?view=aspnetcore-3.1
             services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
-                .AddAzureAD(options => this.configuration.Bind("AzureAd", options));
+                .AddAzureAD(options => this.configuration.Bind("AzureAd", options))
+                .AddJwtBearer(options =>
+                {
+                    //this code can be used to validate signing keys
+                    string stsDiscoveryEndpoint = "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration";
+                    IConfigurationManager<OpenIdConnectConfiguration> configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(stsDiscoveryEndpoint, new OpenIdConnectConfigurationRetriever());
+                    OpenIdConnectConfiguration openIdConfig = configurationManager.GetConfigurationAsync(CancellationToken.None).GetAwaiter().GetResult();
+                    
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        //Tenant ID for Microsoft.com
+                        ValidIssuer = "https://sts.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47/",
+                        //audience is the clientid registered in the marketplace
+                        ValidAudience = this.configuration["FulfillmentClient:AzureActiveDirectory:ClientId"],
+                        IssuerSigningKeys = openIdConfig.SigningKeys,
+                    };
+                });
 
             services.Configure<CookieAuthenticationOptions>(
                 AzureADDefaults.CookieScheme,
@@ -91,7 +110,7 @@
             services.Configure<DashboardOptions>(this.configuration.GetSection("Dashboard"));
 
             services.AddFulfillmentClient(options => this.configuration.Bind("FulfillmentClient", options))
-                .WithAzureTableOperationsStore(this.configuration["OperationsStoreConnectionString"]);
+                .WithAzureTableOperationsStore(this.configuration["FulfillmentClient:OperationsStoreConnectionString"]);
 
             // Hack to save the host name and port during the handling the request. Please see the WebhookController and ContosoWebhookHandler implementations
             services.AddSingleton<ContosoWebhookHandlerOptions>();

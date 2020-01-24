@@ -68,8 +68,6 @@ It exposes a landing page that can be customized for branding. It provides a web
 
 The landing page can also used for adding new fields for getting more information from the subscriber, for example what is the favored region.When a subscriber provides the details on the landing page, the solution generates an email to the configured operations contact. The operations team then provisions the required resources and onbards the customer using their internal processes then comes back to the generated email and clicks on the link in the email to activate the subscription.
 
-The solution does not implement native "cancel" or "update" subscription options. The subscriber uses the Azure Marketplace to cancel or update the subscription. In the case of a change on the subscription (cancel, update, suspend), the marketplace posts a notification to the webhook, and the operations contact receives an email. Just like the onboarding operation, the operations contact performs the required operation manually, and then returns to the email, and click on the included link to indicate completion of the operation.
-
 I give an overview of integrating a SaaS application with Azure Marketplace in my sample client library [sample](https://github.com/Ercenk/AzureMarketplaceSaaSApiClient). I point out three areas for integration.
 
 - [Landing page](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/LandingPageController.cs#L27)

@@ -76,9 +76,11 @@ I give an overview of integrating a SaaS application with Azure Marketplace in m
  
 ![overview](./Docs/Overview.png)
 
-# Notes
+## Before we start...
 
-## Secrets
+I want to cover a few items before we start to go through the steps for deploying the solution. Let's look at how to handle the secrets, Active Directory integration and options.
+
+### Secrets
 
 Secrets such as API keys are managed through "dotnet user-secrets" command. For example, to set the value for "FulfillmentClient:AzureActiveDirectory:AppKey" use the following command:
 
@@ -90,13 +92,14 @@ Please see the user secrets [documentation](https://docs.microsoft.com/en-us/asp
 
 Alternatively, if you are not going to publish your code, and will just keep the code on your computer, you can also modify the appsettings.json to add your secrets.
 
-## About Active Directory integration
+### About Active Directory integration
 
 I recommend using two Azure AD applications. One for authenticating the subscriber on the landing page, and the other for interacting with the API. Please see the section [below](#Register-two-apps).
 
 This way, you can ask the subscriber for consent to access his/her Graph API, Azure Management API, or any other API that is protected by Azure AD on the landing page, and separate the security for accessing the marketplace API from this interaction. Good practice...
 
-## About options
+### About options
+
 |Setting|Change/Keep|Notes|
 |-------|-----------|-----|
 |AzureAd:Instance       |Keep|The landing page is using a multi-tenant app. Keep the instance value|
@@ -119,7 +122,7 @@ This way, you can ask the subscriber for consent to access his/her Graph API, Az
 |Dashboard:AdvancedFlow       |Change|This controls the basic or advanced flow when activating new subscriptions. I recommend to keep the basic for the start. Advanced flow is implemented for demonstration only and I do not recommend to use this technique in production. |
 |Dashboard:BasePlanId       |Change|The name of the base plan used for the advanced flow. |
 
-# How do I run the sample?
+## How do I run the sample?
 
 
 The top level actions are:
@@ -129,7 +132,7 @@ The top level actions are:
 
 **Make sure to set the API version in the settings to the mock API. Please see `FulfillmentClient:FulfillmentService:ApiVersion` setting.**
 
-## Registering Azure Active Directory applications
+### Registering Azure Active Directory applications
 
 I usually maintain a separate Azure Active Directory tenant (directory) for my application registrations. To create one, 
 
@@ -154,7 +157,7 @@ Click on "App registrations", and select "New registration". You will need to cr
 
 ![registerappstart](./Docs/registerappstart.png)
 
-### Register two apps
+#### Register two apps
 
 I recommend registering two apps:
 
@@ -162,11 +165,11 @@ I recommend registering two apps:
 
 1. **To authenticate Azure Marketplace Fulfillment APIs,** you can register a **single tenant application**. You will need to provide the application ID (also referred to as the "client ID") and the tenant ID on the ["Technical Configuration page"](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/offer-creation-checklist#technical-configuration-page) on the Partner portal while registering your offer.  Set the ClientId value of the "FulfillmentClient:AzureActiveDirectory" section to this value. You will need to create a client key, and either put it in the appsettings.json file or add it as a user secret using ```dotnet user-secrets``` command. You will also need to set the TenantId as described in the appsettings.json file. Remember, this is a single tenant app. The API authentication uses "[Service-to-service access token request](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-oauth2-client-creds-grant-flow#service-to-service-access-token-request)". The solution needs to get an access token for the resource "62d94f6c-d599-489b-a797-3e10e42fbe22" (this is the well-known resource ID for the FUlfillment API) using V1 endpoint for AAD.
 
-## Creating and configuring a SendGrid account
+### Creating and configuring a SendGrid account
 
 Follow the steps in the [tutorial](https://docs.microsoft.com/en-us/azure/sendgrid-dotnet-how-to-send-email), and grab an API Key. Set the value of the ApiKey in the configuration section, "Dashboard:Mail", either using the user-secrets method or in the appconfig.json file.
 
-## Running the sample
+### Running the sample
 
 You can run the sample either in Docker by building an image using the Dockerfile on the src/Dashboard folder, or running with ```dotnet run``` in the "ContosoAMPBasic\src\Dashboard" folder. Once you run the application, you need to grab the URL and update the "redirect URLs" section of the multi-tenant AD application's "Authentication" settings. E.g. if you run using ```dotnet run```, make sure to add https://localhost:5001/ and https://localhost:5001/signin-oidc to the URL list.
 
@@ -189,7 +192,3 @@ The email should look like the following.
 ![receivedemail](./Docs/receivedemail.png)
 
 At this point we can assume the operations team will go off and provision the customer using the received details. The example captures the "MaximumNumberofThingsToHandle" and "Region". After the operations team complete their tasks and ready to activate the subscription, they need to come back to this email and click on the "Click here to activate subscription" link in the email.
-
-## Simulating the cancelled subscription
-
-I included a Postman collection containing one request to the webhook endpoint. Send the request using Postman, and go through the same steps as described above, this time for decommissioning the customer.

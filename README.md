@@ -130,7 +130,6 @@ The top level actions are:
 1. Create and configure a SendGrid account.
 1. Update user secrets.
 
-**Make sure to set the API version in the settings to the mock API. Please see `FulfillmentClient:FulfillmentService:ApiVersion` setting.**
 
 ### Registering Azure Active Directory applications
 

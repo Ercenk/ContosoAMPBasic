@@ -19,9 +19,11 @@ First, disclaimers :)
 
 In the sections below you will find
 
-1.  Integrating a Software as a Solution with Azure Marketplace
+1.  [Integrating a Software as a Solution with Azure Marketplace](#Integrating-a-Software-as-a-Solution-with-Azure-Marketplace) 
 
-2.  The scenario for the sample
+1.  [The scenario for the sample](#The-scenario-for-the-sample)
+
+1. [Running the sample](#Running-the-sample)
 
 Let's first start with mentioning how to integrate a SaaS solution with Azure
 Marketplace.
@@ -66,9 +68,6 @@ Marketplace and the SaaS solution,
 
 ![overview](Docs/AmpIntegrationOverview.png)
 
-overview
-
-overview
 
 ### Landing page
 
@@ -156,11 +155,11 @@ Let’s go through the steps of activating a subscription to an offer.
     the “Configure Account” for an inactive subscription, or “Manage Account”
     for an active subscription
 
-![newSubscription](Docs/New subscription.png)
+![newSubscription](Docs/NewSubscription.png)
 
 >   inactive sunbscription
 
-![Active subscription ](Docs/Active subscription.png)
+![Active subscription ](Docs/ActiveSubscription.png)
 
 1.  Customer clicks on the “Configure Account” (new and not activated
     subscription) or “Managed Account” (activated subscription) and accesses the
@@ -224,9 +223,10 @@ Software as a Solution with Azure Marketplace”.
 -   [Calling the
     API](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/LandingPageController.cs#L19)
 
-![overview](Docs/overview.png)
+![overview](Docs/Overview.png)
 
-How do I run the sample?
+
+Running the sample
 ------------------------
 
 The top-level actions are:

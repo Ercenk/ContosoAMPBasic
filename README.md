@@ -225,6 +225,48 @@ Software as a Solution with Azure Marketplace”.
 
 ![overview](Docs/Overview.png)
 
+Remember, this scenario is useful when there is a human element in the mix, for situations such as
+
+- A script needs to be run manually for provisioning resources for a new customer, as part of the onboarding process
+- A team needs to qualify the purchase of the customer, for reasons like ITAR certification etc.
+
+Let's go through the scenario. 
+
+1. The prospective customer is on Azure Portal, and going through the Azure Marketplace in-product experience on the portal. Finds the solution and subscribes to it, after deciding on the plan. A placeholder resource is deployed on the customer's (subscriber's) Azure subscription for the new subscription to the offer. Please notice the overloaded use of the "subscription", there are two subscriptions at this moment, the customer's Azure subscription and the subscription to the SaaS offer. I will use **subscription** only when I refer to the subscription to the offer from now on. 
+
+1. Subscriber clicks on the **Configure Account** button on the new subscription, and gets transferred to the landing page.
+
+1. Landing page uses Azure Active Directory (with OpenID Connect flow) to log the user on
+
+1. Landing page uses the SDK to resolve the subscription to get the details, using the marketplace token on the landing page URL token parameter
+
+1. SDK gets an access token from Azure Active Directory (AAD) 
+
+1. SDK calls  **resolve** operation on the Fulfillment API, using the access token as a bearer token
+
+1. Subscriber fills in the other details on the landing page that will help the operations team to kick of the provisioning process. The landing page asks for a deployment region, as well as the email of the business unit contact.The solution may be using different data retention policies based on the region (GDPR comes to mind for Europe), or the solution may be depending on a completely different identity provider (IP), such as in-house developed, and may be sending an email to the business unit owner, asking him/her to add the other end users to the solution's account management system. Please keep in mind that the person subscribing, that is the purchaser (having access to the Azure subscription) can be different than the end user(s) of the solution.
+
+1. Subscriber completes the process by submitting the form on the landing page. This sends an email to the operations team email address (configured in the settings)
+
+1. Operations team takes the appropriate steps (qualifying, provisioning resources etc.)
+
+1. Once complete, operation team clicks on the activate link in the email
+
+1. The sample uses the SDK to activate the subscription
+
+1. SDK gets an access token from Azure Active Directory (AAD) 
+
+1. SDK calls the **activate** operation on the Fulfillment API
+
+1. The subscriber may eventually unsubscribe from the subscription by deleting it, or may stop fulfilling his/her monetary commitment to Microsoft
+
+1. The commerce engine sends a notification on the webhook at this time, for letting the publisher know about the situation
+
+1. The sample sends an email to the operations team, notifying the team about the status
+
+1. The operations team may de-provision the customer
+
+
 
 Running the sample
 ------------------------

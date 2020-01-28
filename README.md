@@ -147,7 +147,7 @@ Let’s go through the steps of activating a subscription to an offer.
 
 1.  Customer subscribes to an offer on Azure Marketplace
 
-2.  Commerce engine generates marketplace token for the landing page. This is an
+1.  Commerce engine generates marketplace token for the landing page. This is an
     opaque token (unlike a JSON Web Token, JWT that is returned when
     authenticating against Azure AD) and does not contain any information. It is
     just an index to the subscription and used by the resolve API to retrieve
@@ -155,41 +155,35 @@ Let’s go through the steps of activating a subscription to an offer.
     the “Configure Account” for an inactive subscription, or “Manage Account”
     for an active subscription
 
-![newSubscription](Docs/NewSubscription.png)
-
->   inactive sunbscription
-
-![Active subscription ](Docs/ActiveSubscription.png)
-
-1.  Customer clicks on the “Configure Account” (new and not activated
+1. Customer clicks on the “Configure Account” (new and not activated
     subscription) or “Managed Account” (activated subscription) and accesses the
     landing page
 
-2.  Landing page asks the user to logon using Azure AD [OpenID
+1.  Landing page asks the user to logon using Azure AD [OpenID
     Connect](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-protocols-oidc)
     flow
 
-3.  Azure AD returns the id_token. There needs to be additional steps for
+1.  Azure AD returns the id_token. There needs to be additional steps for
     validating the id_token. Just receiving an id_token is not enough for
     authentication. Also, the solution may need to ask for authorization to
     access other resources on behalf of the user. We are not covering them for
     brevity and ask you to refer to the related Azure AD documentation
 
-4.  Solution asks for an access token using the use [service-to-service access
+1.  Solution asks for an access token using the use [service-to-service access
     token
     request](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-oauth2-client-creds-grant-flow#service-to-service-access-token-request)
     of the client credential workflow to be able to call the API
 
-5.  Azure AD returns the access token
+1.  Azure AD returns the access token
 
-6.  Solution prepends “Bearer “ (notice the space) to the access token, and adds
+1.  Solution prepends “Bearer “ (notice the space) to the access token, and adds
     it to the “Authorization” header of the outgoing request. We are using the
     marketplace token previously received on the landing page to get the details
     of the subscription using the “resolve” API
 
-7.  The subscription details is returned
+1.  The subscription details is returned
 
-8.  Further API calls are made, again using the access token obtained from the
+1.  Further API calls are made, again using the access token obtained from the
     Azure AD, in this case to activate the subscription
 
 The scenario for the sample

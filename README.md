@@ -359,7 +359,6 @@ the values in the appsettings.json file, or use the dotnet user-secrets command.
 Please see the section “Secrets” below for the details if you want to use user
 secrets method.
 
-### About options
 
 | Setting                                           | Change/Keep | Notes                                                                                                                                                                                                                                    |
 |---------------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

@@ -346,8 +346,7 @@ registering two applications:
     added.
 
 2.  **To authenticate Azure Marketplace Fulfillment APIs,** you can register a
-    **single tenant application**. Select the “Access tokens” checkbox on the
-    “Authentication” page.
+    **single tenant application**. 
 
 ![A screenshot of a computer Description automatically generated](Docs/AdAppRegistration.png)
 

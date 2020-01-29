@@ -62,9 +62,13 @@
                                       correlationId,
                                       cancellationToken)).Plans.ToList();
 
-            // remove the base plan from the model to show
-            if (availablePlans.Any(p => p.PlanId == this.options.BasePlanId)){
-                availablePlans.Remove(availablePlans.Single(p => p.PlanId == this.options.BasePlanId));
+            // remove the base plan from the model to show if advanced flow is active
+            if (this.options.AdvancedFlow)
+            {
+                if (availablePlans.Any(p => p.PlanId == this.options.BasePlanId))
+                {
+                    availablePlans.Remove(availablePlans.Single(p => p.PlanId == this.options.BasePlanId));
+                }
             }
 
             var provisioningModel = new AzureSubscriptionProvisionModel

@@ -21,6 +21,14 @@
                 @Html.DisplayNameFor(model => model.PlanId)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.PurchaserEmail)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.PurchaserTenantId)
+            </th>
+
+            <th>
                 @Html.DisplayNameFor(model => model.Quantity)
             </th>
 
@@ -35,44 +43,52 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SubscriptionName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.State)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OfferId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PlanId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
-                </td>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubscriptionName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OfferId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlanId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PurchaserEmail)
+            </td>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.SubscriptionId)
-                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PurchaserTenantId)
+            </td>
 
-                <td>
-                    @if (!item.PendingOperations)
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.SubscriptionId)
+            </td>
+
+            <td>
+                @if (!item.PendingOperations)
+                {
+                    @foreach (var a in item.NextActions)
                     {
-                        @foreach (var a in item.NextActions)
-                        {
-                            <span> @Html.ActionLink(Enum.GetName(typeof(ActionsEnum), a), "SubscriptionAction", new { subscriptionAction = a, subscriptionId = item.SubscriptionId }) </span>
-                        }
+                        <span> @Html.ActionLink(Enum.GetName(typeof(ActionsEnum), a), "SubscriptionAction", new { subscriptionAction = a, subscriptionId = item.SubscriptionId }) </span>
                     }
-                    else
-                    {
-                        <span>Pending operations</span>
-                    }
-                </td>
-                <td>
-                    @Html.ActionLink("Operations", "Operations", new { item.SubscriptionId })
-                </td>
-            </tr>
+                }
+                else
+                {
+                    <span>Pending operations</span>
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Operations", "Operations", new { item.SubscriptionId })
+            </td>
+        </tr>
         }
     </tbody>
 </table>

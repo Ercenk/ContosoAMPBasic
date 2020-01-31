@@ -1,4 +1,6 @@
-﻿namespace Dashboard.Models
+﻿using System;
+
+namespace Dashboard.Models
 {
     using System.Collections.Generic;
 
@@ -51,8 +53,14 @@
                            SubscriptionId = marketplaceSubscription.SubscriptionId,
                            OfferId = marketplaceSubscription.OfferId,
                            State = marketplaceSubscription.SaasSubscriptionStatus,
-                           SubscriptionName = marketplaceSubscription.Name
+                           SubscriptionName = marketplaceSubscription.Name,
+                           PurchaserEmail = marketplaceSubscription.Purchaser.EmailId,
+                           PurchaserTenantId = marketplaceSubscription.Purchaser.TenantId
                        };
         }
+
+        public Guid PurchaserTenantId { get; set; }
+
+        public string PurchaserEmail { get; set; }
     }
 }

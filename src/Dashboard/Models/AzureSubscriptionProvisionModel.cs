@@ -50,5 +50,11 @@
         public string SubscriptionName { get; set; }
 
         public StatusEnum SubscriptionStatus { get; set; }
+
+        [Display(Name = "Purchaser email")]
+        public string PurchaserEmail { get; set; }
+
+        [Display(Name = "Purchaser AAD TenantId")]
+        public Guid PurchaserTenantId { get; set; }
     }
 }

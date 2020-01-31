@@ -367,6 +367,8 @@ Copy the base URL of the web application, and set the value of the landing page,
 by adding /landingpage to the end, and set the webhook URL by adding /webhook to
 the end of the base URL of the web application.
 
+Also create test plans, with $0 cost, so you do not charge yourself when testing. Please remember to add a list of users as authorized preview users on the "Preview" tab.
+
 ### Creating and configuring a SendGrid account
 
 Follow the steps in the

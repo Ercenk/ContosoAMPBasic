@@ -17,6 +17,8 @@ First, disclaimers :)
 -   **I make frequent changes to this repo as I discover new things with the
     marketplace API. Please check back often.**
 
+You can also find a short [video published on the Azure Friday channel](https://www.youtube.com/watch?v=2Oaq5dHczMY)  to see the experience, and a brief explanation.    
+
 In the sections below you will find
 
 1.  [Integrating a Software as a Solution with Azure Marketplace](#Integrating-a-Software-as-a-Solution-with-Azure-Marketplace) 

@@ -385,7 +385,7 @@ Create an Azure Storage account following the steps here. The solution uses the
 storage account to keep references to the operations returned by actions done on
 the fulfillment API.
 
-#### Change the configuration settings
+### Change the configuration settings
 
 You will need to modify the settings with the values for the services you have
 created above.

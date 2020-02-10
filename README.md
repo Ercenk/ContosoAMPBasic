@@ -269,17 +269,17 @@ Running the sample
 
 The top-level actions are:
 
-1.  Create a web application on Azure App Service
+1.  [Create a web application on Azure App Service](#Creating-a-web-application-on-Azure-App-Service-and-deploy-the-sample)
 
-2.  Registering Azure Active Directory applications
+2.  [Registering Azure Active Directory applications](#Registering-Azure-Active-Directory-applications)
 
-3.  Create an offer on Commercial Marketplace Portal in Partner center
+3.  [Create an offer on Commercial Marketplace Portal in Partner center](#Create-an-offer-on-Commercial-Marketplace-Portal-in-Partner-center)
 
-4.  Create and configure a SendGrid account
+4.  [Create and configure a SendGrid account](#Creating-and-configuring-a-SendGrid-account)
 
-5.  Create an Azure Storage Account
+5.  [Create an Azure Storage Account](#Creating-a-storage-account)
 
-6.  Change the configuration settings
+6.  [Change the configuration settings](#Change-the-configuration-settings)
 
 ### Creating a web application on Azure App Service and deploy the sample
 

@@ -1,10 +1,13 @@
 ﻿namespace Dashboard.Controllers
 {
+    using System;
     using System.IO;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Filters;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 
@@ -12,6 +15,7 @@
 
     using SaaSFulfillmentClient.WebHook;
 
+    // Removing the authorize attribute. This will be relevant once we start receivint JWT from the marketplac engine
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [AllowAnonymous]
     [RequireHttps]
@@ -36,14 +40,6 @@
         [HttpPost]
         public async Task<IActionResult> Index([FromBody] WebhookPayload payload)
         {
-            using (var reader = new StreamReader(Request.Body))
-            {
-                // Using this to surface the exact payload the webhook is receiving
-                var body = await reader.ReadToEndAsync();
-
-                this.logger.LogInformation($"Webhook payload is \n {body}");
-            }
-
             // Options is injected as a singleton. This is not a good hack, but need to pass the host name and port
             this.options.BaseUrl = $"{this.Request.Scheme}://{this.Request.Host}/";
             await this.webhookProcessor.ProcessWebhookNotificationAsync(payload);

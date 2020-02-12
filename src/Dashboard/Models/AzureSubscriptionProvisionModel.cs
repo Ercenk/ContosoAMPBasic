@@ -14,12 +14,8 @@
     [BindProperties]
     public class AzureSubscriptionProvisionModel
     {
-        public bool AdvancedFlow { get; set; }
-
         [Display(Name = "Available plans")]
         public IEnumerable<Plan> AvailablePlans { get; set; }
-
-        public string BasePlanId { get; set; }
 
         [Display(Name = "Business unit contact email")]
         public string BusinessUnitContactEmail { get; set; }

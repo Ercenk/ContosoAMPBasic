@@ -418,8 +418,6 @@ secrets method.
 | Dashboard:Mail:ApiKey                             | Change      | Sendgrid API key.                                                                                                                                                                                                                        |
 | Dashboard:DashboardAdmin                          | Change      | Change it to the email address you are logging on to the dashboard. Only the users with the domain name of this email is authorized to use the dashboard to display the subscriptions.                                                   |
 | Dashboard:ShowUnsubscribed                        | Change      | Change true or false, depending on if you want to see the subscriptions that are not active.                                                                                                                                             |
-| Dashboard:AdvancedFlow                            | Change      | This controls the basic or advanced flow when activating new subscriptions. I recommend to keep the basic for the start. Advanced flow is implemented for demonstration only and I do not recommend to use this technique in production. |
-| Dashboard:BasePlanId                              | Change      | The name of the base plan used for the advanced flow.                                                                                                                                                                                    |
 
 Notes
 -----

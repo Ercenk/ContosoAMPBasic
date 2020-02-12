@@ -82,9 +82,7 @@
                                       new Tuple<string, string>("planId", provisionModel.NewPlanId)
                                   };
 
-            var emailText = provisionModel.AdvancedFlow
-                                ? $"Customer's subscription is active with the {provisionModel.BasePlanId} plan. "
-                                : $"<p>Updated subscription from {provisionModel.PlanId} to {provisionModel.NewPlanId}.";
+            var emailText = $"<p>Updated subscription from {provisionModel.PlanId} to {provisionModel.NewPlanId}.";
 
             emailText +=
                 "Please take the required action, then return to this email and click the following link to confirm. ";

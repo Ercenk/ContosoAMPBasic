@@ -82,8 +82,7 @@
                         </dd>
                     </div>
 
-                    @* Only show if we are here for "modifying" a subscription for the basic flow, and always for the advanced flow, if the customer has not already select the base plan when subscribing.*@
-                    @if (Model.SubscriptionStatus == StatusEnum.Subscribed || Model.AdvancedFlow && Model.PlanId == Model.BasePlanId)
+                    @if (Model.SubscriptionStatus == StatusEnum.Subscribed)
                     {
                         <div class="row">
                             <dt class="col-sm-2">

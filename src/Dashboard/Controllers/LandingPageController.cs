@@ -114,15 +114,6 @@ namespace Dashboard.Controllers
                                       correlationId,
                                       cancellationToken)).Plans.ToList();
 
-            // remove the base plan from the model to show if advanced flow is active
-            if (this.options.AdvancedFlow)
-            {
-                if (availablePlans.Any(p => p.PlanId == this.options.BasePlanId))
-                {
-                    availablePlans.Remove(availablePlans.Single(p => p.PlanId == this.options.BasePlanId));
-                }
-            }
-
             var provisioningModel = new AzureSubscriptionProvisionModel
             {
                 PlanId = resolvedSubscription.PlanId,
@@ -137,8 +128,6 @@ namespace Dashboard.Controllers
                 Region = TargetContosoRegionEnum.NorthAmerica,
                 AvailablePlans = availablePlans,
                 SubscriptionStatus = existingSubscription.SaasSubscriptionStatus,
-                AdvancedFlow = this.options.AdvancedFlow,
-                BasePlanId = this.options.BasePlanId,
                 PendingOperations =
                                                 (await this.fulfillmentClient.GetSubscriptionOperationsAsync(
                                                      resolvedSubscription.SubscriptionId,
@@ -155,50 +144,12 @@ namespace Dashboard.Controllers
             AzureSubscriptionProvisionModel provisionModel,
             CancellationToken cancellationToken)
         {
-            provisionModel.AdvancedFlow = this.options.AdvancedFlow;
-
             // A new subscription will have PendingFulfillmentStart as status
             if (provisionModel.SubscriptionStatus != StatusEnum.Subscribed)
             {
-                if (this.options.AdvancedFlow)
-                {
-                    // ATTENTION:
-                    // Following implementation is for demonstration purposes only and not guaranteed to work
-                    // in production. The APIs are asynchronous APIs and required to poll for completion before
-                    // another request is submitted. A better implementation will be to decouple this process
-                    // and implement a work queue mechanism.
-
-                    // We want to activate the subscription right away if we are in advanced flow
-                    var requestId = Guid.NewGuid();
-                    var correlationId = Guid.NewGuid();
-                    var activateResult = await this.fulfillmentClient.ActivateSubscriptionAsync(
-                                             provisionModel.SubscriptionId,
-                                             new ActivatedSubscription { PlanId = provisionModel.PlanId },
-                                             requestId,
-                                             correlationId,
-                                             cancellationToken);
-
-                    // See if the subscriber already selected the desired plan when subscribing.
-                    // Otherwise, we expect the customer to select one of the available plans.
-                    if (provisionModel.PlanId != this.options.BasePlanId)
-                    {
-                        provisionModel.NewPlanId = provisionModel.PlanId;
-
-                        // Update the subscription to base plan
-                        var updateResult = await this.fulfillmentClient.UpdateSubscriptionPlanAsync(
-                                               provisionModel.SubscriptionId,
-                                               this.options.BasePlanId,
-                                               requestId,
-                                               correlationId,
-                                               cancellationToken);
-                    }
-
-                    await this.notificationHandler.ProcessChangePlanAsync(provisionModel, cancellationToken);
-                }
-                else
-                {
-                    await this.notificationHandler.ProcessActivateAsync(provisionModel, cancellationToken);
-                }
+                
+                await this.notificationHandler.ProcessActivateAsync(provisionModel, cancellationToken);
+                
             }
             else
             {

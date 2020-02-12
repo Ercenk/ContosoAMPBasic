@@ -62,5 +62,7 @@ namespace Dashboard.Models
         public Guid PurchaserTenantId { get; set; }
 
         public string PurchaserEmail { get; set; }
+        public bool ExistingOperations { get; internal set; }
+        public int OperationCount { get; internal set; }
     }
 }

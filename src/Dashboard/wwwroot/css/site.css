@@ -10,17 +10,27 @@ a.navbar-brand {
 /* Sticky footer styles
 -------------------------------------------------- */
 
-html { font-size: 14px; }
-
-@media (min-width: 768px) {
-    html { font-size: 16px; }
+html {
+    font-size: 14px;
 }
 
-.border-top { border-top: 1px solid #e5e5e5; }
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
 
-.border-bottom { border-bottom: 1px solid #e5e5e5; }
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
 
-.box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
 
 button.accept-policy {
     font-size: 1rem;
@@ -50,9 +60,13 @@ body {
     width: 100%;
 }
 
-[class*="span"] { background: #EEF; }
+[class*="span"] {
+    background: #EEF;
+}
 
-[class*="span"] [class*="span"] { background: #FEE; }
+    [class*="span"] [class*="span"] {
+        background: #FEE;
+    }
 
 
 tr.Subscribed {
@@ -66,3 +80,8 @@ tr.PendingFulfillmentStart {
 tr.PendingFulfillmentStart {
     background: lightsalmon;
 }
+
+tr.Unsubscribed {
+    background: lightgray;
+}
+

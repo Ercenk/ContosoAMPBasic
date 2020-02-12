@@ -55,35 +55,55 @@
 
             var subscriptionsViewModel = subscriptions.Select(SubscriptionViewModel.FromSubscription)
                 .Where(s => s.State != StatusEnum.Unsubscribed || this.options.ShowUnsubscribed);
+
+            var newViewModel = new List<SubscriptionViewModel>();
+
             foreach (var subscription in subscriptionsViewModel)
             {
-                subscription.PendingOperations =
-                    (await this.fulfillmentClient.GetSubscriptionOperationsAsync(
-                         requestId,
-                         correlationId,
-                         subscription.SubscriptionId,
-                         cancellationToken)).Any(o => o.Status == OperationStatusEnum.InProgress);
+                // REMOVING THE FOLLOWING FOR THE SAKE OF PERFORMANCE, but keeping them here as reference
+
+                //subscription.PendingOperations =
+                //    (await this.fulfillmentClient.GetSubscriptionOperationsAsync(
+                //         requestId,
+                //         correlationId,
+                //         subscription.SubscriptionId,
+                //         cancellationToken)).Any(o => o.Status == OperationStatusEnum.InProgress);
 
                 var recordedSubscriptionOperations =
                     await this.operationsStore.GetAllSubscriptionRecordsAsync(
                         subscription.SubscriptionId,
                         cancellationToken);
 
-                var subscriptionOperations = new List<SubscriptionOperation>();
-                foreach (var operation in recordedSubscriptionOperations)
-                    subscriptionOperations.Add(
-                        await this.fulfillmentClient.GetSubscriptionOperationAsync(
-                            operation.SubscriptionId,
-                            operation.OperationId,
-                            requestId,
-                            correlationId,
-                            cancellationToken));
+                // REMOVING THE FOLLOWING FOR THE SAKE OF PERFORMANCE, but keeping them here as reference
 
-                subscription.PendingOperations |=
-                    subscriptionOperations.Any(o => o.Status == OperationStatusEnum.InProgress);
-            }
+                //var subscriptionOperations = new List<SubscriptionOperation>();
+                //foreach (var operation in recordedSubscriptionOperations)
+                //{
+                //    var subscriptionOperation = await this.fulfillmentClient.GetSubscriptionOperationAsync(
+                //          operation.SubscriptionId,
+                //          operation.OperationId,
+                //          requestId,
+                //          correlationId,
+                //          cancellationToken);
 
-            return this.View(subscriptionsViewModel.OrderByDescending(s => s.SubscriptionName));
+                //    if (subscriptionOperation != default(SubscriptionOperation))
+                //    {
+                //        subscriptionOperations.Add(subscriptionOperation);
+                //    }
+                //}
+
+
+                //subscription.PendingOperations |=
+                //    subscriptionOperations.Any(o => o.Status == OperationStatusEnum.InProgress);
+
+                subscription.ExistingOperations = (await this.operationsStore.GetAllSubscriptionRecordsAsync(
+                    subscription.SubscriptionId,
+                    cancellationToken)).Any();
+                subscription.OperationCount = recordedSubscriptionOperations.Count();
+                newViewModel.Add(subscription);
+            }            
+
+            return this.View(newViewModel.OrderByDescending(s => s.SubscriptionName));
         }
 
         [AllowAnonymous]

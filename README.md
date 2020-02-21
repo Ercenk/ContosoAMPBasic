@@ -288,6 +288,10 @@ in Visual Studio, and follow the steps for deploying the solution starting from
 this
 [step](https://docs.microsoft.com/en-us/azure/app-service/app-service-web-get-started-dotnet#publish-your-web-app).
 
+Following is how my Visual Studio Publish profile looks like:
+
+![publishprofile](./Docs/PublishProfile.png)
+
 ### Registering Azure Active Directory applications
 
 I usually maintain a separate Azure Active Directory tenant (directory) for my
@@ -381,7 +385,7 @@ file.
 
 ### Creating a storage account
 
-Create an Azure Storage account following the steps here. The solution uses the
+Create an Azure Storage account following the steps [here](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal). The solution uses the
 storage account to keep references to the operations returned by actions done on
 the fulfillment API.
 

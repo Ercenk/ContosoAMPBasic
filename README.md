@@ -27,7 +27,7 @@ In the sections below you will find
 
 1. [Running the sample](#Running-the-sample)
 
-1. [I deployed and configured everything, how should it look like?](I-deployed-and-configured-everything-,-how-should-it-look-like?)
+1. [I deployed and configured everything, how should it look like?](#I-deployed-and-configured-everything-,-how-should-it-look-like?)
 
 Let's first start with mentioning how to integrate a SaaS solution with Azure
 Marketplace.

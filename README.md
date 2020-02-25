@@ -423,6 +423,58 @@ secrets method.
 | Dashboard:DashboardAdmin                          | Change      | Change it to the email address you are logging on to the dashboard. Only the users with the domain name of this email is authorized to use the dashboard to display the subscriptions.                                                   |
 | Dashboard:ShowUnsubscribed                        | Change      | Change true or false, depending on if you want to see the subscriptions that are not active.                                                                                                                                             |
 
+
+I deployed and configured everything, how should it look like?
+------------------------------------------------------------
+
+Here is how everything gets together on the Partner Center offer technical configuration details
+![Technical Configuration Page](./Docs/PartnerCenterTechnicalConfiguration.png)
+
+And make sure you have the correct preview audience set, with the email you would use for logging on the Azure Portal
+![preview audience](./Docs/PreviewAudience.png)
+
+Customer searches for the offer on Azure Portal
+
+1. Go to Azure Portal and add a resource
+
+![purchaser1](./Docs/Purchaser1.png)
+
+2. Find the search text box
+
+![purchaser2](./Docs/Purchaser2.png)
+
+3. Type in your offer name
+
+![purchaser3](./Docs/Purchaser3.png)
+
+4. Select the plan
+
+![purchaser4](./Docs/Purchaser4.png)
+
+5. Subscribe
+
+![purchaser5](./Docs/Purchaser5.png)
+
+6. Find the subscription after the deployment is complete, and go the subscription
+
+![purchaser6](./Docs/Purchaser6.png)
+
+7. Subscription details, notice it is not active yet
+
+![purchaser7](./Docs/Purchaser7.png)
+
+8. Landing page
+
+![purchaser8](./Docs/Purchaser8.png)
+
+9. Purchaser submits the form, and Contoso ops team receives an email
+
+![purchaser9](./Docs/Purchaser9.png)
+
+10. Contoso team takes the appropriate action to qualify and onboard the customer
+
+![purchaser10](./Docs/Purchaser10.png)
+
 Notes
 -----
 

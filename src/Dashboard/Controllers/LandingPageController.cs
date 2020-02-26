@@ -101,6 +101,7 @@ namespace Dashboard.Controllers
                                            cancellationToken);
 
             if (resolvedSubscription == default(ResolvedSubscription)) return default;
+            if (!resolvedSubscription.Success) return default;
 
             var existingSubscription = await this.fulfillmentClient.GetSubscriptionAsync(
                                            resolvedSubscription.SubscriptionId,

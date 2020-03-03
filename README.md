@@ -17,6 +17,8 @@ First, disclaimers :)
 -   **I make frequent changes to this repo as I discover new things with the
     marketplace API. Please check back often.**
 
+    **I tried not to take any dependencies on 3rd party libraries, and tried to keep it as "pure" as possible, so no SPA, no client side MVC, fancy UI, or other .NET packages other than JSON.NET, and SendGrid, so we can focus on the solution.**
+
 You can also find a short [video published on the Azure Friday channel](https://www.youtube.com/watch?v=2Oaq5dHczMY)  to see the experience, and a brief explanation.    
 
 In the sections below you will find

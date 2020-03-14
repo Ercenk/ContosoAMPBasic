@@ -133,7 +133,7 @@ registering the offer for the marketplace.
 The solution is put on a whitelist so it can call the marketplace REST API with
 those details. A client must use [service-to-service access token
 request](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-oauth2-client-creds-grant-flow#service-to-service-access-token-request)
-of the client credential workflow, and with the v1 Azure AD endpoint.
+of the client credential workflow, and with the v1 Azure AD endpoint. Use the Marketplace Fulfillment API V2.0's resource ID,62d94f6c-d599-489b-a797-3e10e42fbe22 for the resource parameter
 
 Please note the different requirements for the Azure AD interaction for the
 landing page and calling the APIs. I recommend two separate AAD applications,
@@ -147,7 +147,7 @@ this interaction. Good practice...
 
 ### Activating a subscription
 
-Let’s go through the steps of activating a subscription to an offer.
+Let's go through the steps of activating a subscription to an offer.
 
 ![AuthandAPIFlow](Docs/Auth_and_API_flow.png)
 
@@ -158,11 +158,11 @@ Let’s go through the steps of activating a subscription to an offer.
     authenticating against Azure AD) and does not contain any information. It is
     just an index to the subscription and used by the resolve API to retrieve
     the details of a subscription. This token is available when the user clicks
-    the “Configure Account” for an inactive subscription, or “Manage Account”
+    the "Configure Account" for an inactive subscription, or "Manage Account"
     for an active subscription
 
-1. Customer clicks on the “Configure Account” (new and not activated
-    subscription) or “Managed Account” (activated subscription) and accesses the
+1. Customer clicks on the "Configure Account" (new and not activated
+    subscription) or "Managed Account" (activated subscription) and accesses the
     landing page
 
 1.  Landing page asks the user to logon using Azure AD [OpenID
@@ -182,10 +182,10 @@ Let’s go through the steps of activating a subscription to an offer.
 
 1.  Azure AD returns the access token
 
-1.  Solution prepends “Bearer “ (notice the space) to the access token, and adds
-    it to the “Authorization” header of the outgoing request. We are using the
+1.  Solution prepends "Bearer " (notice the space) to the access token, and adds
+    it to the "Authorization" header of the outgoing request. We are using the
     marketplace token previously received on the landing page to get the details
-    of the subscription using the “resolve” API
+    of the subscription using the "resolve" API
 
 1.  The subscription details is returned
 
@@ -211,8 +211,8 @@ the required resources and onbards the customer using their internal processes
 then comes back to the generated email and clicks on the link in the email to
 activate the subscription.
 
-Please see my overview for the integration points in section “Integrating a
-Software as a Solution with Azure Marketplace”.
+Please see my overview for the integration points in section "Integrating a
+Software as a Solution with Azure Marketplace".
 
 -   [Landing
     page](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/LandingPageController.cs#L27)
@@ -351,7 +351,7 @@ registering two applications:
     **Make sure you register a multi-tenant application**, you can find the
     differences in the
     [documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps).
-    Select the “ID tokens” on the “Authentication” page. Also add two Redirect
+    Select the "ID tokens" on the "Authentication" page. Also add two Redirect
     URLs, he base URL of the web app, and another web app URL with /signin-oidc
     added.
 
@@ -398,26 +398,26 @@ the fulfillment API.
 You will need to modify the settings with the values for the services you have
 created above.
 
-You will need to replace the values marked as “CHANGE” or “SET USING dotnet
-user-secrets” in the appsettings.json file.
+You will need to replace the values marked as "CHANGE" or "SET USING dotnet
+user-secrets" in the appsettings.json file.
 
-For those values marked with “SET USING dotnet user-secrets” you can either plug
+For those values marked with "SET USING dotnet user-secrets" you can either plug
 the values in the appsettings.json file, or use the dotnet user-secrets command.
-Please see the section “Secrets” below for the details if you want to use user
+Please see the section "Secrets" below for the details if you want to use user
 secrets method.
 
 
 | Setting                                           | Change/Keep | Notes                                                                                                                                                                                                                                    |
 |---------------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | AzureAd:Instance                                  | Keep        | The landing page is using a multi-tenant app. Keep the instance value                                                                                                                                                                    |
-| AzureAd:Domain                                    | Change      | You can find this value on the “Overview” page of the Active Directory you have registered your applications in. If you are not using a custom domain, it is in the format of \<tenant name\>.onmicrosoft.com                            |
+| AzureAd:Domain                                    | Change      | You can find this value on the "Overview" page of the Active Directory you have registered your applications in. If you are not using a custom domain, it is in the format of \<tenant name\>.onmicrosoft.com                            |
 | AzureAd:TenantId                                  | Keep        | Common authentication endpoint, since this is a multi-tenant app                                                                                                                                                                         |
-| AzureAd:ClientId                                  | Change      | Copy the clientId of the multi-tenant app from its “Overview” page                                                                                                                                                                       |
+| AzureAd:ClientId                                  | Change      | Copy the clientId of the multi-tenant app from its "Overview" page                                                                                                                                                                       |
 | AzureAd:CallbackPath                              | Keep        | Default oidc sign in path                                                                                                                                                                                                                |
 | AzureAd:SignedOutCallbackPath                     | Keep        | Default sign out path                                                                                                                                                                                                                    |
-| FulfillmentClient:AzureActiveDirectory:ClientId   | Change      | Copy the clientId of the single-tenant app from its “Overview” page. This AD app is for calling the Fulfillment API                                                                                                                      |
-| FulfillmentClient:AzureActiveDirectory:TenantId   | Change      | Copy the tenantId of the single-tenant app from its “Overview” page.                                                                                                                                                                     |
-| FulfillmentClient:AzureActiveDirectory:AppKey     | Change      | Go to the “Certificates & secrets” page of the single-tenant app you have registered, create a new client secret, and copy the value to the clipboard, then set the value for this setting.                                              |
+| FulfillmentClient:AzureActiveDirectory:ClientId   | Change      | Copy the clientId of the single-tenant app from its "Overview" page. This AD app is for calling the Fulfillment API                                                                                                                      |
+| FulfillmentClient:AzureActiveDirectory:TenantId   | Change      | Copy the tenantId of the single-tenant app from its "Overview" page.                                                                                                                                                                     |
+| FulfillmentClient:AzureActiveDirectory:AppKey     | Change      | Go to the "Certificates & secrets" page of the single-tenant app you have registered, create a new client secret, and copy the value to the clipboard, then set the value for this setting.                                              |
 | FulfillmentClient:FulfillmentService:BaseUri      | Keep        | The Azure Marketplace API endpoint.                                                                                                                                                                                                      |
 | FulfillmentClient:FulfillmentService:ApiVersion   | Change      | Change if you want to hit the production or mock API. 2018-08-31 is for production, 2018-09-15 is for mock API                                                                                                                           |
 | FulfillmentClient:OperationsStoreConnectionString | Change      | Copy the connection string of the storage account you have created in the previous step. Please see [SDK documentation for details](https://github.com/Ercenk/AzureMarketplaceSaaSApiClient#operations-store)                            |

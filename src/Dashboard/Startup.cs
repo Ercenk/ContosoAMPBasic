@@ -66,13 +66,12 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(
-    options =>
-        {
-                        // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                        options.CheckConsentNeeded = context => true;
-            options.MinimumSameSitePolicy = SameSiteMode.None;
-        });
+            services.Configure<CookiePolicyOptions>(options =>
+                {
+                                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                    options.CheckConsentNeeded = context => true;
+                    options.MinimumSameSitePolicy = SameSiteMode.None;
+                });
 
             // https://docs.microsoft.com/en-us/aspnet/core/security/authentication/?view=aspnetcore-3.1
             services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
@@ -83,11 +82,12 @@
                     string stsDiscoveryEndpoint = "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration";
                     IConfigurationManager<OpenIdConnectConfiguration> configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(stsDiscoveryEndpoint, new OpenIdConnectConfigurationRetriever());
                     OpenIdConnectConfiguration openIdConfig = configurationManager.GetConfigurationAsync(CancellationToken.None).GetAwaiter().GetResult();
-                    
+                    var tenantId = this.configuration["FulfillmentClient:AzureActiveDirectory:TenantId"];
+                    var validIssuer = $"https://sts.windows.net/{tenantId}/";
+
                     options.TokenValidationParameters = new TokenValidationParameters()
                     {
-                        //Tenant ID for Microsoft.com
-                        ValidIssuer = "https://sts.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47/",
+                        ValidIssuer = validIssuer,
                         //audience is the clientid registered in the marketplace
                         ValidAudience = this.configuration["FulfillmentClient:AzureActiveDirectory:ClientId"],
                         IssuerSigningKeys = openIdConfig.SigningKeys,

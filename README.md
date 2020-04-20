@@ -135,6 +135,10 @@ those details. A client must use [service-to-service access token
 request](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-oauth2-client-creds-grant-flow#service-to-service-access-token-request)
 of the client credential workflow, and with the v1 Azure AD endpoint. Use the Marketplace Fulfillment API V2.0's resource ID,62d94f6c-d599-489b-a797-3e10e42fbe22 for the resource parameter
 
+There needs to be a **one-to-one match between the publisher account and the application**. If a publisher has multiple SaaS offers under the same publisher account, all of those offers need to use the same TenantId/AppId. 
+
+If you have multiple publisher accounts for various reasons, please do not use the TenantId/AppId for offers under different publisher accounts.
+
 Please note the different requirements for the Azure AD interaction for the
 landing page and calling the APIs. I recommend two separate AAD applications,
 one for the landing page, and one for the API interactions, so you can have

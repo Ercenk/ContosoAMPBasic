@@ -18,5 +18,8 @@
         public Guid SubscriptionId { get; set; }
 
         public string SubscriptionName { get; set; }
+
+        public int CurrentQuantity { get; set; }
+        public int NewQuantity { get; set; }
     }
 }

@@ -37,14 +37,18 @@
 
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(string viewName = null)
         {
+            if (viewName != null)
+                return this.View(viewName,
+                    new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
+
             return this.View(
                 new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
         }
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
-        {            
+        {
             var requestId = Guid.NewGuid();
             var correlationId = Guid.NewGuid();
 
@@ -101,7 +105,7 @@
                     cancellationToken)).Any();
                 subscription.OperationCount = recordedSubscriptionOperations.Count();
                 newViewModel.Add(subscription);
-            }            
+            }
 
             return this.View(newViewModel.OrderByDescending(s => s.SubscriptionName));
         }
@@ -172,6 +176,7 @@
                         SubscriptionId = subscriptionId,
                         SubscriptionName = subscription.Name,
                         CurrentPlan = subscription.PlanId,
+                        CurrentQuantity = subscription.Quantity,
                         AvailablePlans = availablePlans,
                         PendingOperations =
                                                                   (await this.fulfillmentClient
@@ -226,6 +231,35 @@
                                    cancellationToken);
 
             return updateResult.Success ? this.RedirectToAction("Index") : this.Error();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateSubscriptionQuantity(
+            UpdateSubscriptionViewModel model,
+            CancellationToken cancellationToken)
+        {
+            var requestId = Guid.NewGuid();
+            var correlationId = Guid.NewGuid();
+
+            if ((await this.fulfillmentClient.GetSubscriptionOperationsAsync(
+                     model.SubscriptionId,
+                     requestId,
+                     correlationId,
+                     cancellationToken))
+                .Any(o => o.Status == OperationStatusEnum.InProgress)) return this.RedirectToAction("Index");
+            var updateResult = await this.fulfillmentClient.UpdateSubscriptionQuantityAsync(
+                                   model.SubscriptionId,
+                                   model.NewQuantity,
+                                   requestId,
+                                   correlationId,
+                                   cancellationToken);
+
+            if (this.operationsStore != default)
+            {
+                await this.operationsStore.RecordAsync(model.SubscriptionId, updateResult, cancellationToken);
+            }
+
+            return updateResult.Success ? this.RedirectToAction("Index") : this.Error("UpdateSubscription");
         }
     }
 }

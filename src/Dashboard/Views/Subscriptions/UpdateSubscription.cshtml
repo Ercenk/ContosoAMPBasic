@@ -9,7 +9,7 @@
 
 <span class="text-danger">@Html.ValidationSummary(false)</span>
 
-<form asp-action="UpdateSubscription">
+<form method="post">
     <div>
         <dl class="row">
             <dt class="col-sm-2">
@@ -25,27 +25,40 @@
                 @Html.DisplayFor(model => model.SubscriptionId)
                 <input asp-for="SubscriptionId" type="hidden" class="form-control" />
             </dd>
+        </dl>
+    </div>
 
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CurrentPlan)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.CurrentPlan)
-            </dd>
-
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.AvailablePlans)
-            </dt>
-            <dd class="col-sm-10">
+    <table class="table table-bordered">
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.CurrentPlan)</td>
+            <td>@Html.DisplayFor(model => model.CurrentPlan)</td>
+            @if (Model.CurrentQuantity > 0)
+            {
+                <td>@Html.DisplayNameFor(model => model.CurrentQuantity)</td>
+                <td>@Html.DisplayFor(model => model.CurrentQuantity)</td>
+            }
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.AvailablePlans)</td>
+            <td>
                 <select asp-for="NewPlan" asp-items="@(new SelectList(Model.AvailablePlans, "PlanId", "DisplayName"))" class="form-control">
                     <option value="">Choose a new plan</option>
                 </select>
-            </dd>
-        </dl>
-    </div>
-    <div>
-        <input type="submit"
-               value="Submit"
-               class="btn btn-primary" />
-    </div>
+            </td>
+            @if (Model.CurrentQuantity > 0)
+            {
+                <td>@Html.DisplayNameFor(model => model.NewQuantity)</td>
+                <td>@Html.EditorFor(model => model.NewQuantity)</td>
+            }
+        </tr>
+        <tr>
+            <td colspan="2"><button asp-action="UpdateSubscription" class="btn btn-primary">Change Plan</button></td>
+            @if (Model.CurrentQuantity > 0)
+            {
+                <td colspan="2"><button asp-action="UpdateSubscriptionQuantity" class="btn btn-primary">Change Quantity</button></td>
+            }
+        </tr>
+    </table>
+
+
 </form>

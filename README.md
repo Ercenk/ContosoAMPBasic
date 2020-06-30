@@ -1,5 +1,4 @@
-A sample for Azure Marketplace SaaS integration
-===============================================
+# A Sample for Azure Marketplace SaaS Integration
 
 This sample demonstrates the basic interaction of a SaaS solution with Azure
 Marketplace. It does not have any SaaS functionality. It is a bare bones
@@ -7,35 +6,31 @@ approach focusing on the marketplace integration.
 
 First, disclaimers :)
 
--   **My intent with this sample is to demonstrate the integration concepts, and
-    highlight a possible solution that may address a common scenario.**
+- **My intent with this sample is to demonstrate the integration concepts, and
+  highlight a possible solution that may address a common scenario.**
+- **This is sample quality code, and does not implement many important aspects
+  for production level, such as exception handling, transient faults, proper
+  logging etc. Please use it as a learning tool, and write your own code.**
+- **I make frequent changes to this repo as I discover new things with the
+  marketplace API. Please check back often.**
+- **I tried not to take any dependencies on 3rd party libraries, and tried to
+  keep it as "pure" as possible, so no SPA, no client side MVC, fancy UI, or
+  other .NET packages other than JSON.NET, and SendGrid, so we can focus on the
+  solution.**
 
--   **This is sample quality code, and does not implement many important aspects
-    for production level, such as exception handling, transient faults, proper
-    logging etc. Please use it as a learning tool, and write your own code.**
+You can also find a short [video published on the Azure Friday channel](https://www.youtube.com/watch?v=2Oaq5dHczMY) to see the experience and a brief explanation.
 
--   **I make frequent changes to this repo as I discover new things with the
-    marketplace API. Please check back often.**
+In the sections below you will find:
 
--   **I tried not to take any dependencies on 3rd party libraries, and tried to keep it as "pure" as possible, so no SPA, no client side MVC, fancy UI, or other .NET packages other than JSON.NET, and SendGrid, so we can focus on the solution.**
-
-You can also find a short [video published on the Azure Friday channel](https://www.youtube.com/watch?v=2Oaq5dHczMY)  to see the experience, and a brief explanation.    
-
-In the sections below you will find
-
-1.  [Integrating a Software as a Solution with Azure Marketplace](#Integrating-a-Software-as-a-Solution-with-Azure-Marketplace) 
-
-1.  [The scenario for the sample](#The-scenario-for-the-sample)
-
-1. [Running the sample](#Running-the-sample)
-
-1. [I deployed and configured everything, how should it look like?](#i-deployed-and-configured-everything-how-should-it-look-like)
+1. [Integrating a Software as a Solution with Azure Marketplace](#Integrating-a-Software-as-a-Solution-with-Azure-Marketplace)
+2. [The scenario for the sample](#The-scenario-for-the-sample)
+3. [Running the sample](#Running-the-sample)
+4. [Signing Up for Your Offer](#signing-up-for-your-offer)
 
 Let's first start with mentioning how to integrate a SaaS solution with Azure
 Marketplace.
 
-Integrating a Software as a Solution with Azure Marketplace
------------------------------------------------------------
+## Integrating a Software as a Solution with Azure Marketplace
 
 Many different types of solution offers are available on Azure Marketplace for
 the customers to subscribe. Those different types include options such as
@@ -49,15 +44,14 @@ capabilities for enabling the solution to be available for purchase.
 
 Azure Marketplace talks to a SaaS solution on two channels,
 
--   [Landing page](###-Landing-page): The Azure Marketplace sends the subscriber
-    to this page maintained by the publisher to capture the details for
-    provisioning the solution for the subscriber. The subscriber is on this page
-    for the activating the subscription, or modifying it.
-
--   [Webhook](###-Webhook-endpoint): This is an endpoint where the Azure
-    Marketplace notifies the solution for the events such as subscription cancel
-    and update, or suspend request for the subscription, should the customer's
-    payment method becomes unusable.
+- [Landing page](###-Landing-page): The Azure Marketplace sends the subscriber
+  to this page maintained by the publisher to capture the details for
+  provisioning the solution for the subscriber. The subscriber is on this page
+  for the activating the subscription, or modifying it.
+- [Webhook](###-Webhook-endpoint): This is an endpoint where the Azure
+  Marketplace notifies the solution for the events such as subscription cancel
+  and update, or suspend request for the subscription, should the customer's
+  payment method becomes unusable.
 
 The SaaS solution in turn uses the REST API exposed on the Azure Marketplace
 side to perform corresponding operations. Those can be activating, cancelling,
@@ -66,14 +60,11 @@ updating a subscription.
 To summarize, we can talk about three interaction areas between the Azure
 Marketplace and the SaaS solution,
 
-1.  Landing page
-
-2.  Webhook endpoint
-
-3.  Calls on the Azure Marketplace REST API
+1. Landing page
+2. Webhook endpoint
+3. Calls on the Azure Marketplace REST API
 
 ![overview](Docs/AmpIntegrationOverview.png)
-
 
 ### Landing page
 
@@ -98,7 +89,7 @@ by AAD, such as Microsoft Graph API, Azure Management API etc.
 As noted above, the subscriber can access the landing page after subscribing to
 the offer to make changes to the subscription.
 
-#### Azure AD Requirement
+#### Multi-Tenant Azure AD Requirement
 
 This page should authenticate a subscriber through Azure Active Directory (AAD)
 using the [OpenID
@@ -124,7 +115,7 @@ The Fulfillment API is documented
 for subscription integration, and the usage based metering API documentation is
 [here](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/marketplace-metering-service-apis).
 
-#### Azure AD Requirement
+#### Single-Tenant Azure AD Requirement
 
 The publisher should register an AAD application and provide the AppID
 (ClientId) and the tenant ID (AAD directory where the app is registered) during
@@ -135,7 +126,7 @@ those details. A client must use [service-to-service access token
 request](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-oauth2-client-creds-grant-flow#service-to-service-access-token-request)
 of the client credential workflow, and with the v1 Azure AD endpoint. Use the Marketplace Fulfillment API V2.0's resource ID,62d94f6c-d599-489b-a797-3e10e42fbe22 for the resource parameter
 
-There needs to be a **one-to-one match between the publisher account and the application**. If a publisher has multiple SaaS offers under the same publisher account, all of those offers need to use the same TenantId/AppId. 
+There needs to be a **one-to-one match between the publisher account and the application**. If a publisher has multiple SaaS offers under the same publisher account, all of those offers need to use the same TenantId/AppId.
 
 If you have multiple publisher accounts for various reasons, please do not use the TenantId/AppId for offers under different publisher accounts.
 
@@ -155,49 +146,39 @@ Let's go through the steps of activating a subscription to an offer.
 
 ![AuthandAPIFlow](Docs/Auth_and_API_flow.png)
 
-1.  Customer subscribes to an offer on Azure Marketplace
-
-1.  Commerce engine generates marketplace token for the landing page. This is an
-    opaque token (unlike a JSON Web Token, JWT that is returned when
-    authenticating against Azure AD) and does not contain any information. It is
-    just an index to the subscription and used by the resolve API to retrieve
-    the details of a subscription. This token is available when the user clicks
-    the "Configure Account" for an inactive subscription, or "Manage Account"
-    for an active subscription
-
-1. Customer clicks on the "Configure Account" (new and not activated
-    subscription) or "Managed Account" (activated subscription) and accesses the
-    landing page
-
-1.  Landing page asks the user to logon using Azure AD [OpenID
-    Connect](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-protocols-oidc)
-    flow
-
-1.  Azure AD returns the id_token. There needs to be additional steps for
-    validating the id_token. Just receiving an id_token is not enough for
-    authentication. Also, the solution may need to ask for authorization to
-    access other resources on behalf of the user. We are not covering them for
-    brevity and ask you to refer to the related Azure AD documentation
-
-1.  Solution asks for an access token using the use [service-to-service access
-    token
-    request](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-oauth2-client-creds-grant-flow#service-to-service-access-token-request)
-    of the client credential workflow to be able to call the API
-
-1.  Azure AD returns the access token
-
-1.  Solution prepends "Bearer " (notice the space) to the access token, and adds
-    it to the "Authorization" header of the outgoing request. We are using the
-    marketplace token previously received on the landing page to get the details
-    of the subscription using the "resolve" API
-
-1.  The subscription details is returned
-
-1.  Further API calls are made, again using the access token obtained from the
+1. Customer subscribes to an offer on Azure Marketplace
+2. Commerce engine generates marketplace token for the landing page. This is an
+   opaque token (unlike a JSON Web Token, JWT that is returned when
+   authenticating against Azure AD) and does not contain any information. It is
+   just an index to the subscription and used by the resolve API to retrieve
+   the details of a subscription. This token is available when the user clicks
+   the "Configure Account" for an inactive subscription, or "Manage Account"
+   for an active subscription
+3. Customer clicks on the "Configure Account" (new and not activated
+   subscription) or "Managed Account" (activated subscription) and accesses the
+   landing page
+4. Landing page asks the user to logon using Azure AD [OpenID
+   Connect](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-protocols-oidc)
+   flow
+5. Azure AD returns the id_token. There needs to be additional steps for
+   validating the id_token. Just receiving an id_token is not enough for
+   authentication. Also, the solution may need to ask for authorization to
+   access other resources on behalf of the user. We are not covering them for
+   brevity and ask you to refer to the related Azure AD documentation
+6. Solution asks for an access token using the use [service-to-service access
+   token
+   request](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-oauth2-client-creds-grant-flow#service-to-service-access-token-request)
+   of the client credential workflow to be able to call the API
+7. Azure AD returns the access token
+8. Solution prepends "Bearer " (notice the space) to the access token, and adds
+   it to the "Authorization" header of the outgoing request. We are using the
+   marketplace token previously received on the landing page to get the details
+   of the subscription using the "resolve" API
+9. The subscription details is returned
+10. Further API calls are made, again using the access token obtained from the
     Azure AD, in this case to activate the subscription
 
-The scenario for the sample
----------------------------
+## The scenario for the sample
 
 This sample can be a good starting point if the solution does not have
 requirements for providing native experience for cancelling and updating a
@@ -218,14 +199,14 @@ activate the subscription.
 Please see my overview for the integration points in section "Integrating a
 Software as a Solution with Azure Marketplace".
 
--   [Landing
-    page](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/LandingPageController.cs#L27)
+- [Landing
+  page](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/LandingPageController.cs#L27)
 
--   [Webhook
-    endpoint](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/WebHookController.cs)
+- [Webhook
+  endpoint](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/WebHookController.cs)
 
--   [Calling the
-    API](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/LandingPageController.cs#L19)
+- [Calling the
+  API](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/LandingPageController.cs#L19)
 
 ![overview](Docs/Overview.png)
 
@@ -234,9 +215,9 @@ Remember, this scenario is useful when there is a human element in the mix, for 
 - A script needs to be run manually for provisioning resources for a new customer, as part of the onboarding process
 - A team needs to qualify the purchase of the customer, for reasons like ITAR certification etc.
 
-Let's go through the scenario. 
+Let's go through the scenario.
 
-1. The prospective customer is on Azure Portal, and going through the Azure Marketplace in-product experience on the portal. Finds the solution and subscribes to it, after deciding on the plan. A placeholder resource is deployed on the customer's (subscriber's) Azure subscription for the new subscription to the offer. Please notice the overloaded use of the "subscription", there are two subscriptions at this moment, the customer's Azure subscription and the subscription to the SaaS offer. I will use **subscription** only when I refer to the subscription to the offer from now on. 
+1. The prospective customer is on Azure Portal, and going through the Azure Marketplace in-product experience on the portal. Finds the solution and subscribes to it, after deciding on the plan. A placeholder resource is deployed on the customer's (subscriber's) Azure subscription for the new subscription to the offer. Please notice the overloaded use of the "subscription", there are two subscriptions at this moment, the customer's Azure subscription and the subscription to the SaaS offer. I will use **subscription** only when I refer to the subscription to the offer from now on.
 
 1. Subscriber clicks on the **Configure Account** button on the new subscription, and gets transferred to the landing page.
 
@@ -244,9 +225,9 @@ Let's go through the scenario.
 
 1. Landing page uses the SDK to resolve the subscription to get the details, using the marketplace token on the landing page URL token parameter
 
-1. SDK gets an access token from Azure Active Directory (AAD) 
+1. SDK gets an access token from Azure Active Directory (AAD)
 
-1. SDK calls  **resolve** operation on the Fulfillment API, using the access token as a bearer token
+1. SDK calls **resolve** operation on the Fulfillment API, using the access token as a bearer token
 
 1. Subscriber fills in the other details on the landing page that will help the operations team to kick of the provisioning process. The landing page asks for a deployment region, as well as the email of the business unit contact.The solution may be using different data retention policies based on the region (GDPR comes to mind for Europe), or the solution may be depending on a completely different identity provider (IP), such as in-house developed, and may be sending an email to the business unit owner, asking him/her to add the other end users to the solution's account management system. Please keep in mind that the person subscribing, that is the purchaser (having access to the Azure subscription) can be different than the end user(s) of the solution.
 
@@ -258,7 +239,7 @@ Let's go through the scenario.
 
 1. The sample uses the SDK to activate the subscription
 
-1. SDK gets an access token from Azure Active Directory (AAD) 
+1. SDK gets an access token from Azure Active Directory (AAD)
 
 1. SDK calls the **activate** operation on the Fulfillment API
 
@@ -270,24 +251,32 @@ Let's go through the scenario.
 
 1. The operations team may de-provision the customer
 
-
-
-Running the sample
-------------------------
+## Running the sample
 
 The top-level actions are:
 
-1.  [Create a web application on Azure App Service](#Creating-a-web-application-on-Azure-App-Service-and-deploy-the-sample)
-
-2.  [Registering Azure Active Directory applications](#Registering-Azure-Active-Directory-applications)
-
-3.  [Create an offer on Commercial Marketplace Portal in Partner center](#Create-an-offer-on-Commercial-Marketplace-Portal-in-Partner-center)
-
-4.  [Create and configure a SendGrid account](#Creating-and-configuring-a-SendGrid-account)
-
-5.  [Create an Azure Storage Account](#Creating-a-storage-account)
-
-6.  [Change the configuration settings](#Change-the-configuration-settings)
+- [A Sample for Azure Marketplace SaaS Integration](#a-sample-for-azure-marketplace-saas-integration)
+  - [Integrating a Software as a Solution with Azure Marketplace](#integrating-a-software-as-a-solution-with-azure-marketplace)
+    - [Landing page](#landing-page)
+      - [Multi-Tenant Azure AD Requirement](#multi-tenant-azure-ad-requirement)
+    - [Webhook endpoint](#webhook-endpoint)
+    - [Marketplace REST API interactions](#marketplace-rest-api-interactions)
+      - [Single-Tenant Azure AD Requirement](#single-tenant-azure-ad-requirement)
+    - [Activating a subscription](#activating-a-subscription)
+  - [The scenario for the sample](#the-scenario-for-the-sample)
+  - [Running the sample](#running-the-sample)
+    - [Creating a web application on Azure App Service and deploy the sample](#creating-a-web-application-on-azure-app-service-and-deploy-the-sample)
+    - [Registering Azure Active Directory applications](#registering-azure-active-directory-applications)
+      - [Creating a new directory](#creating-a-new-directory)
+      - [Registering the apps](#registering-the-apps)
+    - [Create an offer on Commercial Marketplace Portal in Partner center](#create-an-offer-on-commercial-marketplace-portal-in-partner-center)
+    - [Creating and configuring a SendGrid account](#creating-and-configuring-a-sendgrid-account)
+    - [Creating a storage account](#creating-a-storage-account)
+    - [Change the configuration settings](#change-the-configuration-settings)
+  - [Signing Up for Your Offer](#signing-up-for-your-offer)
+  - [Notes](#notes)
+    - [Secrets](#secrets)
+      - [An experimental API client, and webhook processor helper](#an-experimental-api-client-and-webhook-processor-helper)
 
 ### Creating a web application on Azure App Service and deploy the sample
 
@@ -318,9 +307,9 @@ To create one,
 
 ![createdirectory](Docs/createdirectory.png)
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```
 Then fill in the details as you see fit after clicking the "create" button
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```
 
 1.  Switch to the new directory.
 
@@ -360,11 +349,11 @@ registering two applications:
     added.
 
 2.  **To authenticate Azure Marketplace Fulfillment APIs,** you can register a
-    **single tenant application**. 
+    **single tenant application**.
 
 ![A screenshot of a computer Description automatically generated](Docs/AdAppRegistration.png)
 
-### Create an offer on Commercial Marketplace Portal in Partner center 
+### Create an offer on Commercial Marketplace Portal in Partner center
 
 Base requirement is to have a SaaS offer set up through the Partner Center.
 Please see the checklist for creating the offer
@@ -378,10 +367,12 @@ client ID of the single tenant application you created (the second app) and set
 them on the technical configuration page.
 
 Copy the base URL of the web application, and set the value of the landing page,
-by adding /landingpage to the end, and set the webhook URL by adding /webhook to
+by adding `/landingpage` to the end, and set the webhook URL by adding `/webhook` to
 the end of the base URL of the web application.
 
-Also create test plans, with $0 cost, so you do not charge yourself when testing. Please remember to add a list of users as authorized preview users on the "Preview" tab.
+Also create test plans, with \$0 cost, so you do not charge yourself when testing. Please remember to add a list of users as authorized preview users on the "Preview" tab.
+
+[Create a SaaS Offer](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/create-new-saas-offer)
 
 ### Creating and configuring a SendGrid account
 
@@ -410,36 +401,27 @@ the values in the appsettings.json file, or use the dotnet user-secrets command.
 Please see the section "Secrets" below for the details if you want to use user
 secrets method.
 
+| Setting                                           | Change/Keep | Notes                                                                                                                                                                                                         |
+| ------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AzureAd:Instance                                  | Keep        | The landing page is using a multi-tenant app. Keep the instance value                                                                                                                                         |
+| AzureAd:Domain                                    | Change      | You can find this value on the "Overview" page of the Active Directory you have registered your applications in. If you are not using a custom domain, it is in the format of \<tenant name\>.onmicrosoft.com |
+| AzureAd:TenantId                                  | Keep        | Common authentication endpoint, since this is a multi-tenant app                                                                                                                                              |
+| AzureAd:ClientId                                  | Change      | Copy the clientId of the multi-tenant app from its "Overview" page                                                                                                                                            |
+| AzureAd:CallbackPath                              | Keep        | Default oidc sign in path                                                                                                                                                                                     |
+| AzureAd:SignedOutCallbackPath                     | Keep        | Default sign out path                                                                                                                                                                                         |
+| FulfillmentClient:AzureActiveDirectory:ClientId   | Change      | Copy the clientId of the single-tenant app from its "Overview" page. This AD app is for calling the Fulfillment API                                                                                           |
+| FulfillmentClient:AzureActiveDirectory:TenantId   | Change      | Copy the tenantId of the single-tenant app from its "Overview" page.                                                                                                                                          |
+| FulfillmentClient:AzureActiveDirectory:AppKey     | Change      | Go to the "Certificates & secrets" page of the single-tenant app you have registered, create a new client secret, and copy the value to the clipboard, then set the value for this setting.                   |
+| FulfillmentClient:FulfillmentService:BaseUri      | Keep        | The Azure Marketplace API endpoint.                                                                                                                                                                           |
+| FulfillmentClient:FulfillmentService:ApiVersion   | Change      | Change if you want to hit the production or mock API. 2018-08-31 is for production, 2018-09-15 is for mock API                                                                                                |
+| FulfillmentClient:OperationsStoreConnectionString | Change      | Copy the connection string of the storage account you have created in the previous step. Please see [SDK documentation for details](https://github.com/Ercenk/AzureMarketplaceSaaSApiClient#operations-store) |
+| Dashboard:Mail:OperationsTeamEmail                | Change      | The sample sends emails to this address.                                                                                                                                                                      |
+| Dashboard:Mail:FromEmail                          | Change      | Sendgrid requires a "from" email address when sending emails.                                                                                                                                                 |
+| Dashboard:Mail:ApiKey                             | Change      | Sendgrid API key.                                                                                                                                                                                             |
+| Dashboard:DashboardAdmin                          | Change      | Change it to the email address you are logging on to the dashboard. Only the users with the domain name of this email is authorized to use the dashboard to display the subscriptions.                        |
+| Dashboard:ShowUnsubscribed                        | Change      | Change true or false, depending on if you want to see the subscriptions that are not active.                                                                                                                  |
 
-| Setting                                           | Change/Keep | Notes                                                                                                                                                                                                                                    |
-|---------------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| AzureAd:Instance                                  | Keep        | The landing page is using a multi-tenant app. Keep the instance value                                                                                                                                                                    |
-| AzureAd:Domain                                    | Change      | You can find this value on the "Overview" page of the Active Directory you have registered your applications in. If you are not using a custom domain, it is in the format of \<tenant name\>.onmicrosoft.com                            |
-| AzureAd:TenantId                                  | Keep        | Common authentication endpoint, since this is a multi-tenant app                                                                                                                                                                         |
-| AzureAd:ClientId                                  | Change      | Copy the clientId of the multi-tenant app from its "Overview" page                                                                                                                                                                       |
-| AzureAd:CallbackPath                              | Keep        | Default oidc sign in path                                                                                                                                                                                                                |
-| AzureAd:SignedOutCallbackPath                     | Keep        | Default sign out path                                                                                                                                                                                                                    |
-| FulfillmentClient:AzureActiveDirectory:ClientId   | Change      | Copy the clientId of the single-tenant app from its "Overview" page. This AD app is for calling the Fulfillment API                                                                                                                      |
-| FulfillmentClient:AzureActiveDirectory:TenantId   | Change      | Copy the tenantId of the single-tenant app from its "Overview" page.                                                                                                                                                                     |
-| FulfillmentClient:AzureActiveDirectory:AppKey     | Change      | Go to the "Certificates & secrets" page of the single-tenant app you have registered, create a new client secret, and copy the value to the clipboard, then set the value for this setting.                                              |
-| FulfillmentClient:FulfillmentService:BaseUri      | Keep        | The Azure Marketplace API endpoint.                                                                                                                                                                                                      |
-| FulfillmentClient:FulfillmentService:ApiVersion   | Change      | Change if you want to hit the production or mock API. 2018-08-31 is for production, 2018-09-15 is for mock API                                                                                                                           |
-| FulfillmentClient:OperationsStoreConnectionString | Change      | Copy the connection string of the storage account you have created in the previous step. Please see [SDK documentation for details](https://github.com/Ercenk/AzureMarketplaceSaaSApiClient#operations-store)                            |
-| Dashboard:Mail:OperationsTeamEmail                | Change      | The sample sends emails to this address.                                                                                                                                                                                                 |
-| Dashboard:Mail:FromEmail                          | Change      | Sendgrid requires a "from" email address when sending emails.                                                                                                                                                                            |
-| Dashboard:Mail:ApiKey                             | Change      | Sendgrid API key.                                                                                                                                                                                                                        |
-| Dashboard:DashboardAdmin                          | Change      | Change it to the email address you are logging on to the dashboard. Only the users with the domain name of this email is authorized to use the dashboard to display the subscriptions.                                                   |
-| Dashboard:ShowUnsubscribed                        | Change      | Change true or false, depending on if you want to see the subscriptions that are not active.                                                                                                                                             |
-
-
-I deployed and configured everything, how should it look like?
-------------------------------------------------------------
-
-Here is how everything gets together on the Partner Center offer technical configuration details
-![Technical Configuration Page](./Docs/PartnerCenterTechnicalConfiguration.png)
-
-And make sure you have the correct preview audience set, with the email you would use for logging on the Azure Portal
-![preview audience](./Docs/PreviewAudience.png)
+## Signing Up for Your Offer
 
 Customer searches for the offer on Azure Portal
 
@@ -483,8 +465,7 @@ Customer searches for the offer on Azure Portal
 
 ![purchaser10](./Docs/Purchaser10.png)
 
-Notes
------
+## Notes
 
 ### Secrets
 
@@ -492,9 +473,9 @@ Secrets such as API keys are managed through "dotnet user-secrets" command. For
 example, to set the value for "FulfillmentClient:AzureActiveDirectory:AppKey"
 use the following command:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```shell
 dotnet user-secrets set "FulfillmentClient:AzureActiveDirectory:AppKey" "secret here"
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```
 
 Please see the user secrets
 [documentation](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-2.2&tabs=windows)

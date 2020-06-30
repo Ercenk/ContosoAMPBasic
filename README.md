@@ -97,7 +97,7 @@ customer, and provision additional resources as needed. The publisher's solution
 can also ask for consent to access other resources owned by the customer, and
 protected by AAD, such as Microsoft Graph API, Azure Management API, etc.
 
-> **Important:** the subscriber can access this page after subscribing to an
+> **:warning: IMPORTANT:** the subscriber can access this page after subscribing to an
 > offer to make changes to his/her subscription, such as upgrading, downgrading,
 > or any other changes to the subscription from Azure portal.
 
@@ -117,7 +117,7 @@ update of the subscription through Azure Marketplace, or suspending it, because
 of the unavailability of customer's payment method. A publisher provides the URL
 for this webhook endpoint when registering the offer for Azure Marketplace.
 
-> **Important:** This endpoint is not protected. The implementation should call
+> **:warning: IMPORTANT:** This endpoint is not protected. The implementation should call
 > the marketplace REST API to ensure the validity of the event.
 
 ### Marketplace REST API interactions

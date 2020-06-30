@@ -64,7 +64,7 @@ Marketplace and the SaaS solution,
 2. Webhook endpoint
 3. Calls on the Azure Marketplace REST API
 
-![overview](Docs/AmpIntegrationOverview.png)
+![overview](docs/images/AmpIntegrationOverview.png)
 
 ### Landing page
 
@@ -144,7 +144,7 @@ this interaction. Good practice...
 
 Let's go through the steps of activating a subscription to an offer.
 
-![AuthandAPIFlow](Docs/Auth_and_API_flow.png)
+![AuthandAPIFlow](docs/images/Auth_and_API_flow.png)
 
 1. Customer subscribes to an offer on Azure Marketplace
 2. Commerce engine generates marketplace token for the landing page. This is an
@@ -208,7 +208,7 @@ Software as a Solution with Azure Marketplace".
 - [Calling the
   API](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/LandingPageController.cs#L19)
 
-![overview](Docs/Overview.png)
+![overview](docs/images/Overview.png)
 
 Remember, this scenario is useful when there is a human element in the mix, for situations such as
 
@@ -287,7 +287,7 @@ this
 
 Following is how my Visual Studio Publish profile looks like:
 
-![publishprofile](./Docs/PublishProfile.png)
+![publishprofile](./docs/images/PublishProfile.png)
 
 ### Registering Azure Active Directory applications
 
@@ -305,7 +305,7 @@ To create one,
 2.  Click "Create a resource", and type in "azure active directory" in the
     search box, and select
 
-![createdirectory](Docs/createdirectory.png)
+![createdirectory](docs/images/createdirectory.png)
 
 ```
 Then fill in the details as you see fit after clicking the "create" button
@@ -313,24 +313,24 @@ Then fill in the details as you see fit after clicking the "create" button
 
 1.  Switch to the new directory.
 
-![switchdirectory](Docs/switchdirectory.png)
+![switchdirectory](docs/images/switchdirectory.png)
 
 1.  Select the new directory, if it does not show under "Favorites" check "All
     directories"
 
-![gotodirectory](Docs/gotodirectory.png)
+![gotodirectory](docs/images/gotodirectory.png)
 
 Once you switch to the new directory (or if you have not created a new one, and
 decided to use the existing one instead), select the Active Directory service (1
 on the image below). If you do not see it, find it using "All services" (2 on
 the image below).
 
-![findactivedirectory](Docs/findactivedirectory.png)
+![findactivedirectory](docs/images/findactivedirectory.png)
 
 Click on "App registrations", and select "New registration". You will need to
 create two apps.
 
-![registerappstart](Docs/registerappstart.png)
+![registerappstart](docs/images/registerappstart.png)
 
 #### Registering the apps
 
@@ -351,7 +351,7 @@ registering two applications:
 2.  **To authenticate Azure Marketplace Fulfillment APIs,** you can register a
     **single tenant application**.
 
-![A screenshot of a computer Description automatically generated](Docs/AdAppRegistration.png)
+![A screenshot of a computer Description automatically generated](docs/images/AdAppRegistration.png)
 
 ### Create an offer on Commercial Marketplace Portal in Partner center
 
@@ -427,43 +427,43 @@ Customer searches for the offer on Azure Portal
 
 1. Go to Azure Portal and add a resource
 
-![purchaser1](./Docs/Purchaser1.png)
+![purchaser1](./docs/images/Purchaser1.png)
 
 2. Find the search text box
 
-![purchaser2](./Docs/Purchaser2.png)
+![purchaser2](./docs/images/Purchaser2.png)
 
 3. Type in your offer name
 
-![purchaser3](./Docs/Purchaser3.png)
+![purchaser3](./docs/images/Purchaser3.png)
 
 4. Select the plan
 
-![purchaser4](./Docs/Purchaser4.png)
+![purchaser4](./docs/images/Purchaser4.png)
 
 5. Subscribe
 
-![purchaser5](./Docs/Purchaser5.png)
+![purchaser5](./docs/images/Purchaser5.png)
 
 6. Find the subscription after the deployment is complete, and go the subscription
 
-![purchaser6](./Docs/Purchaser6.png)
+![purchaser6](./docs/images/Purchaser6.png)
 
 7. Subscription details, notice it is not active yet
 
-![purchaser7](./Docs/Purchaser7.png)
+![purchaser7](./docs/images/Purchaser7.png)
 
 8. Landing page
 
-![purchaser8](./Docs/Purchaser8.png)
+![purchaser8](./docs/images/Purchaser8.png)
 
 9. Purchaser submits the form, and Contoso ops team receives an email
 
-![purchaser9](./Docs/Purchaser9.png)
+![purchaser9](./docs/images/Purchaser9.png)
 
 10. Contoso team takes the appropriate action to qualify and onboard the customer
 
-![purchaser10](./Docs/Purchaser10.png)
+![purchaser10](./docs/images/Purchaser10.png)
 
 ## Notes
 

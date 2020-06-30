@@ -29,9 +29,9 @@ In the sections below you will find:
     - [Landing Page](#landing-page)
       - [Azure AD Requirement: Multi-Tenant Application Registration](#azure-ad-requirement-multi-tenant-application-registration)
     - [Webhook Endpoint](#webhook-endpoint)
-    - [Marketplace REST API interactions](#marketplace-rest-api-interactions)
+    - [Marketplace REST API Interactions](#marketplace-rest-api-interactions)
       - [Azure AD Requirement: Single-Tenant Registration](#azure-ad-requirement-single-tenant-registration)
-    - [Activating a subscription](#activating-a-subscription)
+    - [Activating a Subscription](#activating-a-subscription)
   - [The Scenario for the Sample](#the-scenario-for-the-sample)
   - [Running the sample](#running-the-sample)
     - [Creating a web application on Azure App Service and deploy the sample](#creating-a-web-application-on-azure-app-service-and-deploy-the-sample)
@@ -82,7 +82,7 @@ Marketplace and the SaaS solution,
 
 1. Landing Page
 2. Webhook Endpoint
-3. Calls to the Azure Marketplace REST API
+3. Marketplace REST API Interactions
 
 ![overview](docs/images/AmpIntegrationOverview.png)
 
@@ -97,9 +97,9 @@ customer, and provision additional resources as needed. The publisher's solution
 can also ask for consent to access other resources owned by the customer, and
 protected by AAD, such as Microsoft Graph API, Azure Management API, etc.
 
-> **:warning: IMPORTANT:** the subscriber can access this page after subscribing to an
-> offer to make changes to his/her subscription, such as upgrading, downgrading,
-> or any other changes to the subscription from Azure portal.
+> **:warning: IMPORTANT:** the subscriber can access this page after subscribing
+> to an offer to make changes to his/her subscription, such as upgrading,
+> downgrading, or any other changes to the subscription from Azure portal.
 
 #### Azure AD Requirement: Multi-Tenant Application Registration
 
@@ -112,40 +112,42 @@ landing page.
 ### Webhook Endpoint
 
 The Azure Marketplace calls this endpoint to notify the solution for the events
-happening on the marketplace side. Those events can be the cancellation, and
-update of the subscription through Azure Marketplace, or suspending it, because
-of the unavailability of customer's payment method. A publisher provides the URL
-for this webhook endpoint when registering the offer for Azure Marketplace.
+happening on the marketplace side. Those events can be the cancellation or
+modification of the subscription through Azure Marketplace, or suspending it
+because of the unavailability of a customer's payment method. A publisher
+provides the URL for this webhook endpoint when registering the offer for Azure
+Marketplace.
 
-> **:warning: IMPORTANT:** This endpoint is not protected. The implementation should call
-> the marketplace REST API to ensure the validity of the event.
+> **:warning: IMPORTANT:** This endpoint is not protected. The implementation
+> should call the marketplace REST API to ensure the validity of the event.
 
-### Marketplace REST API interactions
+### Marketplace REST API Interactions
 
-The Fulfillment API is documented
+The _Fulfillment API_ is documented
 [here](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/pc-saas-fulfillment-api-v2)
-for subscription integration, and the usage based metering API documentation is
+for subscription integration, and the usage based _Metered Billing API_
+documentation is
 [here](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/marketplace-metering-service-apis).
 
 #### Azure AD Requirement: Single-Tenant Registration
 
-The publisher should register an AAD application and provide the AppID
-(ClientId) and the tenant ID (AAD directory where the app is registered) during
-registering the offer for the marketplace.
+The publisher should register an AAD application and provide the `AppID`
+(ClientId) and the `Tenant ID` (AAD directory where the app is registered)
+during registering the offer for the marketplace.
 
 The solution is put on a whitelist so it can call the marketplace REST API with
-those details. A client must use
+those details. A client must use a
 [service-to-service access token request](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-oauth2-client-creds-grant-flow#service-to-service-access-token-request)
 of the client credential workflow, and with the v1 Azure AD endpoint. Use the
-Marketplace Fulfillment API V2.0's resource
-ID,62d94f6c-d599-489b-a797-3e10e42fbe22 for the resource parameter
+Marketplace Fulfillment API v2's resource ID,
+`62d94f6c-d599-489b-a797-3e10e42fbe22`, for the resource parameter.
 
 There needs to be a **one-to-one match between the publisher account and the
 application**. If a publisher has multiple SaaS offers under the same publisher
-account, all of those offers need to use the same TenantId/AppId.
+account, all of those offers need to use the same `Tenant Id` and `AppId`.
 
-If you have multiple publisher accounts for various reasons, please do not use
-the TenantId/AppId for offers under different publisher accounts.
+If you have multiple publisher accounts, please do not use the `Tenant Id` and
+`AppId` combination for offers under different publisher accounts.
 
 Please note the different requirements for the Azure AD interaction for the
 landing page and calling the APIs. I recommend two separate AAD applications,
@@ -155,9 +157,9 @@ proper separation of concerns when authenticating against Azure AD.
 This way, you can ask the subscriber for consent to access his/her Graph API,
 Azure Management API, or any other API that is protected by Azure AD on the
 landing page, and separate the security for accessing the marketplace API from
-this interaction. Good practice...
+this interaction as good practice.
 
-### Activating a subscription
+### Activating a Subscription
 
 Let's go through the steps of activating a subscription to an offer.
 

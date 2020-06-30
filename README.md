@@ -165,41 +165,40 @@ Let's go through the steps of activating a subscription to an offer.
 
 ![AuthandAPIFlow](docs/images/Auth_and_API_flow.png)
 
-1. Customer subscribes to an offer on Azure Marketplace
-2. Commerce engine generates marketplace token for the landing page. This is an
-   opaque token (unlike a JSON Web Token, JWT that is returned when
-   authenticating against Azure AD) and does not contain any information. It is
+1. Customer subscribes to an offer on Azure Marketplace.
+2. Commerce engine generates a marketplace token for the landing page. This is
+   an opaque token, unlike a JSON Web Token (JWT) that is returned when
+   authenticating against Azure AD, and does not contain any information. It is
    just an index to the subscription and used by the resolve API to retrieve the
-   details of a subscription. This token is available when the user clicks the
-   "Configure Account" for an inactive subscription, or "Manage Account" for an
-   active subscription
-3. Customer clicks on the "Configure Account" (new and not activated
-   subscription) or "Managed Account" (activated subscription) and accesses the
-   landing page
+   details of a subscription. This token is available when the user clicks
+   "Configure Account" for an inactive subscription or "Manage Account" for an
+   active subscription.
+3. Customer clicks on "Configure Account" (new and not activated subscription)
+   or "Manage Account" (activated subscription) and accesses the landing page.
 4. Landing page asks the user to logon using Azure AD
    [OpenID Connect](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-protocols-oidc)
-   flow
-5. Azure AD returns the id_token. There needs to be additional steps for
-   validating the id_token. Just receiving an id_token is not enough for
+   flow.
+5. Azure AD returns the `id_token`. There needs to be additional steps for
+   validating the `id_token` — just receiving an `id_token` is not enough for
    authentication. Also, the solution may need to ask for authorization to
    access other resources on behalf of the user. We are not covering them for
-   brevity and ask you to refer to the related Azure AD documentation
-6. Solution asks for an access token using the use
+   brevity and ask you to refer to the related Azure AD documentation.
+6. Solution asks for an access token using the
    [service-to-service access token request](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-oauth2-client-creds-grant-flow#service-to-service-access-token-request)
-   of the client credential workflow to be able to call the API
-7. Azure AD returns the access token
-8. Solution prepends "Bearer " (notice the space) to the access token, and adds
-   it to the "Authorization" header of the outgoing request. We are using the
-   marketplace token previously received on the landing page to get the details
-   of the subscription using the "resolve" API
-9. The subscription details is returned
+   of the client credential workflow to be able to call the API.
+7. Azure AD returns the access token.
+8. Solution prepends `"Bearer "` (notice the space) to the access token, and
+   adds it to the `Authorization` header of the outgoing request. We are using
+   the marketplace token previously received on the landing page to get the
+   details of the subscription using the resolve API.
+9. The subscription details are returned.
 10. Further API calls are made, again using the access token obtained from the
-    Azure AD, in this case to activate the subscription
+    Azure AD, in this case to activate the subscription.
 
 ## The Scenario for the Sample
 
-This sample can be a good starting point if the solution does not have
-requirements for providing native experience for cancelling and updating a
+This sample can be a good starting point, assuming the solution does not have
+requirements of providing a native experience for cancelling or updating a
 subscription by a customer.
 
 It exposes a landing page that can be customized for branding. It provides a

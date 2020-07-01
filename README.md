@@ -32,7 +32,9 @@ In the sections below you will find:
     - [Marketplace REST API Interactions](#marketplace-rest-api-interactions)
       - [Azure AD Requirement: Single-Tenant Registration](#azure-ad-requirement-single-tenant-registration)
     - [Activating a Subscription](#activating-a-subscription)
-  - [The Scenario for the Sample](#the-scenario-for-the-sample)
+  - [Scenario for the Sample](#scenario-for-the-sample)
+    - [Architecture Overview and Process Flow of the Solution](#architecture-overview-and-process-flow-of-the-solution)
+    - [Walking-through the Scenario](#walking-through-the-scenario)
   - [Running the sample](#running-the-sample)
     - [Creating a web application on Azure App Service and deploy the sample](#creating-a-web-application-on-azure-app-service-and-deploy-the-sample)
     - [Registering Azure Active Directory applications](#registering-azure-active-directory-applications)
@@ -195,7 +197,7 @@ Let's go through the steps of activating a subscription to an offer.
 10. Further API calls are made, again using the access token obtained from the
     Azure AD, in this case to activate the subscription.
 
-## The Scenario for the Sample
+## Scenario for the Sample
 
 This sample can be a good starting point, assuming the solution does not have
 requirements of providing a native experience for cancelling or updating a
@@ -203,36 +205,37 @@ subscription by a customer.
 
 It exposes a landing page that can be customized for branding. It provides a
 webhook endpoint for processing the incoming notifications from the Azure
-Marketplace. The rest of the integration is done via emails.
+Marketplace. It also provides a privacy policy and support page to meet the
+partner center requirements. The rest of the integration is done via emails.
 
-The landing page can also used for adding new fields for getting more
-information from the subscriber, for example what is the favored region.When a
-subscriber provides the details on the landing page, the solution generates an
-email to the configured operations contact. The operations team then provisions
-the required resources and onbards the customer using their internal processes
-then comes back to the generated email and clicks on the link in the email to
-activate the subscription.
+The landing page can also used for adding new fields to gather more information
+from the subscriber; for example: what is the favored region. When a subscriber
+provides the details on the landing page, the solution generates an email to the
+configured operations contact. The operations team then provisions the required
+resources, onboards the customer using their internal processes, and then comes
+back to the generated email and clicks on the link in the email to activate the
+subscription.
 
-Please see my overview for the integration points in section "Integrating a
-Software as a Solution with Azure Marketplace".
+Please see my overview for the integration points in
+[Integrating a Software as a Solution with Azure Marketplace](#integrating-a-software-as-a-solution-with-azure-marketplace).
 
-- [Landing page](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/LandingPageController.cs#L27)
+### Architecture Overview and Process Flow of the Solution
 
-- [Webhook endpoint](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/WebHookController.cs)
+![Architecture Overview and Process Flow of the Solution](docs/images/Overview.png)
 
+- [Landing Page](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/LandingPageController.cs#L27)
+- [Webhook Endpoint](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/WebHookController.cs)
 - [Calling the API](https://github.com/Ercenk/ContosoAMPBasic/blob/master/src/Dashboard/Controllers/LandingPageController.cs#L19)
 
-![overview](docs/images/Overview.png)
-
 Remember, this scenario is useful when there is a human element in the mix, for
-situations such as
+situations such as:
 
 - A script needs to be run manually for provisioning resources for a new
-  customer, as part of the onboarding process
-- A team needs to qualify the purchase of the customer, for reasons like ITAR
-  certification etc.
+  customer as part of the onboarding process.
+- A team needs to qualify the purchase of the customer for reasons like ITAR
+  certification, etc.
 
-Let's go through the scenario.
+### Walking-through the Scenario
 
 1. The prospective customer is on Azure Portal, and going through the Azure
    Marketplace in-product experience on the portal. Finds the solution and
@@ -243,22 +246,16 @@ Let's go through the scenario.
    Azure subscription and the subscription to the SaaS offer. I will use
    **subscription** only when I refer to the subscription to the offer from now
    on.
-
-1. Subscriber clicks on the **Configure Account** button on the new
+2. Subscriber clicks on the **Configure Account** button on the new
    subscription, and gets transferred to the landing page.
-
-1. Landing page uses Azure Active Directory (with OpenID Connect flow) to log
-   the user on
-
-1. Landing page uses the SDK to resolve the subscription to get the details,
-   using the marketplace token on the landing page URL token parameter
-
-1. SDK gets an access token from Azure Active Directory (AAD)
-
-1. SDK calls **resolve** operation on the Fulfillment API, using the access
-   token as a bearer token
-
-1. Subscriber fills in the other details on the landing page that will help the
+3. Landing page uses Azure Active Directory (with OpenID Connect flow) to log
+   the user on.
+4. Landing page uses the SDK to resolve the subscription to get the details,
+   using the marketplace token on the landing page URL token parameter.
+5. SDK gets an access token from Azure Active Directory (AAD).
+6. SDK calls **resolve** operation on the Fulfillment API, using the access
+   token as a bearer token.
+7. Subscriber fills in the other details on the landing page that will help the
    operations team to kick of the provisioning process. The landing page asks
    for a deployment region, as well as the email of the business unit
    contact.The solution may be using different data retention policies based on
@@ -269,32 +266,22 @@ Let's go through the scenario.
    in mind that the person subscribing, that is the purchaser (having access to
    the Azure subscription) can be different than the end user(s) of the
    solution.
-
-1. Subscriber completes the process by submitting the form on the landing page.
+8. Subscriber completes the process by submitting the form on the landing page.
    This sends an email to the operations team email address (configured in the
-   settings)
-
-1. Operations team takes the appropriate steps (qualifying, provisioning
-   resources etc.)
-
-1. Once complete, operation team clicks on the activate link in the email
-
-1. The sample uses the SDK to activate the subscription
-
-1. SDK gets an access token from Azure Active Directory (AAD)
-
-1. SDK calls the **activate** operation on the Fulfillment API
-
-1. The subscriber may eventually unsubscribe from the subscription by deleting
-   it, or may stop fulfilling his/her monetary commitment to Microsoft
-
-1. The commerce engine sends a notification on the webhook at this time, for
-   letting the publisher know about the situation
-
-1. The sample sends an email to the operations team, notifying the team about
-   the status
-
-1. The operations team may de-provision the customer
+   settings).
+9. Operations team takes the appropriate steps (qualifying, provisioning
+   resources etc.).
+10. Once complete, operation team clicks on the activate link in the email.
+11. The sample uses the SDK to activate the subscription.
+12. SDK gets an access token from Azure Active Directory (AAD).
+13. SDK calls the **activate** operation on the Fulfillment API.
+14. The subscriber may eventually unsubscribe from the subscription by deleting
+    it, or may stop fulfilling his/her monetary commitment to Microsoft.
+15. The commerce engine sends a notification on the webhook at this time, for
+    letting the publisher know about the situation.
+16. The sample sends an email to the operations team, notifying the team about
+    the status.
+17. The operations team may de-provision the customer.
 
 ## Running the sample
 

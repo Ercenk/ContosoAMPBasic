@@ -47,12 +47,12 @@ In the sections below you will find:
     - [Example Offer Setup in Commercial Marketplace Portal](#example-offer-setup-in-commercial-marketplace-portal)
       - [Offer Setup](#offer-setup)
       - [Properties](#properties)
-      - [Offer listing](#offer-listing)
-      - [Preview audience](#preview-audience)
-      - [Technical configuration](#technical-configuration)
-      - [Plan overview](#plan-overview)
-      - [Co-sell with Microsoft](#co-sell-with-microsoft)
-      - [Resell through CSPs](#resell-through-csps)
+      - [Offer Listing](#offer-listing)
+      - [Preview Audience](#preview-audience)
+      - [Technical Configuration](#technical-configuration)
+      - [Plan Overview](#plan-overview)
+      - [Co-Sell with Microsoft](#co-sell-with-microsoft)
+      - [Resell Through CSPs](#resell-through-csps)
   - [Signing Up for Your Offer](#signing-up-for-your-offer)
   - [Notes](#notes)
     - [Secrets](#secrets)
@@ -460,17 +460,37 @@ sample SaaS solution to help you get started with a sample offer.
 
 #### Properties
 
-#### Offer listing
+![Microsoft Partner Center - Properties](docs/images/MicrosoftPartnerCenter-Properties.png)
 
-#### Preview audience
+#### Offer Listing
 
-#### Technical configuration
+![Microsoft Partner Center - Offer Listing](docs/images/MicrosoftPartnerCenter-OfferListing.png)
 
-#### Plan overview
+#### Preview Audience
 
-#### Co-sell with Microsoft
+![Microsoft Partner Center - Preview Audience](docs/images/MicrosoftPartnerCenter-PreviewAudience.png)
 
-#### Resell through CSPs
+#### Technical Configuration
+
+![Microsoft Partner Center - Technical Configuration](docs/images/MicrosoftPartnerCenter-TechnicalConfiguration.png)
+
+#### Plan Overview
+
+![Microsoft Partner Center - Plan Overview](docs/images/MicrosoftPartnerCenter-PlanOverview.png)
+
+![Microsoft Partner Center - Plan Overview - Plan Listing](docs/images/MicrosoftPartnerCenter-PlanOverview-PlanListing.png)
+
+![Microsoft Partner Center - Plan Overview - Pricing and Availability](docs/images/MicrosoftPartnerCenter-PlanOverview-PricingAndAvailability.png)
+
+![Microsoft Partner Center - Plan Overview - Pricing and Availability - Markets](docs/images/MicrosoftPartnerCenter-PlanOverview-PricingAndAvailability-Markets.png)
+
+#### Co-Sell with Microsoft
+
+*Nothing needs to be configured here for the purpose of this solution.*
+
+#### Resell Through CSPs
+
+*Nothing needs to be configured here for the purpose of this solution.*
 
 You will need to provide the application ID (also referred to as the "client
 ID") and the tenant ID on the

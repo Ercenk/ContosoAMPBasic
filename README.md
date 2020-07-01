@@ -40,7 +40,16 @@ In the sections below you will find:
     - [Registering Azure Active Directory Applications](#registering-azure-active-directory-applications)
       - [Creating a New Directory](#creating-a-new-directory)
       - [Registering the Apps](#registering-the-apps)
-    - [Create an offer on Commercial Marketplace Portal in Partner center](#create-an-offer-on-commercial-marketplace-portal-in-partner-center)
+    - [Create an Offer on Commercial Marketplace Portal in Partner Center](#create-an-offer-on-commercial-marketplace-portal-in-partner-center)
+    - [Example Offer Setup in Commercial Marketplace Portal](#example-offer-setup-in-commercial-marketplace-portal)
+      - [Offer Setup](#offer-setup)
+      - [Properties](#properties)
+      - [Offer listing](#offer-listing)
+      - [Preview audience](#preview-audience)
+      - [Technical configuration](#technical-configuration)
+      - [Plan overview](#plan-overview)
+      - [Co-sell with Microsoft](#co-sell-with-microsoft)
+      - [Resell through CSPs](#resell-through-csps)
     - [Creating and configuring a SendGrid account](#creating-and-configuring-a-sendgrid-account)
     - [Creating a storage account](#creating-a-storage-account)
     - [Change the configuration settings](#change-the-configuration-settings)
@@ -336,30 +345,80 @@ directory, you can skip the following steps and go directly to
 
 #### Registering the Apps
 
-As I mention in the landing page and webhook sections above, I recommend
+As I mentioned in the landing page and webhook sections above, I recommend
 registering two applications:
 
-1.  **For the landing page,** the Azure Marketplace SaaS offers are required to
-    have a landing page, authenticating through Azure Active Directory. Register
-    it as described in the
-    [documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-aspnet-core-webapp#option-2-register-and-manually-configure-your-application-and-code-sample).
-    **Make sure you register a multi-tenant application**, you can find the
-    differences in the
-    [documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps).
-    Select the "ID tokens" on the "Authentication" page. Also add two Redirect
-    URLs, he base URL of the web app, and another web app URL with /signin-oidc
-    added.
+1. **For the Landing Page:** Azure Marketplace SaaS offers are required to have
+   a landing page, authenticating through Azure Active Directory. Register it as
+   described in the
+   [documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-aspnet-core-webapp#option-2-register-and-manually-configure-your-application-and-code-sample).
+   **Make sure you register a multi-tenant application**, you can find the
+   differences in the
+   [documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps).
+   Select the "ID tokens" on the "Authentication" page. Also, add two Redirect
+   URLs: the base `/` URL of the web app and another web app URL with
+   `/signin-oidc` added.
 
-2.  **To authenticate Azure Marketplace Fulfillment APIs,** you can register a
-    **single tenant application**.
+2. **To authenticate Azure Marketplace Fulfillment APIs,** you can register a
+   **single tenant application**.
 
-![A screenshot of a computer Description automatically generated](docs/images/AdAppRegistration.png)
+   ![A screenshot of a computer Description automatically generated](docs/images/AdAppRegistration.png)
 
-### Create an offer on Commercial Marketplace Portal in Partner center
+### Create an Offer on Commercial Marketplace Portal in Partner Center
 
-Base requirement is to have a SaaS offer set up through the Partner Center.
-Please see the checklist for creating the offer
-[here](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/offer-creation-checklist).
+Once your AAD directory, AAD applications, and web application are setup and
+ready to use, an offer must be created in the
+[Commercial Marketplace Portal in the Microsoft Partner Center](https://partner.microsoft.com/en-us/dashboard/home).
+
+Documentation on creating an offer can be found on
+[Microsoft Docs: Create a New Saas Offer in the Commercial Marketplace](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/create-new-saas-offer).
+Documentation is also available for all
+[fields and pages for the offer on Docs](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/offer-creation-checklist)
+as well.
+
+You will need the following information to complete the offer:
+
+- AAD Application ID (also called Client ID) from the Single-Tenant Application
+- AAD Tenant ID hosting the AAD Single Tenant
+- URLs from the Azure AppService web application:
+  - The Base URL `/`
+  - The Landing Page `/landingpage`
+  - The Webhook Endpoint `/webhook`
+  - The Privacy Policy `/privacy`
+  - The Support Page `/support`
+
+Additionally, you will need assets, such as logos and screenshots, to complete
+the offer listing as well. They can be found in this code repository under
+`/resources`.
+
+### Example Offer Setup in Commercial Marketplace Portal
+
+These are sample configuration values for the offer to pass certification of the
+sample SaaS solution to help you get started with a sample offer.
+
+> **:warning: IMPORTANT:** This is just meant to be a sample. You will need to
+> make adjustments based on your specific offer, even for this sample (e.g.
+> contact information). _Real_ information needs to be entered; using "Lorem
+> ipsum" style information will _not_ pass the certification steps if you want
+> to preview your offer in the marketplace. Again, reference the
+> [Microsoft Docs](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/create-new-saas-offer)
+> for a more thorough overview of each section.
+
+#### Offer Setup
+
+#### Properties
+
+#### Offer listing
+
+#### Preview audience
+
+#### Technical configuration
+
+#### Plan overview
+
+#### Co-sell with Microsoft
+
+#### Resell through CSPs
 
 You will need to provide the application ID (also referred to as the "client
 ID") and the tenant ID on the
@@ -375,8 +434,6 @@ by adding `/landingpage` to the end, and set the webhook URL by adding
 Also create test plans, with \$0 cost, so you do not charge yourself when
 testing. Please remember to add a list of users as authorized preview users on
 the "Preview" tab.
-
-[Create a SaaS Offer](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/create-new-saas-offer)
 
 ### Creating and configuring a SendGrid account
 

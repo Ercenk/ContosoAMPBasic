@@ -40,6 +40,9 @@ In the sections below you will find:
     - [Registering Azure Active Directory Applications](#registering-azure-active-directory-applications)
       - [Creating a New Directory](#creating-a-new-directory)
       - [Registering the Apps](#registering-the-apps)
+    - [Creating and configuring a SendGrid account](#creating-and-configuring-a-sendgrid-account)
+    - [Creating a storage account](#creating-a-storage-account)
+    - [Change the configuration settings](#change-the-configuration-settings)
     - [Create an Offer on Commercial Marketplace Portal in Partner Center](#create-an-offer-on-commercial-marketplace-portal-in-partner-center)
     - [Example Offer Setup in Commercial Marketplace Portal](#example-offer-setup-in-commercial-marketplace-portal)
       - [Offer Setup](#offer-setup)
@@ -50,9 +53,6 @@ In the sections below you will find:
       - [Plan overview](#plan-overview)
       - [Co-sell with Microsoft](#co-sell-with-microsoft)
       - [Resell through CSPs](#resell-through-csps)
-    - [Creating and configuring a SendGrid account](#creating-and-configuring-a-sendgrid-account)
-    - [Creating a storage account](#creating-a-storage-account)
-    - [Change the configuration settings](#change-the-configuration-settings)
   - [Signing Up for Your Offer](#signing-up-for-your-offer)
   - [Notes](#notes)
     - [Secrets](#secrets)
@@ -364,77 +364,6 @@ registering two applications:
 
    ![A screenshot of a computer Description automatically generated](docs/images/AdAppRegistration.png)
 
-### Create an Offer on Commercial Marketplace Portal in Partner Center
-
-Once your AAD directory, AAD applications, and web application are setup and
-ready to use, an offer must be created in the
-[Commercial Marketplace Portal in the Microsoft Partner Center](https://partner.microsoft.com/en-us/dashboard/home).
-
-Documentation on creating an offer can be found on
-[Microsoft Docs: Create a New Saas Offer in the Commercial Marketplace](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/create-new-saas-offer).
-Documentation is also available for all
-[fields and pages for the offer on Docs](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/offer-creation-checklist)
-as well.
-
-You will need the following information to complete the offer:
-
-- AAD Application ID (also called Client ID) from the Single-Tenant Application
-- AAD Tenant ID hosting the AAD Single Tenant
-- URLs from the Azure AppService web application:
-  - The Base URL `/`
-  - The Landing Page `/landingpage`
-  - The Webhook Endpoint `/webhook`
-  - The Privacy Policy `/privacy`
-  - The Support Page `/support`
-
-Additionally, you will need assets, such as logos and screenshots, to complete
-the offer listing as well. They can be found in this code repository under
-`/resources`.
-
-### Example Offer Setup in Commercial Marketplace Portal
-
-These are sample configuration values for the offer to pass certification of the
-sample SaaS solution to help you get started with a sample offer.
-
-> **:warning: IMPORTANT:** This is just meant to be a sample. You will need to
-> make adjustments based on your specific offer, even for this sample (e.g.
-> contact information). _Real_ information needs to be entered; using "Lorem
-> ipsum" style information will _not_ pass the certification steps if you want
-> to preview your offer in the marketplace. Again, reference the
-> [Microsoft Docs](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/create-new-saas-offer)
-> for a more thorough overview of each section.
-
-#### Offer Setup
-
-#### Properties
-
-#### Offer listing
-
-#### Preview audience
-
-#### Technical configuration
-
-#### Plan overview
-
-#### Co-sell with Microsoft
-
-#### Resell through CSPs
-
-You will need to provide the application ID (also referred to as the "client
-ID") and the tenant ID on the
-["Technical Configuration page"](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/offer-creation-checklist#technical-configuration-page)
-on the Partner portal while registering your offer. Copy the tenant ID and the
-client ID of the single tenant application you created (the second app) and set
-them on the technical configuration page.
-
-Copy the base URL of the web application, and set the value of the landing page,
-by adding `/landingpage` to the end, and set the webhook URL by adding
-`/webhook` to the end of the base URL of the web application.
-
-Also create test plans, with \$0 cost, so you do not charge yourself when
-testing. Please remember to add a list of users as authorized preview users on
-the "Preview" tab.
-
 ### Creating and configuring a SendGrid account
 
 Follow the steps in the
@@ -482,6 +411,81 @@ secrets method.
 | Dashboard:Mail:ApiKey                             | Change      | Sendgrid API key.                                                                                                                                                                                             |
 | Dashboard:DashboardAdmin                          | Change      | Change it to the email address you are logging on to the dashboard. Only the users with the domain name of this email is authorized to use the dashboard to display the subscriptions.                        |
 | Dashboard:ShowUnsubscribed                        | Change      | Change true or false, depending on if you want to see the subscriptions that are not active.                                                                                                                  |
+
+### Create an Offer on Commercial Marketplace Portal in Partner Center
+
+Once your AAD directory, AAD applications, and web application are setup and
+ready to use, an offer must be created in the
+[Commercial Marketplace Portal in the Microsoft Partner Center](https://partner.microsoft.com/en-us/dashboard/home).
+
+Documentation on creating an offer can be found on
+[Microsoft Docs: Create a New Saas Offer in the Commercial Marketplace](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/create-new-saas-offer).
+Documentation is also available for all
+[fields and pages for the offer on Docs](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/offer-creation-checklist)
+as well.
+
+You will need the following information to complete the offer:
+
+- AAD Application ID (also called Client ID) from the Single-Tenant Application
+- AAD Tenant ID hosting the AAD Single Tenant
+- URLs from the Azure AppService web application:
+  - The Base URL `/`
+  - The Landing Page `/landingpage`
+  - The Webhook Endpoint `/webhook`
+  - The Privacy Policy `/privacy`
+  - The Support Page `/support`
+- Storage Account Connection String
+
+Additionally, you will need assets, such as logos and screenshots, to complete
+the offer listing as well. They can be found in this code repository under
+`/resources`.
+
+### Example Offer Setup in Commercial Marketplace Portal
+
+These are sample configuration values for the offer to pass certification of the
+sample SaaS solution to help you get started with a sample offer.
+
+> **:warning: IMPORTANT:** This is just meant to be a sample. You will need to
+> make adjustments based on your specific offer, even for this sample (e.g.
+> contact information). _Real_ information needs to be entered; using "Lorem
+> ipsum" style information will _not_ pass the certification steps if you want
+> to preview your offer in the marketplace. Again, reference the
+> [Microsoft Docs](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/create-new-saas-offer)
+> for a more thorough overview of each section.
+
+#### Offer Setup
+
+![Microsoft Partner Center - Offer Setup](docs/images/MicrosoftPartnerCenter-OfferSetup.png)
+![Microsoft Partner Center - Offer Setup - Customer Leads](docs/images/MicrosoftPartnerCenter-OfferSetup-CustomerLeads.png)
+
+#### Properties
+
+#### Offer listing
+
+#### Preview audience
+
+#### Technical configuration
+
+#### Plan overview
+
+#### Co-sell with Microsoft
+
+#### Resell through CSPs
+
+You will need to provide the application ID (also referred to as the "client
+ID") and the tenant ID on the
+["Technical Configuration page"](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/offer-creation-checklist#technical-configuration-page)
+on the Partner portal while registering your offer. Copy the tenant ID and the
+client ID of the single tenant application you created (the second app) and set
+them on the technical configuration page.
+
+Copy the base URL of the web application, and set the value of the landing page,
+by adding `/landingpage` to the end, and set the webhook URL by adding
+`/webhook` to the end of the base URL of the web application.
+
+Also create test plans, with \$0 cost, so you do not charge yourself when
+testing. Please remember to add a list of users as authorized preview users on
+the "Preview" tab.
 
 ## Signing Up for Your Offer
 

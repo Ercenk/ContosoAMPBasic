@@ -4,7 +4,7 @@ This sample demonstrates the basic interaction of a SaaS solution with Azure
 Marketplace. It does not have any SaaS functionality — it is a bare bones
 approach focusing on the marketplace integration.
 
-First, disclaimers :)
+First, disclaimers:
 
 - My intent with this sample is to demonstrate the integration concepts, and
   highlight a possible solution that may address a common scenario.
@@ -34,12 +34,12 @@ In the sections below you will find:
     - [Activating a Subscription](#activating-a-subscription)
   - [Scenario for the Sample](#scenario-for-the-sample)
     - [Architecture Overview and Process Flow of the Solution](#architecture-overview-and-process-flow-of-the-solution)
-    - [Walking-through the Scenario](#walking-through-the-scenario)
-  - [Running the sample](#running-the-sample)
-    - [Creating a web application on Azure App Service and deploy the sample](#creating-a-web-application-on-azure-app-service-and-deploy-the-sample)
-    - [Registering Azure Active Directory applications](#registering-azure-active-directory-applications)
-      - [Creating a new directory](#creating-a-new-directory)
-      - [Registering the apps](#registering-the-apps)
+    - [Walking-through the Scenario Subscription Process](#walking-through-the-scenario-subscription-process)
+  - [Running the Sample](#running-the-sample)
+    - [Creating a Web Application on Azure App Service and Deploy the Sample](#creating-a-web-application-on-azure-app-service-and-deploy-the-sample)
+    - [Registering Azure Active Directory Applications](#registering-azure-active-directory-applications)
+      - [Creating a New Directory](#creating-a-new-directory)
+      - [Registering the Apps](#registering-the-apps)
     - [Create an offer on Commercial Marketplace Portal in Partner center](#create-an-offer-on-commercial-marketplace-portal-in-partner-center)
     - [Creating and configuring a SendGrid account](#creating-and-configuring-a-sendgrid-account)
     - [Creating a storage account](#creating-a-storage-account)
@@ -235,17 +235,16 @@ situations such as:
 - A team needs to qualify the purchase of the customer for reasons like ITAR
   certification, etc.
 
-### Walking-through the Scenario
+### Walking-through the Scenario Subscription Process
 
-1. The prospective customer is on Azure Portal, and going through the Azure
-   Marketplace in-product experience on the portal. Finds the solution and
-   subscribes to it, after deciding on the plan. A placeholder resource is
-   deployed on the customer's (subscriber's) Azure subscription for the new
-   subscription to the offer. Please notice the overloaded use of the
-   "subscription", there are two subscriptions at this moment, the customer's
-   Azure subscription and the subscription to the SaaS offer. I will use
-   **subscription** only when I refer to the subscription to the offer from now
-   on.
+1. The prospective customer is on the Azure Portal going through the Azure
+   Marketplace in-product experience. They find the solution and subscribe to it
+   after deciding on a plan. A placeholder resource is deployed on the
+   customer's (subscriber's) Azure subscription for the new offer subscription.
+   _Note:_ Please notice the overloaded use of the "subscription", there are two
+   subscriptions at this moment, the customer's Azure subscription and the
+   subscription to the SaaS offer. I will use **subscription** only when I refer
+   to the subscription to the offer from now on.
 2. Subscriber clicks on the **Configure Account** button on the new
    subscription, and gets transferred to the landing page.
 3. Landing page uses Azure Active Directory (with OpenID Connect flow) to log
@@ -257,89 +256,85 @@ situations such as:
    token as a bearer token.
 7. Subscriber fills in the other details on the landing page that will help the
    operations team to kick of the provisioning process. The landing page asks
-   for a deployment region, as well as the email of the business unit
-   contact.The solution may be using different data retention policies based on
-   the region (GDPR comes to mind for Europe), or the solution may be depending
-   on a completely different identity provider (IP), such as in-house developed,
-   and may be sending an email to the business unit owner, asking him/her to add
-   the other end users to the solution's account management system. Please keep
-   in mind that the person subscribing, that is the purchaser (having access to
-   the Azure subscription) can be different than the end user(s) of the
-   solution.
+   for a deployment region, as well as the email of the business unit contact.
+   The solution may be using different data retention policies based on the
+   region (e.g. GDPR in Europe), or the solution may be depending on a
+   completely different identity provider (IP), such as something in-house
+   developed, and may be sending an email to the business unit owner asking them
+   to add the other end users to the solution's account management system.
+   Please keep in mind that the person subscribing, that is the purchaser
+   (having access to the Azure subscription) can be different than the end users
+   of the solution.
 8. Subscriber completes the process by submitting the form on the landing page.
    This sends an email to the operations team email address (configured in the
    settings).
 9. Operations team takes the appropriate steps (qualifying, provisioning
-   resources etc.).
+   resources, etc.).
 10. Once complete, operation team clicks on the activate link in the email.
 11. The sample uses the SDK to activate the subscription.
 12. SDK gets an access token from Azure Active Directory (AAD).
-13. SDK calls the **activate** operation on the Fulfillment API.
+13. SDK calls the `activate` operation on the Fulfillment API.
 14. The subscriber may eventually unsubscribe from the subscription by deleting
-    it, or may stop fulfilling his/her monetary commitment to Microsoft.
-15. The commerce engine sends a notification on the webhook at this time, for
-    letting the publisher know about the situation.
+    it, or may stop fulfilling their monetary commitment to Microsoft.
+15. The commerce engine sends a notification on the webhook at this time, to
+    notify the publisher know about the situation.
 16. The sample sends an email to the operations team, notifying the team about
     the status.
 17. The operations team may de-provision the customer.
 
-## Running the sample
+## Running the Sample
 
-### Creating a web application on Azure App Service and deploy the sample
+### Creating a Web Application on Azure App Service and Deploy the Sample
 
 I am assuming you have already cloned the code in this repo. Open the solution
 in Visual Studio, and follow the steps for deploying the solution starting from
 this
 [step](https://docs.microsoft.com/en-us/azure/app-service/app-service-web-get-started-dotnet#publish-your-web-app).
 
-Following is how my Visual Studio Publish profile looks like:
+The following is how my Visual Studio Publish profile looks:
 
 ![publishprofile](./docs/images/PublishProfile.png)
 
-### Registering Azure Active Directory applications
+### Registering Azure Active Directory Applications
 
 I usually maintain a separate Azure Active Directory tenant (directory) for my
 application registrations. If you want to register the apps on your default
-directory, you can skip the following steps and go directly to registering
-applications.
+directory, you can skip the following steps and go directly to
+[Registering the Apps](#registering-the-apps).
 
-#### Creating a new directory
+#### Creating a New Directory
 
-To create one,
+1. Login to the [Azure Portal](https://portal.azure.com).
+2. Click `Create a Resource` and type in `Azure Active Directory` in the search
+   box:
 
-1.  Login to Azure [portal](https://portal.azure.com)
+   ![createdirectory](docs/images/createdirectory.png)
 
-2.  Click "Create a resource", and type in "azure active directory" in the
-    search box, and select
+   Select `Create Directory` then fill in the details as you see fit after
+   clicking the `Create` button
 
-![createdirectory](docs/images/createdirectory.png)
+3. Switch to the new directory.
 
-```
-Then fill in the details as you see fit after clicking the "create" button
-```
+   ![switchdirectory](docs/images/switchdirectory.png)
 
-1.  Switch to the new directory.
+4. Select the new directory, if it does not show under "Favorites" check "All
+   directories":
 
-![switchdirectory](docs/images/switchdirectory.png)
+   ![gotodirectory](docs/images/gotodirectory.png)
 
-1.  Select the new directory, if it does not show under "Favorites" check "All
-    directories"
+5. Once you switch to the new directory (or if you have not created a new one,
+   and decided to use the existing one instead), select the Active Directory
+   service (**1** on the image below). If you do not see it, find it using "All
+   services" (**2** on the image below).
 
-![gotodirectory](docs/images/gotodirectory.png)
+   ![findactivedirectory](docs/images/findactivedirectory.png)
 
-Once you switch to the new directory (or if you have not created a new one, and
-decided to use the existing one instead), select the Active Directory service (1
-on the image below). If you do not see it, find it using "All services" (2 on
-the image below).
+6. Click on "App registrations", and select "New registration". You will need to
+   create two apps.
 
-![findactivedirectory](docs/images/findactivedirectory.png)
+   ![registerappstart](docs/images/registerappstart.png)
 
-Click on "App registrations", and select "New registration". You will need to
-create two apps.
-
-![registerappstart](docs/images/registerappstart.png)
-
-#### Registering the apps
+#### Registering the Apps
 
 As I mention in the landing page and webhook sections above, I recommend
 registering two applications:

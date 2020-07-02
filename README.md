@@ -650,7 +650,7 @@ Customer searches for the offer on Azure Portal
 
 10. Contoso team takes the appropriate action to qualify and onboard the
     customer
-    
+
     ![purchaser10](./docs/images/Purchaser10.png)
 
 ## Notes

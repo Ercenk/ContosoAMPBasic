@@ -40,9 +40,9 @@ In the sections below you will find:
     - [Registering Azure Active Directory Applications](#registering-azure-active-directory-applications)
       - [Creating a New Directory](#creating-a-new-directory)
       - [Registering the Apps](#registering-the-apps)
-    - [Creating and configuring a SendGrid account](#creating-and-configuring-a-sendgrid-account)
-    - [Creating a storage account](#creating-a-storage-account)
-    - [Change the configuration settings](#change-the-configuration-settings)
+    - [Creating and Configuring a SendGrid Account](#creating-and-configuring-a-sendgrid-account)
+    - [Creating a Storage Account](#creating-a-storage-account)
+    - [Change the Configuration Settings](#change-the-configuration-settings)
     - [Create an Offer on Commercial Marketplace Portal in Partner Center](#create-an-offer-on-commercial-marketplace-portal-in-partner-center)
     - [Example Offer Setup in Commercial Marketplace Portal](#example-offer-setup-in-commercial-marketplace-portal)
       - [Offer Setup](#offer-setup)
@@ -365,33 +365,30 @@ registering two applications:
 
    ![A screenshot of a computer Description automatically generated](docs/images/AdAppRegistration.png)
 
-### Creating and configuring a SendGrid account
+### Creating and Configuring a SendGrid Account
 
 Follow the steps in the
 [tutorial](https://docs.microsoft.com/en-us/azure/sendgrid-dotnet-how-to-send-email),
 and grab an API Key. Set the value of the ApiKey in the configuration section,
-"Dashboard:Mail", either using the user-secrets method or in the appconfig.json
-file.
+"Dashboard:Mail", either using the user-secrets method or in the
+`appconfig.json` file.
 
-### Creating a storage account
+### Creating a Storage Account
 
 Create an Azure Storage account following the steps
 [here](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal).
 The solution uses the storage account to keep references to the operations
-returned by actions done on the fulfillment API.
+returned by actions done on the fulfillment API, as well as offering a place to
+store Leads generated from the Marketplace offer (via Table Storage).
 
-### Change the configuration settings
+### Change the Configuration Settings
 
 You will need to modify the settings with the values for the services you have
 created above.
 
-You will need to replace the values marked as "CHANGE" or "SET USING dotnet
-user-secrets" in the appsettings.json file.
-
-For those values marked with "SET USING dotnet user-secrets" you can either plug
-the values in the appsettings.json file, or use the dotnet user-secrets command.
-Please see the section "Secrets" below for the details if you want to use user
-secrets method.
+You will need to replace the values marked as `CHANGE`, either by editing the
+`appconfig.json` file in the solution, or by using `dotnet user-secrets` (see
+notes at the bottom of this document for more instruction).
 
 | Setting                                           | Change/Keep | Notes                                                                                                                                                                                                         |
 | ------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -616,45 +613,45 @@ Customer searches for the offer on Azure Portal
 
 1. Go to Azure Portal and add a resource
 
-![purchaser1](./docs/images/Purchaser1.png)
+   ![purchaser1](./docs/images/Purchaser1.png)
 
 2. Find the search text box
 
-![purchaser2](./docs/images/Purchaser2.png)
+   ![purchaser2](./docs/images/Purchaser2.png)
 
 3. Type in your offer name
 
-![purchaser3](./docs/images/Purchaser3.png)
+   ![purchaser3](./docs/images/Purchaser3.png)
 
 4. Select the plan
 
-![purchaser4](./docs/images/Purchaser4.png)
+   ![purchaser4](./docs/images/Purchaser4.png)
 
 5. Subscribe
 
-![purchaser5](./docs/images/Purchaser5.png)
+   ![purchaser5](./docs/images/Purchaser5.png)
 
 6. Find the subscription after the deployment is complete, and go the
    subscription
 
-![purchaser6](./docs/images/Purchaser6.png)
+   ![purchaser6](./docs/images/Purchaser6.png)
 
 7. Subscription details, notice it is not active yet
 
-![purchaser7](./docs/images/Purchaser7.png)
+   ![purchaser7](./docs/images/Purchaser7.png)
 
 8. Landing page
 
-![purchaser8](./docs/images/Purchaser8.png)
+   ![purchaser8](./docs/images/Purchaser8.png)
 
 9. Purchaser submits the form, and Contoso ops team receives an email
 
-![purchaser9](./docs/images/Purchaser9.png)
+   ![purchaser9](./docs/images/Purchaser9.png)
 
 10. Contoso team takes the appropriate action to qualify and onboard the
     customer
-
-![purchaser10](./docs/images/Purchaser10.png)
+    
+    ![purchaser10](./docs/images/Purchaser10.png)
 
 ## Notes
 

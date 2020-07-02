@@ -152,7 +152,7 @@ those details. A client must use a
 [service-to-service access token request](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-oauth2-client-creds-grant-flow#service-to-service-access-token-request)
 of the client credential workflow, and with the v1 Azure AD endpoint. Use the
 Marketplace Fulfillment API v2's resource ID,
-`62d94f6c-d599-489b-a797-3e10e42fbe22`, for the resource parameter.
+`20e940b3-4c77-4b0b-9a53-9e16a1b010a7`, for the resource parameter.
 
 There needs to be a **one-to-one match between the publisher account and the
 application**. If a publisher has multiple SaaS offers under the same publisher

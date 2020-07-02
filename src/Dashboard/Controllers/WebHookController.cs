@@ -15,8 +15,14 @@
 
     using SaaSFulfillmentClient.WebHook;
 
-    // Removing the authorize attribute. This will be relevant once we start receivint JWT from the marketplac engine
+    // To test without JWT validation:
+
+    // Comment out the following line
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
+    // and include the next line
+    // [AllowAnonymous]
+
     [RequireHttps]
     public class WebHookController : Controller
     {

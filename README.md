@@ -53,6 +53,7 @@ In the sections below you will find:
       - [Plan Overview](#plan-overview)
       - [Co-Sell with Microsoft](#co-sell-with-microsoft)
       - [Resell Through CSPs](#resell-through-csps)
+      - [Review and Publish](#review-and-publish)
   - [Signing Up for Your Offer](#signing-up-for-your-offer)
   - [Notes](#notes)
     - [Secrets](#secrets)
@@ -427,7 +428,7 @@ as well.
 You will need the following information to complete the offer:
 
 - AAD Application ID (also called Client ID) from the Single-Tenant Application
-- AAD Tenant ID hosting the AAD Single Tenant
+- AAD Tenant ID hosting the AAD Single-Tenant
 - URLs from the Azure AppService web application:
   - The Base URL `/`
   - The Landing Page `/landingpage`
@@ -456,56 +457,158 @@ sample SaaS solution to help you get started with a sample offer.
 #### Offer Setup
 
 ![Microsoft Partner Center - Offer Setup](docs/images/MicrosoftPartnerCenter-OfferSetup.png)
-![Microsoft Partner Center - Offer Setup - Customer Leads](docs/images/MicrosoftPartnerCenter-OfferSetup-CustomerLeads.png)
+
+1. **Selling Through Microsoft:** to simplify for this sample, choose "Yes".
+2. **Customer Leads:** unless you already have a CRM or other system setup that
+   you'd like to use, choose Azure Table storage and use the connection string
+   for the storage account you created earlier:
+
+   ![Microsoft Partner Center - Offer Setup - Customer Leads](docs/images/MicrosoftPartnerCenter-OfferSetup-CustomerLeads.png)
+
+   1. **Lead Destination:** Azure Table.
+   2. **Contact Email:** your email address.
+   3. **Storage Account Connection String:** the connection string for the
+      storage account you created earlier.
+   4. **Validate:** ensure you can actually connect to the storage account.
+   5. **OK:** close the dialog and you're set.
+
+3. **Save Draft:** Between each screen, be sure to save a draft.
 
 #### Properties
 
 ![Microsoft Partner Center - Properties](docs/images/MicrosoftPartnerCenter-Properties.png)
 
+1. **Category:** choose any category. Web is appropriate for this sample.
+2. **Industried:** again, choose any.
+3. **Legal:** optional, but choosing the Standard Contract may help with the
+   certification process.
+4. **Save Draft:** as always, save a draft.
+
 #### Offer Listing
 
+This is where most of your configuration for the offer will be. Pay attention to
+all the fields, taking care to fill them out as fully as you can.
+
 ![Microsoft Partner Center - Offer Listing](docs/images/MicrosoftPartnerCenter-OfferListing.png)
+
+1. **Name:** the name of your offer. This is what will be listed in the
+   Marketplace. Since this is just a demo, something along the lines of
+   _Marketplace Demo - {YOUR ORG NAME}_ could work here.
+2. **Search Results Summary:** this is the text that shows when you search for
+   your offer in the marketplace – a short sentence should suffice.
+3. **Description:** this needs to be a real description (i.e. no _Lorem Ipsum_).
+   Feel free to use something similar to what's in the screenshot above.
+4. **Getting Started Instructions:** again, this needs to be real text. Also
+   feel free to use something similar to what's in the screenshot above.
+5. **Search Keywords:** add your organization name, "marketplace demo", or
+   something similar.
+6. **Privacy Policy Link:** This needs to be your web application's privacy
+   policy URL that was called out earlier. It will be in the format of
+   `https://{YOUR_APP_SERVICE_NAME}.azurewebsites.net/privacy`.
+7. **Contact Information:** Use your details for _Name_, _Email_, and _Phone_
+   for both the _Support Contact_ and _Engineering Contact_ sections. For
+   _Support URL_, you'll need to use the support URL that was called out
+   earlier. It will be in the format of
+   `https://{YOUR_APP_SERVICE_NAME}.azurewebsites.net/support`.
+8. **Supporting Documents:** upload the PDF
+   `resources/OfferListing-SupportDocuments-SupportInformation.pdf` provided in
+   this repository and name it "Support Information".
+9. **Marketplace Media - Logos:** upload all logos using the PNG files provided
+   under `resources/` in this repository. They are named according to their
+   sizes.
+10. **Marketplace Media - Screenshots:** a screenshot has been provided under
+    the `resources/` directory – name it "All Offer Subscriptions".
+11. **Save Draft:** as always, save a draft when finished editing the page.
 
 #### Preview Audience
 
 ![Microsoft Partner Center - Preview Audience](docs/images/MicrosoftPartnerCenter-PreviewAudience.png)
 
+1. **Azure Active Directory or Microsoft Account Email Address:** add any AAD or
+   Microsoft account email addresses that you would like to access this
+   application. These will be the accounts that have access to viewing the offer
+   in its preview phase. At a minimum, add your own account.
+2. **Add Another Email:** if there are others you'd like to see the offer in the
+   preview phase, add up to 10 total accounts.
+3. **Save Draft:** save before moving forward.
+
 #### Technical Configuration
 
+This page has the landing page and webhook configuration for your offer that was
+deployed in earlier steps.
+
 ![Microsoft Partner Center - Technical Configuration](docs/images/MicrosoftPartnerCenter-TechnicalConfiguration.png)
+
+1. **Landing Page URL:** this is the Landing Page URL that was called out
+   earlier. It will be in the format of
+   `https://{YOUR_APP_SERVICE_NAME}.azurewebsites.net/LandingPage`.
+2. **Connection Webhook:** this is the Webhook Endpoint URL that was called out
+   earlier. It will be in the format of
+   `https://{YOUR_APP_SERVICE_NAME}.azurewebsites.net/webhook`.
+3. **Azure Active Directory Tenant ID:** the Tenant ID hosting the Single-Tenant
+   Application.
+4. **Azure Active Directory Application ID:** the Application (Client) ID from
+   the Single-Tenant Application that was created.
+5. **Save Draft:** save the current page.
 
 #### Plan Overview
 
 ![Microsoft Partner Center - Plan Overview](docs/images/MicrosoftPartnerCenter-PlanOverview.png)
 
-![Microsoft Partner Center - Plan Overview - Plan Listing](docs/images/MicrosoftPartnerCenter-PlanOverview-PlanListing.png)
+1. **Create New Plan:** add a new plan to the offer to allow for signing up.
+   We'll add one that's \$0 to avoid billing.
+2. **Selecting Previous Plan:** if you've already created a plan, you can edit
+   them by selecting from the list.
+3. **Stop Selling:** if you need to "remove" a plan, you can stop selling it.
 
-![Microsoft Partner Center - Plan Overview - Pricing and Availability](docs/images/MicrosoftPartnerCenter-PlanOverview-PricingAndAvailability.png)
+_Creating a new plan:_
 
-![Microsoft Partner Center - Plan Overview - Pricing and Availability - Markets](docs/images/MicrosoftPartnerCenter-PlanOverview-PricingAndAvailability-Markets.png)
+1. **Plan Listing:**
+
+   ![Microsoft Partner Center - Plan Overview - Plan Listing](docs/images/MicrosoftPartnerCenter-PlanOverview-PlanListing.png)
+
+   1. **Plan Name:** choose a plan name that will be listed when selecting it in
+      the subscription process.
+   2. **Plan Description:** a basic, real description is required for
+      certification.
+   3. **Save Draft**
+
+2. **Pricing and Availability:**
+
+   ![Microsoft Partner Center - Plan Overview - Pricing and Availability](docs/images/MicrosoftPartnerCenter-PlanOverview-PricingAndAvailability.png)
+
+   1. **Markets:** Choose the markets in which this plan will be available:
+
+      ![Microsoft Partner Center - Plan Overview - Pricing and Availability - Markets](docs/images/MicrosoftPartnerCenter-PlanOverview-PricingAndAvailability-Markets.png)
+
+      1. **Market Selection:** Search for your current market(s).
+      2. **Save:** save to close the dialog with your selection.
+
+   2. **Pricing - Pricing Model:** choose "Flat Rate".
+   3. **Pricing - Billing Term:** choose "Monthly" and set the cost to \$0.
+   4. **Plan Visibility:** set to "Private".
+   5. **Restricted Audience:** use the Tenant ID that hosts the Single-Tenant
+      and Multi-Tenant AAD applications (the same that was used in previous
+      steps).
+   6. **Save Draft**
 
 #### Co-Sell with Microsoft
 
-*Nothing needs to be configured here for the purpose of this solution.*
+_Nothing needs to be configured here for the purpose of this solution._
 
 #### Resell Through CSPs
 
-*Nothing needs to be configured here for the purpose of this solution.*
+_Nothing needs to be configured here for the purpose of this solution._
 
-You will need to provide the application ID (also referred to as the "client
-ID") and the tenant ID on the
-["Technical Configuration page"](https://docs.microsoft.com/en-us/azure/marketplace/partner-center-portal/offer-creation-checklist#technical-configuration-page)
-on the Partner portal while registering your offer. Copy the tenant ID and the
-client ID of the single tenant application you created (the second app) and set
-them on the technical configuration page.
+#### Review and Publish
 
-Copy the base URL of the web application, and set the value of the landing page,
-by adding `/landingpage` to the end, and set the webhook URL by adding
-`/webhook` to the end of the base URL of the web application.
+Under _Offer Overview_, verify that all available information looks correct.
+Then choose to `Review and Publish` the offer to start the certification
+process. Correct any errors that come back and work to the _Publisher Signoff_
+step; this is where you'll be able to sign up for your offer before going live
+(with your real SaaS offer in the future).
 
-Also create test plans, with \$0 cost, so you do not charge yourself when
-testing. Please remember to add a list of users as authorized preview users on
-the "Preview" tab.
+![Microsoft Partner Center - Offer Overview - Review and Publish](docs/images/MicrosoftPartnerCenter-OfferOverview-ReviewAndPublish.png)
 
 ## Signing Up for Your Offer
 

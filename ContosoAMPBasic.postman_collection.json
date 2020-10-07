@@ -1,0 +1,829 @@
+{
+	"info": {
+		"_postman_id": "1fe4c31b-863d-4d00-a3e9-e67b2712f4a9",
+		"name": "ContosoAMPBasic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "WebHook",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IlNzWnNCTmhaY0YzUTlTNHRycFFCVEJ5TlJSSSIsImtpZCI6IlNzWnNCTmhaY0YzUTlTNHRycFFCVEJ5TlJSSSJ9.eyJhdWQiOiI1ZjA2ZjBhNS1hODA0LTRmODAtYTZkYS00YzA3ZjQzN2YxYWUiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC82ZWJiODY5YS1mMmZjLTQ1NWYtYjNjMy1jODIxNzNkNTU2ZWEvIiwiaWF0IjoxNTkxNjM3NjM3LCJuYmYiOjE1OTE2Mzc2MzcsImV4cCI6MTU5MTcyNDMzNywiYWlvIjoiNDJkZ1lQaVE0ZmhSVzJtM0RHdWZ6YlMyMHp2MkFRQT0iLCJhcHBpZCI6IjIwZTk0MGIzLTRjNzctNGIwYi05YTUzLTllMTZhMWIwMTBhNyIsImFwcGlkYWNyIjoiMiIsImlkcCI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0LzZlYmI4NjlhLWYyZmMtNDU1Zi1iM2MzLWM4MjE3M2Q1NTZlYS8iLCJvaWQiOiIwY2E0OGMwNS1hMmU3LTQ1N2UtODRiMi1mNTMxMzdjNmQ2YmEiLCJyaCI6IjAuQVRZQW1vYTdidnp5WDBXenc4Z2hjOVZXNnJOQTZTQjNUQXRMbWxPZUZxR3dFS2MyQUFBLiIsInN1YiI6IjBjYTQ4YzA1LWEyZTctNDU3ZS04NGIyLWY1MzEzN2M2ZDZiYSIsInRpZCI6IjZlYmI4NjlhLWYyZmMtNDU1Zi1iM2MzLWM4MjE3M2Q1NTZlYSIsInV0aSI6IjY3REY4Y2VnaFV5bzNWQjRuakZoQUEiLCJ2ZXIiOiIxLjAifQ.hquDKndOyuyUAVnS5DtxHfsqObGIXOnk6gZOJQSSwlO5GvNm2WoYi8eNJV6Q1ltJamQWPbKhiIA3gntYGT4SRhFzdCAEW28GpFaRMACA8lzZI1vuVNixZVxnBFM2wIjpmk6otsuxblaACNrs7DqvPqHNDsUhOIzZrN7s_FrcrYa8RRIIORTAxQe-Af10X7v9AN_oC0wpIcS7c3t4vH5xm-wyfURCwrgiPBdv72BG2uOSVVHVv1xwZ62WVgGDaq5jCF09jlJ53XJDJLqJsoDBm24FRjNTYfXHMe8fVGTo9dh7JrT1vvUn7b-QrEKjShWTYqb2GV2PmPxyA05he003xQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\":\"482986a3-5885-49a7-bc24-0fe4fbe1adfb\",\n\t\"activityId\":\"0ad21a52-1604-4db3-a2cc-29c58fda0884\",\n\t\"publisherId\":\"testtestindustryexperiencestest\",\n\t\"offerId\":\"contoso_saas_offer-preview\",\n\t\"planId\":\"base\",\n\t\"quantity\":1,\n\t\"subscriptionId\":\"e00d065c-5991-de7b-bfc6-f86f7992e3ae\",\n\t\"timeStamp\":\"2020-06-08T20:12:07.9658094Z\",\n\t\"action\":\"Unsubscribe\",\n\t\"status\":\"Succeeded\",\n\t\"operationRequestSource\":\"Azure\",\n\t\"subscription\":null\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/webhook",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"webhook"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get AccessToken",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6dcf6325-f841-4d08-be18-7c8767429f1c",
+						"exec": [
+							"var data = JSON.parse(responseBody);",
+							"",
+							"pm.collectionVariables.set(\"bearerToken\", \"Bearer \" + data.access_token);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "Client_id",
+							"value": "{{clientId}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{clientSecret}}",
+							"type": "text"
+						},
+						{
+							"key": "Scope",
+							"value": "20e940b3-4c77-4b0b-9a53-9e16a1b010a7/.default",
+							"type": "text"
+						}
+					],
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "https://login.microsoftonline.com/{{tenantId}}/oauth2/v2.0/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"microsoftonline",
+						"com"
+					],
+					"path": [
+						"{{tenantId}}",
+						"oauth2",
+						"v2.0",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all operations",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://marketplaceapi.microsoft.com/api/saas/operations?=&api-version={{apiVersion}}",
+					"protocol": "https",
+					"host": [
+						"marketplaceapi",
+						"microsoft",
+						"com"
+					],
+					"path": [
+						"api",
+						"saas",
+						"operations"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": ""
+						},
+						{
+							"key": "api-version",
+							"value": "{{apiVersion}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all operations for a specific subscription",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://marketplaceapi.microsoft.com/api/saas/subscriptions/24f1837a-d4f9-dbee-6c53-09f27033edd2/operations/973fb44a-3e51-4719-b050-411abef126db?api-version={{apiVersion}}",
+					"protocol": "https",
+					"host": [
+						"marketplaceapi",
+						"microsoft",
+						"com"
+					],
+					"path": [
+						"api",
+						"saas",
+						"subscriptions",
+						"24f1837a-d4f9-dbee-6c53-09f27033edd2",
+						"operations",
+						"973fb44a-3e51-4719-b050-411abef126db"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "{{apiVersion}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all subscriptions",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://marketplaceapi.microsoft.com/api/saas/subscriptions?api-version={{apiVersion}}",
+					"protocol": "https",
+					"host": [
+						"marketplaceapi",
+						"microsoft",
+						"com"
+					],
+					"path": [
+						"api",
+						"saas",
+						"subscriptions"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "{{apiVersion}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update subscription plan",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"quantity\": \"5\"\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "https://marketplaceapi.microsoft.com/api/saas/subscriptions/cfb4b662-ef59-ee55-d062-e1513484ab4d?api-version={{apiVersion}}",
+					"protocol": "https",
+					"host": [
+						"marketplaceapi",
+						"microsoft",
+						"com"
+					],
+					"path": [
+						"api",
+						"saas",
+						"subscriptions",
+						"cfb4b662-ef59-ee55-d062-e1513484ab4d"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "{{apiVersion}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List available plans",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://marketplaceapi.microsoft.com/api/saas/subscriptions/1be86829-c7ec-1738-ab03-a6cacebe3832/listAvailablePlans?api-version={{apiVersion}}",
+					"protocol": "https",
+					"host": [
+						"marketplaceapi",
+						"microsoft",
+						"com"
+					],
+					"path": [
+						"api",
+						"saas",
+						"subscriptions",
+						"1be86829-c7ec-1738-ab03-a6cacebe3832",
+						"listAvailablePlans"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "{{apiVersion}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete subscription",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://marketplaceapi.microsoft.com/api/saas/subscriptions/1be86829-c7ec-1738-ab03-a6cacebe3832?api-version={{apiVersion}}",
+					"protocol": "https",
+					"host": [
+						"marketplaceapi",
+						"microsoft",
+						"com"
+					],
+					"path": [
+						"api",
+						"saas",
+						"subscriptions",
+						"1be86829-c7ec-1738-ab03-a6cacebe3832"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "{{apiVersion}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Activate subscription",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"planId\": \"gold\"\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "https://marketplaceapi.microsoft.com/api/saas/subscriptions/90419b90-50bb-0024-1da2-74f2f66042e3/activate?api-version={{apiVersion}}",
+					"protocol": "https",
+					"host": [
+						"marketplaceapi",
+						"microsoft",
+						"com"
+					],
+					"path": [
+						"api",
+						"saas",
+						"subscriptions",
+						"90419b90-50bb-0024-1da2-74f2f66042e3",
+						"activate"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "{{apiVersion}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Resolve",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b0a5930d-6969-47aa-8f23-050a0a8e3c6e",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "x-ms-marketplace-token",
+						"value": "p9F51pccGrozjkEVPd%2FQhQDx4F10uoUMGZ9Yt43Bw4PcfnB6VtVkh8bphHb1yCbylo0THz%2FSgCB9soUtGR1HACDsPrxP7u4c9WGFDvy43jxGSmDQFitlp77ZxL9AUM9G4zr9GprmigPMDyEGEz%2BfXrXIeoh6aTNoj8nL6bSoFgPm6Ky%2BbRVUcWBzd%2Fuy75rGCddmetCDIcAJJZFLrn%2BPcW9BFVZl2edNfDOxqVG7ClY1QDBspXKZvxVnFLhdoCAC",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{bearerToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-ms-requestid",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "x-ms-correlationid",
+						"value": "{{$guid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "https://marketplaceapi.microsoft.com/api/saas/subscriptions/resolve?api-version={{apiVersion}}",
+					"protocol": "https",
+					"host": [
+						"marketplaceapi",
+						"microsoft",
+						"com"
+					],
+					"path": [
+						"api",
+						"saas",
+						"subscriptions",
+						"resolve"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "{{apiVersion}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Partner: Resolve Token to Subscription",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "88761375-7c20-4652-a780-6a2fda501b72",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"console.log(json);",
+							"postman.setEnvironmentVariable(\"MarketplaceDFSaaSSubscriptionId\",json.id);",
+							"var resourceNameValue  = postman.getEnvironmentVariable(\"resourceName\");",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Subscription is correct\"] = jsonData.subscriptionName === resourceNameValue;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-ms-requestid",
+						"value": "{{$guid}}"
+					},
+					{
+						"key": "x-ms-correlationid",
+						"value": "{{$guid}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{bearerToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "x-ms-marketplace-token",
+						"value": "{{MarketplaceTokenDF}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseAddressMarketplaceAPI}}/api/saas/subscriptions/resolve?api-version=2017-04-15",
+					"host": [
+						"{{baseAddressMarketplaceAPI}}"
+					],
+					"path": [
+						"api",
+						"saas",
+						"subscriptions",
+						"resolve"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2017-04-15"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post usage event",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{bearerToken}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-ms-requestid",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "x-ms-correlationid",
+						"value": "{{$guid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"resourceId\": \"e118a090-d97b-c58b-2af9-a12c260cd217\",\r\n  \"quantity\": 15,\r\n  \"dimension\": \"dim3\",\r\n  \"effectiveStartTime\": \"2020-03-10T10:00:43.511Z\",\r\n  \"planId\": \"gold\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://marketplaceapi.microsoft.com/api/usageEvent?api-version=2018-08-31",
+					"protocol": "https",
+					"host": [
+						"marketplaceapi",
+						"microsoft",
+						"com"
+					],
+					"path": [
+						"api",
+						"usageEvent"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2018-08-31"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a subscription",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{bearerToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://marketplaceapi.microsoft.com/api/saas/subscriptions/90419b90-50bb-0024-1da2-74f2f66042e3?api-version={{apiVersion}}",
+					"protocol": "https",
+					"host": [
+						"marketplaceapi",
+						"microsoft",
+						"com"
+					],
+					"path": [
+						"api",
+						"saas",
+						"subscriptions",
+						"90419b90-50bb-0024-1da2-74f2f66042e3"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "{{apiVersion}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get AccessToken - Old resource ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6dcf6325-f841-4d08-be18-7c8767429f1c",
+						"exec": [
+							"var data = JSON.parse(responseBody);",
+							"",
+							"pm.environment.set(\"bearerToken\", \"Bearer \" + data.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "Client_id",
+							"value": "{{clientId}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{clientSecret}}",
+							"type": "text"
+						},
+						{
+							"key": "Resource",
+							"value": "62d94f6c-d599-489b-a797-3e10e42fbe22",
+							"type": "text"
+						}
+					],
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "https://login.microsoftonline.com/{{tenantId}}/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"microsoftonline",
+						"com"
+					],
+					"path": [
+						"{{tenantId}}",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get AccessToken - V2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6dcf6325-f841-4d08-be18-7c8767429f1c",
+						"exec": [
+							"var data = JSON.parse(responseBody);",
+							"",
+							"pm.collectionVariables.set(\"bearerToken\", \"Bearer \" + data.access_token);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "Client_id",
+							"value": "{{clientId}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{clientSecret}}",
+							"type": "text"
+						},
+						{
+							"key": "Resource",
+							"value": "20e940b3-4c77-4b0b-9a53-9e16a1b010a7",
+							"type": "text"
+						}
+					],
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "https://login.microsoftonline.com/{{tenantId}}/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"microsoftonline",
+						"com"
+					],
+					"path": [
+						"{{tenantId}}",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1cb0d10d-f5bd-4c11-85e8-515e17efe9d8",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "5d762ac7-9410-4d29-af72-2c1b4c6ccf76",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "55a265c0-a4fb-4cdf-a628-b2af3bee8312",
+			"key": "clientId",
+			"value": "......"
+		},
+		{
+			"id": "6e03c3b0-9256-448d-8d4b-bb60ce3be4a2",
+			"key": "clientSecret",
+			"value": "......."
+		},
+		{
+			"id": "65f0848f-7c27-4265-b194-4305cb22ccda",
+			"key": "tenantId",
+			"value": "......"
+		},
+		{
+			"id": "81d84e27-06b4-4f90-8f40-f7dbb67cd501",
+			"key": "bearerToken",
+			"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImtnMkxZczJUMENUaklmajRydDZKSXluZW4zOCIsImtpZCI6ImtnMkxZczJUMENUaklmajRydDZKSXluZW4zOCJ9.eyJhdWQiOiIyMGU5NDBiMy00Yzc3LTRiMGItOWE1My05ZTE2YTFiMDEwYTciLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC82ZWJiODY5YS1mMmZjLTQ1NWYtYjNjMy1jODIxNzNkNTU2ZWEvIiwiaWF0IjoxNjAyMDg3MDU5LCJuYmYiOjE2MDIwODcwNTksImV4cCI6MTYwMjA5MDk1OSwiYWlvIjoiRTJSZ1lHQzA4ZHI5ekhtaWlwVzE4dGNOUDUzM0FnQT0iLCJhcHBpZCI6IjVmMDZmMGE1LWE4MDQtNGY4MC1hNmRhLTRjMDdmNDM3ZjFhZSIsImFwcGlkYWNyIjoiMSIsImlkcCI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0LzZlYmI4NjlhLWYyZmMtNDU1Zi1iM2MzLWM4MjE3M2Q1NTZlYS8iLCJvaWQiOiI3ODUzZmI2Yi00NWRlLTQ4YTUtYmExOS1mYWM1ZTc2ZDBiN2QiLCJyaCI6IjAuQVRZQW1vYTdidnp5WDBXenc4Z2hjOVZXNnFYd0JsOEVxSUJQcHRwTUJfUTM4YTQyQUFBLiIsInN1YiI6Ijc4NTNmYjZiLTQ1ZGUtNDhhNS1iYTE5LWZhYzVlNzZkMGI3ZCIsInRpZCI6IjZlYmI4NjlhLWYyZmMtNDU1Zi1iM2MzLWM4MjE3M2Q1NTZlYSIsInV0aSI6IjZpTjcyQTEtb2tla1RuSmc3eFlBQWciLCJ2ZXIiOiIxLjAifQ.QeFMSMwDq_lA7ldh2dgTFSC3YSP0xYlxLZVrfPsKWjR_hjyxWEYXLysDhfk1etAb82R-M9oNmBjGDdSzcEZ2XhvLKETlHgWSlFMa63RamsEqPweKHh_Nhxnvzea6KLOlUsLatYmCCWL3V-t_qjLEhlgRbZcNuRzCm1F2w0aZeFP44f2dbM_bPcMNuQxe3BU4spW4w3Hd7y6x03YwU-oDk71MlrY7RBWoOY3Bgf_ZsDa5CNRpbF-OjqRD2rmInYdz9EEtuZX2B900HkdIJYw-EQFQRAABwhsq4UYlD0VSJkefxs4uD1NSjhPT7_fX8n8hSlB8rvQ7OV04mexP4rdmTw"
+		},
+		{
+			"id": "301f4f77-6604-414a-b03e-94ac468be981",
+			"key": "apiVersion",
+			"value": "2018-08-31"
+		}
+	]
+}

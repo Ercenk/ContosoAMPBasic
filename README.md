@@ -1,5 +1,7 @@
 # A Sample for Azure Marketplace SaaS Integration
 
+[![WeMoved](./resources/WeMoved.png)](https://github.com/Azure-Samples/Commercial-Marketplace-SaaS-Manual-On-Boarding)
+
 This sample demonstrates the basic interaction of a SaaS solution with Azure
 Marketplace. It does not have any SaaS functionality — it is a bare bones
 approach focusing on the marketplace integration.
